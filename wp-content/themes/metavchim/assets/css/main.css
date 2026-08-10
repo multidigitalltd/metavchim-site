@@ -14,13 +14,15 @@
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+/* overflow-x:clip (not hidden) — hidden would create a scroll container and break position:sticky on the nav */
+html,body{overflow-x:clip}
 body{margin:0;padding:0;background:var(--mv-bg);color:var(--mv-ink);font-family:Almoni,system-ui,sans-serif;font-size:1rem;line-height:1.6}
 img{max-width:100%;height:auto}
 svg{display:inline-block;vertical-align:middle}
 a{color:var(--mv-green-aa);text-decoration:none}
 a:hover{color:var(--mv-ink)}
 button{font-family:inherit}
-.mv-page{overflow-x:hidden}
+.mv-page{overflow:visible}
 .mv-ltr{direction:ltr;unicode-bidi:isolate}
 .mv-dot{color:var(--mv-green-mid)}
 
@@ -65,6 +67,12 @@ button{font-family:inherit}
 .mv-article-body th,.mv-article-body td{border:1px solid var(--mv-border);padding:10px 14px;text-align:start}
 .mv-article-body th{background:var(--mv-pale)}
 .pagination{max-width:820px;margin:26px auto 0;font-weight:700}
+
+.mv-credit strong{color:var(--mv-ink);font-weight:800}
+
+/* ===== Sticky trial CTA (always visible) ===== */
+.mv-sticky-cta{position:fixed;bottom:22px;inset-inline-end:22px;z-index:90;display:inline-flex;align-items:center;gap:8px;background:var(--mv-green);color:var(--mv-black);font-size:0.9375rem;font-weight:800;padding:14px 22px;border-radius:999px;box-shadow:0 14px 36px rgba(112,238,145,.4),0 4px 14px rgba(14,16,15,.18);transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.mv-sticky-cta:hover{background:var(--mv-green-hover);color:var(--mv-black);transform:translateY(-3px);box-shadow:0 20px 46px rgba(112,238,145,.5),0 6px 16px rgba(14,16,15,.2)}
 
 /* ===== Accessibility toolbar ===== */
 .mv-a11y{position:fixed;bottom:22px;inset-inline-start:22px;z-index:90}

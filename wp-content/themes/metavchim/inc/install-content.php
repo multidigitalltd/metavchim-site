@@ -26,7 +26,6 @@ function mv_home_section_slugs() {
 		'voice',
 		'features',
 		'security',
-		'onboarding',
 		'plans',
 		'cta',
 	);
@@ -182,7 +181,6 @@ function mv_install_menus( array $legal_ids ) {
 				'#product'  => 'המערכת',
 				'#voice'    => 'סוכן קולי',
 				'#security' => 'אבטחה',
-				'#start'    => 'הטמעה',
 				'#plans'    => 'מסלולים',
 			);
 			foreach ( $anchors as $anchor => $label ) {

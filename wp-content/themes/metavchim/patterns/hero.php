@@ -17,8 +17,8 @@
 
   <div class="mv-hero-inner">
     <p class="mv-hero-tag"><span class="mv-hero-tag-line" aria-hidden="true"></span>המערכת היחידה עם רשת שיתופי פעולה בין משרדים<span class="mv-hero-tag-line" aria-hidden="true"></span></p>
-    <h1 class="mv-h1" id="mv-hero-title">הנכס הנכון פוגש את הקונה<br>הנכון. גם אם הוא לא שלך<span class="mv-dot" aria-hidden="true">.</span></h1>
-    <p class="mv-hero-sub">מערכת ניהול אחת למשרדי תיווך וסוכנים עצמאיים: שיחה נכנסת הופכת לכרטיס לקוח, כל נכס נבדק מיד מול כל הקונים — ומה שאין לך במשרד נמצא אצל המשרדים השותפים ברשת.</p>
+    <h1 class="mv-h1" id="mv-hero-title">המערכת עובדת בשבילך.<br>הרשת מביאה לך עסקאות<span class="mv-dot" aria-hidden="true">.</span></h1>
+    <p class="mv-hero-sub">מערכת ניהול אחת למתווכים ולמשרדי תיווך שעושה בשבילך את העבודה: קולטת כל שיחה לכרטיס לקוח, מצליבה כל נכס מול כל הקונים — ומחברת אותך לרשת שיתופי הפעולה בין המשרדים, כך שגם עסקה שאין לך במאגר נסגרת דרכך, בעמלה שמוסכמת מראש.</p>
     <div class="mv-btn-row">
       <a class="mv-btn-green" href="#cta">התחלת 14 יום ניסיון</a>
       <a class="mv-btn-ghost" href="#network">איך עובדים שיתופי הפעולה</a>

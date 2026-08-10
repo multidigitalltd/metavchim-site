@@ -28,8 +28,14 @@ defined( 'ABSPATH' ) || exit;
 				?>
 			</nav>
 			<span class="mv-copy">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?></span>
+			<span class="mv-credit">פיתוח: <strong>Multi Digital</strong></span>
 		</div>
 	</footer>
+
+	<a class="mv-sticky-cta" href="<?php echo esc_url( ( is_front_page() ? '' : home_url( '/' ) ) . '#cta' ); ?>">
+		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M7 12.5 10.5 16 17 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		14 יום ניסיון בחינם
+	</a>
 
 	<?php mv_a11y_toolbar(); ?>
 

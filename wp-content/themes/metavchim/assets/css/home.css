@@ -97,10 +97,23 @@
 /* ===== 2. Stats strip ===== */
 .mv-stats-sec{padding:70px 28px 0}
 .mv-stats{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--mv-border);border-bottom:1px solid var(--mv-border)}
-.mv-stat{padding:26px 24px;border-inline-end:1px solid var(--mv-border)}
+.mv-stat{padding:26px 24px;border-inline-end:1px solid var(--mv-border);transition:background .22s ease,transform .22s ease,opacity .55s ease}
 .mv-stat:last-child{border-inline-end:0}
-.mv-stat-v{font-size:1.625rem;font-weight:900;color:var(--mv-green-aa)}
+.mv-stat:hover{background:var(--mv-pale);transform:translateY(-3px)}
+.mv-stat-v{font-size:1.625rem;font-weight:900;color:var(--mv-green-aa);transition:transform .22s ease}
+.mv-stat:hover .mv-stat-v{transform:scale(1.06);transform-origin:right center}
 .mv-stat-t{font-size:0.875rem;color:var(--mv-text2);margin-top:6px;line-height:1.5}
+
+/* Staggered entrance for stats / steps / benefit cards (only when JS reveal is active) */
+.rv .mv-stat,.rv .mv-step,.rv.mv-bene .mv-bene-card{opacity:0;transform:translateY(22px)}
+.rv.in .mv-stat,.rv.in .mv-step,.rv.mv-bene.in .mv-bene-card{opacity:1;transform:translateY(0)}
+.rv.in .mv-stat{transition:opacity .55s ease,transform .55s ease,background .22s ease}
+.rv.in .mv-step{transition:opacity .55s ease,transform .55s ease,box-shadow .22s ease,border-color .22s ease}
+.rv.mv-bene.in .mv-bene-card{transition:opacity .55s ease,transform .55s ease,box-shadow .25s ease}
+.rv.in .mv-stat:nth-child(2),.rv.in .mv-step:nth-child(2),.rv.mv-bene.in .mv-bene-card:nth-child(2){transition-delay:.1s,.1s,0s,0s}
+.rv.in .mv-stat:nth-child(3),.rv.in .mv-step:nth-child(3),.rv.mv-bene.in .mv-bene-card:nth-child(3){transition-delay:.2s,.2s,0s,0s}
+.rv.in .mv-stat:nth-child(4),.rv.in .mv-step:nth-child(4){transition-delay:.3s,.3s,0s,0s}
+.rv.in .mv-stat:hover,.rv.in .mv-step:hover,.rv.mv-bene.in .mv-bene-card:hover{transition-delay:0s}
 
 /* ===== 3. Network ===== */
 .mv-network-sec{padding:96px 28px 0}
@@ -135,19 +148,23 @@
 .mv-steps-wrap{margin-top:36px;border-top:1px solid #EDF0EB;padding-top:34px}
 .mv-steps-title{font-size:1.0625rem;font-weight:900;margin:0 0 22px}
 .mv-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.mv-step{border:1px solid var(--mv-border);border-radius:16px;padding:22px;background:#FBFCFA}
+.mv-step{border:1px solid var(--mv-border);border-radius:16px;padding:22px;background:#FBFCFA;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.mv-step:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(14,16,15,.08);border-color:rgba(63,191,99,.45)}
 .mv-step.is-green{border-color:rgba(63,191,99,.4);background:var(--mv-pale)}
 .mv-step-head{display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.mv-step-num{width:24px;height:24px;border-radius:99px;background:var(--mv-ink);color:var(--mv-green);font-size:0.78125rem;font-weight:900;display:grid;place-items:center;flex:none}
+.mv-step-num{width:24px;height:24px;border-radius:99px;background:var(--mv-ink);color:var(--mv-green);font-size:0.78125rem;font-weight:900;display:grid;place-items:center;flex:none;transition:transform .22s ease}
+.mv-step:hover .mv-step-num{transform:scale(1.15)}
 .is-green .mv-step-num{background:var(--mv-green);color:var(--mv-black)}
 .mv-step-title{font-size:0.9375rem;font-weight:900;margin:0}
 .mv-step-text{font-size:0.875rem;line-height:1.6;color:var(--mv-text2)}
 .is-green .mv-step-text{color:var(--mv-text3)}
 .mv-bene{max-width:1240px;margin:20px auto 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
-.mv-bene-card{background:var(--mv-ink);color:#fff;border-radius:20px;padding:30px 28px;transition:transform .25s ease,box-shadow .25s ease}
-.mv-bene-card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(14,16,15,.18)}
+.mv-bene-card{background:var(--mv-ink);color:#fff;border-radius:20px;padding:30px 28px;border:1px solid transparent;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.mv-bene-card:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(14,16,15,.2);border-color:rgba(112,238,145,.45)}
 .mv-bene-card.is-green{background:var(--mv-green);color:var(--mv-black)}
-.mv-bene-title{font-size:1.1875rem;font-weight:900;margin:0 0 10px}
+.mv-bene-card.is-green:hover{border-color:rgba(10,12,11,.35);box-shadow:0 18px 44px rgba(112,238,145,.35)}
+.mv-bene-title{font-size:1.1875rem;font-weight:900;margin:0 0 10px;transition:transform .25s ease}
+.mv-bene-card:hover .mv-bene-title{transform:translateX(-4px)}
 .mv-bene-text{font-size:0.9375rem;line-height:1.6;color:rgba(255,255,255,.6);margin:0}
 .is-green .mv-bene-text{color:rgba(10,12,11,.7)}
 
@@ -391,19 +408,6 @@
 .mv-scard-title{font-size:1.125rem;font-weight:900;margin:0}
 .mv-scard-text{font-size:0.9375rem;line-height:1.65;color:var(--mv-text2);margin:0}
 
-/* ===== 9. Onboarding days ===== */
-.mv-start-sec .mv-h2{margin:0 0 12px}
-.mv-start-sec .mv-lede{max-width:540px;margin:0 0 40px}
-.mv-days{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.mv-day{border:1px solid var(--mv-border);background:#fff;border-radius:18px;padding:30px 28px;transition:transform .25s ease,box-shadow .25s ease}
-.mv-day:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(14,16,15,.09)}
-.mv-day.is-dark{border-color:var(--mv-ink);background:var(--mv-ink);color:#fff}
-.mv-day-label{font-size:0.78125rem;font-weight:800;color:var(--mv-green-aa);letter-spacing:.4px;margin-bottom:14px}
-.is-dark .mv-day-label{color:var(--mv-green)}
-.mv-day-title{font-size:1.3125rem;font-weight:900;margin:0 0 10px}
-.mv-day-text{font-size:0.9375rem;line-height:1.6;color:var(--mv-text2);margin:0}
-.is-dark .mv-day-text{color:rgba(255,255,255,.65)}
-
 /* ===== 10. Plans ===== */
 .mv-plans-sec .mv-h2{margin:0 0 12px}
 .mv-plans-sec .mv-lede{max-width:540px;margin:0 0 36px}
@@ -456,7 +460,6 @@
 .mv-kpis{grid-template-columns:1fr 1fr}
 .mv-charts{grid-template-columns:1fr}
 .mv-plans{grid-template-columns:1fr}
-.mv-days{grid-template-columns:1fr}
 .mv-shot-app{grid-template-columns:1fr}
 .mv-shot-side{display:none}
 .mv-match-grid{grid-template-columns:1fr}

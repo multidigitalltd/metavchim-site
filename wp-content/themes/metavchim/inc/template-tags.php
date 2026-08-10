@@ -32,7 +32,6 @@ function mv_primary_menu_fallback() {
 		'#product'  => 'המערכת',
 		'#voice'    => 'סוכן קולי',
 		'#security' => 'אבטחה',
-		'#start'    => 'הטמעה',
 		'#plans'    => 'מסלולים',
 	);
 	$home  = is_front_page() ? '' : esc_url( home_url( '/' ) );
