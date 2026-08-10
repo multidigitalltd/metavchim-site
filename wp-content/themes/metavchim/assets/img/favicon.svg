@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <title>מתווכים — פאביקון</title>
+  <rect width="48" height="48" rx="10" fill="#0E100F"></rect>
+  <g transform="translate(24 24) scale(.74) translate(-24 -24)">
+    <path d="M28.5 6.5h7a6 6 0 0 1 6 6v23a6 6 0 0 1-6 6h-7" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"></path>
+    <path d="M19.5 6.5h-7a6 6 0 0 0-6 6v23a6 6 0 0 0 6 6h7" stroke="#70EE91" stroke-width="6" stroke-linecap="round"></path>
+    <rect x="19" y="19" width="10" height="10" rx="2.6" fill="#70EE91"></rect>
+  </g>
+</svg>

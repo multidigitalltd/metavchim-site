@@ -1,0 +1,102 @@
+<?php
+/**
+ * Conditional, lean asset loading.
+ *
+ * עקרונות: אין jQuery, אין ספריות צד ג', CSS/JS נטענים רק בעמודים
+ * שצריכים אותם, JS נטען עם defer, ופונטים קריטיים נטענים ב-preload.
+ *
+ * @package Metavchim
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Enqueue front-end styles and scripts.
+ */
+function mv_enqueue_assets() {
+	// Base styles — header, footer, typography, accessibility toolbar.
+	wp_enqueue_style(
+		'mv-main',
+		MV_THEME_URI . '/assets/css/main.css',
+		array(),
+		MV_THEME_VERSION
+	);
+
+	// Homepage sections — loaded only where they are rendered.
+	if ( is_front_page() ) {
+		wp_enqueue_style(
+			'mv-home',
+			MV_THEME_URI . '/assets/css/home.css',
+			array( 'mv-main' ),
+			MV_THEME_VERSION
+		);
+	}
+
+	// Site-wide behavior: nav toggle, scroll reveal, accessibility toolbar.
+	wp_enqueue_script(
+		'mv-main',
+		MV_THEME_URI . '/assets/js/main.js',
+		array(),
+		MV_THEME_VERSION,
+		array(
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		)
+	);
+
+	// Demo tabs exist only on the homepage.
+	if ( is_front_page() ) {
+		wp_enqueue_script(
+			'mv-home',
+			MV_THEME_URI . '/assets/js/home.js',
+			array(),
+			MV_THEME_VERSION,
+			array(
+				'strategy'  => 'defer',
+				'in_footer' => true,
+			)
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'mv_enqueue_assets' );
+
+/**
+ * The theme does not use core block styles on the front end — the page
+ * content is hand-tuned HTML sections styled by the theme CSS. Dropping
+ * these sheets removes render-blocking CSS from every page.
+ */
+function mv_dequeue_core_styles() {
+	wp_dequeue_style( 'wp-block-library' );
+	wp_dequeue_style( 'wp-block-library-theme' );
+	wp_dequeue_style( 'classic-theme-styles' );
+	wp_dequeue_style( 'global-styles' );
+	wp_dequeue_style( 'core-block-supports' );
+}
+add_action( 'wp_enqueue_scripts', 'mv_dequeue_core_styles', 20 );
+
+/**
+ * Preload the two font weights used above the fold (body 400, headings 900).
+ */
+function mv_preload_fonts() {
+	$fonts = array( 'almoni-regular-aaa.woff', 'almoni-ultrabold-aaa.woff' );
+	foreach ( $fonts as $font ) {
+		printf(
+			'<link rel="preload" href="%s" as="font" type="font/woff" crossorigin>' . "\n",
+			esc_url( MV_THEME_URI . '/assets/fonts/' . $font )
+		);
+	}
+}
+add_action( 'wp_head', 'mv_preload_fonts', 2 );
+
+/**
+ * Favicon fallback when no Site Icon is set in the Customizer.
+ */
+function mv_favicon_fallback() {
+	if ( ! has_site_icon() ) {
+		printf(
+			'<link rel="icon" href="%s" type="image/svg+xml">' . "\n",
+			esc_url( MV_THEME_URI . '/assets/img/favicon.svg' )
+		);
+	}
+}
+add_action( 'wp_head', 'mv_favicon_fallback', 2 );
