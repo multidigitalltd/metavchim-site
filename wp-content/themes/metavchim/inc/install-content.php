@@ -73,20 +73,38 @@ function mv_render_default_sections() {
 }
 
 /**
- * Create a page once (by slug) and return its ID.
+ * Create (or repair) a page by slug and return its ID.
+ *
+ * התוכן הוא HTML שנכתב בקבצי התבנית עצמה, ולכן נשמר תוך עקיפת מסנני
+ * kses — אחרת הפעלה ללא משתמש בעל unfiltered_html (WP-CLI, פאנל אחסון)
+ * מוחקת את ה-SVG ורוב המרקאפ ומשאירה עמוד ריק.
  *
  * @param string $slug    Page slug.
  * @param string $title   Page title.
- * @param string $content Block content.
+ * @param string $content Block content (theme-authored, trusted).
+ * @param bool   $force   Overwrite existing content even when not empty.
  * @return int Page ID (0 on failure).
  */
-function mv_install_page( $slug, $title, $content ) {
+function mv_install_page( $slug, $title, $content, $force = false ) {
 	$existing = get_page_by_path( $slug );
+
 	if ( $existing instanceof WP_Post ) {
+		if ( $force || '' === trim( $existing->post_content ) ) {
+			kses_remove_filters();
+			wp_update_post(
+				array(
+					'ID'           => $existing->ID,
+					'post_content' => $content,
+					'post_status'  => 'publish',
+				)
+			);
+			kses_init_filters();
+		}
 		return (int) $existing->ID;
 	}
 
-	return (int) wp_insert_post(
+	kses_remove_filters();
+	$page_id = (int) wp_insert_post(
 		array(
 			'post_type'      => 'page',
 			'post_status'    => 'publish',
@@ -97,6 +115,19 @@ function mv_install_page( $slug, $title, $content ) {
 			'ping_status'    => 'closed',
 		)
 	);
+	kses_init_filters();
+
+	return $page_id;
+}
+
+/**
+ * Whether the installed home page exists and actually holds content.
+ *
+ * @return bool
+ */
+function mv_home_page_ok() {
+	$page = get_page_by_path( 'home' );
+	return $page instanceof WP_Post && '' !== trim( $page->post_content );
 }
 
 /**
@@ -227,14 +258,17 @@ function mv_install_menus( array $legal_ids ) {
 }
 
 /**
- * Install pages + menus on theme activation (idempotent).
+ * Install pages + menus (idempotent, self-healing).
+ *
+ * @param bool $force_home Overwrite the home page content from the theme
+ *                         patterns even when the page already has content.
  */
-function mv_install_content() {
-	if ( get_option( 'mv_content_installed' ) ) {
+function mv_install_content( $force_home = false ) {
+	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() ) {
 		return;
 	}
 
-	$home_id = mv_install_page( 'home', 'בית', mv_get_home_content() );
+	$home_id = mv_install_page( 'home', 'בית', mv_get_home_content(), $force_home );
 
 	$legal_ids = array(
 		'terms'         => mv_install_page( 'terms', 'תנאי שימוש', mv_terms_content() ),
@@ -242,7 +276,7 @@ function mv_install_content() {
 		'accessibility' => mv_install_page( 'accessibility', 'הצהרת נגישות', mv_accessibility_statement_content() ),
 	);
 
-	if ( $home_id ) {
+	if ( $home_id && mv_home_page_ok() ) {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $home_id );
 	}
@@ -252,3 +286,86 @@ function mv_install_content() {
 	update_option( 'mv_content_installed', 1, false ); // No autoload.
 }
 add_action( 'after_switch_theme', 'mv_install_content' );
+
+/**
+ * Self-heal: if the home page is missing or was stripped empty (e.g. the
+ * theme was activated without a privileged user), reinstall on the next
+ * admin visit. Cheap when healthy — a single cached page lookup.
+ */
+function mv_maybe_repair_content() {
+	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'edit_pages' ) ) {
+		return;
+	}
+	if ( ! mv_home_page_ok() ) {
+		mv_install_content();
+	}
+}
+add_action( 'admin_init', 'mv_maybe_repair_content' );
+
+/**
+ * Admin screen: עיצוב ← תוכן התבנית — rebuild the home page from the
+ * theme's section patterns on demand (e.g. after a theme update).
+ */
+function mv_register_content_admin_page() {
+	add_theme_page(
+		'תוכן התבנית',
+		'תוכן התבנית',
+		'manage_options',
+		'mv-content',
+		'mv_render_content_admin_page'
+	);
+}
+add_action( 'admin_menu', 'mv_register_content_admin_page' );
+
+/**
+ * Render the content tools screen.
+ */
+function mv_render_content_admin_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$rebuilt = isset( $_GET['mv_done'] ) ? absint( $_GET['mv_done'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only flag.
+	$home    = get_page_by_path( 'home' );
+	?>
+	<div class="wrap">
+		<h1>תוכן התבנית — מתווכים</h1>
+		<?php if ( $rebuilt ) : ?>
+			<div class="notice notice-success is-dismissible"><p>עמוד הבית נבנה מחדש מהסקשנים של התבנית.</p></div>
+		<?php endif; ?>
+		<p>
+			מצב עמוד הבית:
+			<?php if ( mv_home_page_ok() && $home instanceof WP_Post ) : ?>
+				<strong style="color:#0B6E35">תקין</strong> —
+				<a href="<?php echo esc_url( get_edit_post_link( $home->ID ) ); ?>">עריכת העמוד</a> ·
+				<a href="<?php echo esc_url( get_permalink( $home->ID ) ); ?>">צפייה</a>
+			<?php else : ?>
+				<strong style="color:#b32d2e">חסר או ריק</strong>
+			<?php endif; ?>
+		</p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'mv_rebuild_content' ); ?>
+			<input type="hidden" name="action" value="mv_rebuild_content">
+			<p>בנייה מחדש שומרת את כל הסקשנים העדכניים של התבנית לתוך תוכן עמוד הבית, יוצרת עמודים משפטיים חסרים ומגדירה את העמוד כעמוד הבית הסטטי.</p>
+			<p><strong>שים לב:</strong> הפעולה דורסת עריכות ידניות שבוצעו בתוכן עמוד הבית.</p>
+			<?php submit_button( 'בנייה מחדש של עמוד הבית מהתבנית' ); ?>
+		</form>
+	</div>
+	<?php
+}
+
+/**
+ * Handle the rebuild action (nonce + capability checked).
+ */
+function mv_handle_rebuild_content() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'אין לך הרשאה לבצע פעולה זו.', 'metavchim' ) );
+	}
+	check_admin_referer( 'mv_rebuild_content' );
+
+	mv_install_content( true );
+
+	wp_safe_redirect( add_query_arg( array( 'page' => 'mv-content', 'mv_done' => 1 ), admin_url( 'themes.php' ) ) );
+	exit;
+}
+add_action( 'admin_post_mv_rebuild_content', 'mv_handle_rebuild_content' );
