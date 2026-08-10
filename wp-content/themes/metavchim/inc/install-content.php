@@ -172,10 +172,11 @@ function mv_privacy_content() {
  * @param array $legal_ids Page IDs keyed by slug.
  */
 function mv_install_menus( array $legal_ids ) {
-	// Primary anchors menu.
-	if ( ! wp_get_nav_menu_object( 'ראשי' ) ) {
-		$menu_id = wp_create_nav_menu( 'ראשי' );
-		if ( ! is_wp_error( $menu_id ) ) {
+	// Primary anchors menu — reuse an existing menu of the same name.
+	$existing = wp_get_nav_menu_object( 'ראשי' );
+	$menu_id  = $existing ? (int) $existing->term_id : wp_create_nav_menu( 'ראשי' );
+	if ( ! is_wp_error( $menu_id ) ) {
+		if ( ! $existing ) {
 			$anchors = array(
 				'#network'  => 'שיתופי פעולה',
 				'#product'  => 'המערכת',
@@ -195,16 +196,17 @@ function mv_install_menus( array $legal_ids ) {
 					)
 				);
 			}
-			$locations            = get_theme_mod( 'nav_menu_locations', array() );
-			$locations['primary'] = $menu_id;
-			set_theme_mod( 'nav_menu_locations', $locations );
 		}
+		$locations            = get_theme_mod( 'nav_menu_locations', array() );
+		$locations['primary'] = (int) $menu_id;
+		set_theme_mod( 'nav_menu_locations', $locations );
 	}
 
-	// Footer legal menu.
-	if ( ! wp_get_nav_menu_object( 'פוטר' ) ) {
-		$menu_id = wp_create_nav_menu( 'פוטר' );
-		if ( ! is_wp_error( $menu_id ) ) {
+	// Footer legal menu — same reuse-or-create logic.
+	$existing = wp_get_nav_menu_object( 'פוטר' );
+	$menu_id  = $existing ? (int) $existing->term_id : wp_create_nav_menu( 'פוטר' );
+	if ( ! is_wp_error( $menu_id ) ) {
+		if ( ! $existing ) {
 			foreach ( $legal_ids as $page_id ) {
 				if ( $page_id ) {
 					wp_update_nav_menu_item(
@@ -219,10 +221,10 @@ function mv_install_menus( array $legal_ids ) {
 					);
 				}
 			}
-			$locations           = get_theme_mod( 'nav_menu_locations', array() );
-			$locations['footer'] = $menu_id;
-			set_theme_mod( 'nav_menu_locations', $locations );
 		}
+		$locations           = get_theme_mod( 'nav_menu_locations', array() );
+		$locations['footer'] = (int) $menu_id;
+		set_theme_mod( 'nav_menu_locations', $locations );
 	}
 }
 

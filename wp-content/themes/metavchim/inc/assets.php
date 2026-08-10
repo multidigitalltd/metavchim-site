@@ -61,11 +61,14 @@ function mv_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'mv_enqueue_assets' );
 
 /**
- * The theme does not use core block styles on the front end — the page
- * content is hand-tuned HTML sections styled by the theme CSS. Dropping
- * these sheets removes render-blocking CSS from every page.
+ * The homepage is hand-tuned HTML sections styled entirely by the theme
+ * CSS, so core block styles are dead weight there. Other pages keep the
+ * core stylesheets so user-added blocks (columns, gallery…) render fine.
  */
 function mv_dequeue_core_styles() {
+	if ( ! is_front_page() ) {
+		return;
+	}
 	wp_dequeue_style( 'wp-block-library' );
 	wp_dequeue_style( 'wp-block-library-theme' );
 	wp_dequeue_style( 'classic-theme-styles' );

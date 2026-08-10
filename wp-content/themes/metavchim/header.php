@@ -43,7 +43,7 @@ defined( 'ABSPATH' ) || exit;
 
 			<div class="mv-nav-actions">
 				<a class="mv-login" href="<?php echo esc_url( wp_login_url() ); ?>">התחברות</a>
-				<a class="mv-btn-dark" href="#cta">הדגמה של 20 דקות</a>
+				<a class="mv-btn-dark" href="<?php echo esc_url( ( is_front_page() ? '' : home_url( '/' ) ) . '#cta' ); ?>">הדגמה של 20 דקות</a>
 			</div>
 
 			<button type="button" class="mv-nav-toggle" aria-expanded="false" aria-controls="mv-nav">
