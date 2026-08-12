@@ -38,7 +38,9 @@
 /* ===== 1. Hero ===== */
 .mv-c-hero{position:relative;margin:16px 28px 0;background:var(--mv-black);color:#fff;border-radius:28px;padding:80px 56px 76px;overflow:hidden}
 .mv-c-hero-in{position:relative;max-width:1180px;margin:0 auto}
-.mv-c-back{display:inline-flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:700;color:rgba(255,255,255,.55);transition:color .2s ease}
+/* Padding + matching negative margin: a 24px+ touch target (WCAG 2.5.8)
+   without shifting the hero layout. */
+.mv-c-back{display:inline-flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:700;color:rgba(255,255,255,.55);transition:color .2s ease;padding:8px 6px;margin:-8px -6px}
 .mv-c-back:hover{color:var(--mv-green)}
 .mv-c-hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:end;margin-top:26px}
 .mv-c-h1{margin:20px 0 0;font-size:4rem;font-weight:900;line-height:1.04;letter-spacing:-.035em;text-wrap:balance}

@@ -150,6 +150,27 @@ function mv_get_collab_content() {
 }
 
 /**
+ * Keep an installed page's title in sync when the theme renames it.
+ *
+ * @param int    $page_id Page ID.
+ * @param string $title   Expected title.
+ */
+function mv_sync_page_title( $page_id, $title ) {
+	if ( ! $page_id ) {
+		return;
+	}
+	$page = get_post( $page_id );
+	if ( $page instanceof WP_Post && $page->post_title !== $title ) {
+		wp_update_post(
+			array(
+				'ID'         => $page_id,
+				'post_title' => $title,
+			)
+		);
+	}
+}
+
+/**
  * Wrap plain paragraphs/headings into core block markup.
  *
  * @param array $blocks List of [ tag, text ] pairs.
@@ -216,6 +237,80 @@ function mv_privacy_content() {
 }
 
 /**
+ * Make sure the primary menu links to the collaboration page.
+ *
+ * Runs on every install/repair so menus created before the page existed
+ * gain the link, and an item carrying the previous label is renamed.
+ *
+ * @param int $menu_id Primary menu term ID.
+ */
+function mv_ensure_collab_menu_item( $menu_id ) {
+	$page = get_page_by_path( 'collaboration' );
+	if ( ! $menu_id || ! $page instanceof WP_Post ) {
+		return;
+	}
+
+	$url   = get_permalink( $page );
+	$items = wp_get_nav_menu_items( $menu_id );
+	if ( ! is_array( $items ) ) {
+		$items = array();
+	}
+
+	foreach ( $items as $item ) {
+		$is_page_item = ( 'post_type' === $item->type && (int) $item->object_id === (int) $page->ID );
+		$is_url_item  = ( untrailingslashit( $item->url ) === untrailingslashit( $url ) );
+
+		if ( $is_page_item || $is_url_item ) {
+			if ( mv_collab_label() !== $item->title ) {
+				wp_update_nav_menu_item(
+					$menu_id,
+					$item->ID,
+					array(
+						'menu-item-title'  => mv_collab_label(),
+						'menu-item-url'    => $url,
+						'menu-item-status' => 'publish',
+					)
+				);
+			}
+			return;
+		}
+	}
+
+	// Not present yet — add it just before "מסלולים" when that item exists.
+	$new_id = wp_update_nav_menu_item(
+		$menu_id,
+		0,
+		array(
+			'menu-item-title'  => mv_collab_label(),
+			'menu-item-url'    => $url,
+			'menu-item-status' => 'publish',
+		)
+	);
+
+	if ( is_wp_error( $new_id ) ) {
+		return;
+	}
+
+	foreach ( $items as $item ) {
+		if ( 'מסלולים' === $item->title ) {
+			wp_update_post(
+				array(
+					'ID'         => $new_id,
+					'menu_order' => (int) $item->menu_order,
+				)
+			);
+			wp_update_post(
+				array(
+					'ID'         => $item->ID,
+					'menu_order' => (int) $item->menu_order + 1,
+				)
+			);
+			break;
+		}
+	}
+}
+
+/**
  * Create the primary + footer menus once.
  *
  * @param array $legal_ids Page IDs keyed by slug.
@@ -227,11 +322,11 @@ function mv_install_menus( array $legal_ids ) {
 	if ( ! is_wp_error( $menu_id ) ) {
 		if ( ! $existing ) {
 			$anchors = array(
-				'#product'        => 'המערכת',
-				'#voice'          => 'סוכן קולי',
-				'#security'       => 'אבטחה',
-				'collaboration/'  => 'רשת המשרדים',
-				'#plans'          => 'מסלולים',
+				'#product'       => 'המערכת',
+				'#voice'         => 'סוכן קולי',
+				'#security'      => 'אבטחה',
+				'collaboration/' => mv_collab_label(),
+				'#plans'         => 'מסלולים',
 			);
 			foreach ( $anchors as $target => $label ) {
 				wp_update_nav_menu_item(
@@ -245,6 +340,10 @@ function mv_install_menus( array $legal_ids ) {
 				);
 			}
 		}
+
+		// Menus created before this page existed still need the link.
+		mv_ensure_collab_menu_item( (int) $menu_id );
+
 		$locations            = get_theme_mod( 'nav_menu_locations', array() );
 		$locations['primary'] = (int) $menu_id;
 		set_theme_mod( 'nav_menu_locations', $locations );
@@ -289,7 +388,8 @@ function mv_install_content( $force_home = false ) {
 
 	$home_id = mv_install_page( 'home', 'בית', mv_get_home_content(), $force_home );
 
-	mv_install_page( 'collaboration', 'רשת המשרדים', mv_get_collab_content(), $force_home );
+	$collab_id = mv_install_page( 'collaboration', mv_collab_label(), mv_get_collab_content(), $force_home );
+	mv_sync_page_title( $collab_id, mv_collab_label() );
 
 	$legal_ids = array(
 		'terms'         => mv_install_page( 'terms', 'תנאי שימוש', mv_terms_content() ),

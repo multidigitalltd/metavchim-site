@@ -24,6 +24,15 @@ function mv_logo_svg( $size = 25, $accent = '#3FBF63', $main = '#0E100F' ) {
 }
 
 /**
+ * Display label of the collaboration page (menu + installed page title).
+ *
+ * @return string
+ */
+function mv_collab_label() {
+	return 'שת"פים';
+}
+
+/**
  * Primary menu fallback: the anchor links from the approved design.
  */
 function mv_primary_menu_fallback() {
@@ -46,13 +55,13 @@ function mv_primary_menu_fallback() {
 			esc_html( $label )
 		);
 
-		// "רשת המשרדים" sits between "אבטחה" and "מסלולים"; it is plain
-		// bold text while the visitor is already on that page.
+		// "שת"פים" sits between "אבטחה" and "מסלולים"; it is plain bold
+		// text while the visitor is already on that page.
 		if ( '#security' === $anchor ) {
 			if ( function_exists( 'mv_is_collab_page' ) && mv_is_collab_page() ) {
-				echo '<li><span class="mv-nav-current" aria-current="page">רשת המשרדים</span></li>';
+				printf( '<li><span class="mv-nav-current" aria-current="page">%s</span></li>', esc_html( mv_collab_label() ) );
 			} else {
-				printf( '<li><a href="%s">%s</a></li>', esc_url( $collab ), esc_html( 'רשת המשרדים' ) );
+				printf( '<li><a href="%s">%s</a></li>', esc_url( $collab ), esc_html( mv_collab_label() ) );
 			}
 		}
 	}
