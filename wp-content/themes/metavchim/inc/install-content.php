@@ -121,13 +121,32 @@ function mv_install_page( $slug, $title, $content, $force = false ) {
 }
 
 /**
+ * Whether an installed page exists and actually holds content.
+ *
+ * @param string $slug Page slug.
+ * @return bool
+ */
+function mv_page_content_ok( $slug ) {
+	$page = get_page_by_path( $slug );
+	return $page instanceof WP_Post && '' !== trim( $page->post_content );
+}
+
+/**
  * Whether the installed home page exists and actually holds content.
  *
  * @return bool
  */
 function mv_home_page_ok() {
-	$page = get_page_by_path( 'home' );
-	return $page instanceof WP_Post && '' !== trim( $page->post_content );
+	return mv_page_content_ok( 'home' );
+}
+
+/**
+ * The collaboration page content, assembled from its section pattern.
+ *
+ * @return string
+ */
+function mv_get_collab_content() {
+	return mv_get_section_html( 'collaboration' );
 }
 
 /**
@@ -208,19 +227,19 @@ function mv_install_menus( array $legal_ids ) {
 	if ( ! is_wp_error( $menu_id ) ) {
 		if ( ! $existing ) {
 			$anchors = array(
-				'#network'  => 'שיתופי פעולה',
-				'#product'  => 'המערכת',
-				'#voice'    => 'סוכן קולי',
-				'#security' => 'אבטחה',
-				'#plans'    => 'מסלולים',
+				'#product'        => 'המערכת',
+				'#voice'          => 'סוכן קולי',
+				'#security'       => 'אבטחה',
+				'collaboration/'  => 'רשת המשרדים',
+				'#plans'          => 'מסלולים',
 			);
-			foreach ( $anchors as $anchor => $label ) {
+			foreach ( $anchors as $target => $label ) {
 				wp_update_nav_menu_item(
 					$menu_id,
 					0,
 					array(
 						'menu-item-title'  => $label,
-						'menu-item-url'    => home_url( '/' ) . $anchor,
+						'menu-item-url'    => home_url( '/' ) . $target,
 						'menu-item-status' => 'publish',
 					)
 				);
@@ -264,11 +283,13 @@ function mv_install_menus( array $legal_ids ) {
  *                         patterns even when the page already has content.
  */
 function mv_install_content( $force_home = false ) {
-	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() ) {
+	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() && mv_page_content_ok( 'collaboration' ) ) {
 		return;
 	}
 
 	$home_id = mv_install_page( 'home', 'בית', mv_get_home_content(), $force_home );
+
+	mv_install_page( 'collaboration', 'רשת המשרדים', mv_get_collab_content(), $force_home );
 
 	$legal_ids = array(
 		'terms'         => mv_install_page( 'terms', 'תנאי שימוש', mv_terms_content() ),
@@ -296,7 +317,7 @@ function mv_maybe_repair_content() {
 	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'edit_pages' ) ) {
 		return;
 	}
-	if ( ! mv_home_page_ok() ) {
+	if ( ! mv_home_page_ok() || ! mv_page_content_ok( 'collaboration' ) ) {
 		mv_install_content();
 	}
 }

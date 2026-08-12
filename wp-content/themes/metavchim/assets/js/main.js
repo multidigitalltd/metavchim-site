@@ -35,7 +35,7 @@
 
 	/* ---------- 2. Scroll reveal ---------- */
 	if ( ! reduceMotion && 'IntersectionObserver' in window ) {
-		var targets = document.querySelectorAll( '.mv-home section > div, .mv-footer > div' );
+		var targets = document.querySelectorAll( '.mv-reveal section > div, .mv-footer > div' );
 		var io = new IntersectionObserver(
 			function ( entries ) {
 				entries.forEach( function ( entry ) {

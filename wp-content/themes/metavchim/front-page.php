@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
-<main id="main" class="mv-home">
+<main id="main" class="mv-home mv-reveal">
 	<?php
 	if ( 'page' === get_option( 'show_on_front' ) && have_posts() ) {
 		while ( have_posts() ) {

@@ -27,14 +27,16 @@ function mv_logo_svg( $size = 25, $accent = '#3FBF63', $main = '#0E100F' ) {
  * Primary menu fallback: the anchor links from the approved design.
  */
 function mv_primary_menu_fallback() {
-	$links = array(
-		'#network'  => 'שיתופי פעולה',
+	$links  = array(
 		'#product'  => 'המערכת',
 		'#voice'    => 'סוכן קולי',
 		'#security' => 'אבטחה',
 		'#plans'    => 'מסלולים',
 	);
-	$home  = is_front_page() ? '' : esc_url( home_url( '/' ) );
+	$home   = is_front_page() ? '' : esc_url( home_url( '/' ) );
+	$collab = get_page_by_path( 'collaboration' );
+	$collab = $collab ? get_permalink( $collab ) : home_url( '/collaboration/' );
+
 	echo '<ul class="mv-nav-list">';
 	foreach ( $links as $anchor => $label ) {
 		printf(
@@ -43,6 +45,16 @@ function mv_primary_menu_fallback() {
 			esc_attr( $anchor ),
 			esc_html( $label )
 		);
+
+		// "רשת המשרדים" sits between "אבטחה" and "מסלולים"; it is plain
+		// bold text while the visitor is already on that page.
+		if ( '#security' === $anchor ) {
+			if ( function_exists( 'mv_is_collab_page' ) && mv_is_collab_page() ) {
+				echo '<li><span class="mv-nav-current" aria-current="page">רשת המשרדים</span></li>';
+			} else {
+				printf( '<li><a href="%s">%s</a></li>', esc_url( $collab ), esc_html( 'רשת המשרדים' ) );
+			}
+		}
 	}
 	echo '</ul>';
 }
