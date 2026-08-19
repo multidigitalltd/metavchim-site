@@ -502,3 +502,4 @@
 @media (max-width:640px){.mv-caps{grid-template-columns:1fr}.mv-cap-group{margin-bottom:30px}}
 .mv-plan-note{font-size:0.8125rem;color:var(--mv-muted);margin:-2px 0 10px}
 .mv-plan.is-dark .mv-plan-note{color:rgba(255,255,255,.66)}
+.mv-plans-note{margin:22px 0 0;font-size:0.875rem;color:var(--mv-muted)}

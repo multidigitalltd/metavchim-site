@@ -34,7 +34,7 @@
       <div class="mv-caps">
         <div class="mv-cap"><h4 class="mv-cap-title">תמלול שיחות</h4><p class="mv-cap-text">כל שיחה עם לקוח מתומללת ונשמרת על הכרטיס — בלי לרשום מילה בזמן הנהיגה.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">כרטיס קונה אוטומטי</h4><p class="mv-cap-text">מהשיחה נבנה כרטיס קונה עם הדרישות שנאמרו בה, מוכן לאישור שלך.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">סוכן קולי</h4><p class="mv-cap-text">עונה לפניות גם כשאתה בסיור, אוסף את הפרטים ומעביר לך ליד מסודר.</p></div>
+        <div class="mv-cap"><h4 class="mv-cap-title">סוכן קולי<span class="mv-soon">בקרוב</span></h4><p class="mv-cap-text">יענה לפניות גם כשאתה בסיור, יאסוף את הפרטים ויעביר לך ליד מסודר. בפיתוח מתקדם.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">סיכום ותובנות</h4><p class="mv-cap-text">מה נאמר בשיחה, מה השלב הבא ומה חשוב לזכור — בשורות ספורות מעל הכרטיס.</p></div>
       </div>
     </div>
@@ -77,7 +77,7 @@
         <div class="mv-cap"><h4 class="mv-cap-title">הצפנה וגיבוי</h4><p class="mv-cap-text">הנתונים מוצפנים בהעברה ובאחסון, עם גיבוי אוטומטי של כל המאגר.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">יומן פעילות</h4><p class="mv-cap-text">כל צפייה, שינוי ושיתוף נרשמים — כדי שתמיד יהיה ברור מי עשה מה.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">תשתית לעמידה בחוק הגנת הפרטיות</h4><p class="mv-cap-text">ניהול הסכמות, זכות עיון ומחיקה ותיעוד גישה — הכלים שנדרשים לעמידה בדין הישראלי. בקרוב הסמכה לת"י ISO/IEC 27001:2022.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">הנתונים שלך, לייצוא</h4><p class="mv-cap-text">המאגר נשאר שלך. אפשר לייצא אותו בכל רגע, בלי לבקש רשות.</p></div>
+        <div class="mv-cap"><h4 class="mv-cap-title">ייצוא הנתונים שלך</h4><p class="mv-cap-text">המאגר נשאר בבעלותך. ייצוא מלא של הנכסים, הקונים והפעילות זמין מתוך המערכת בכל רגע, בלחיצה אחת.</p></div>
       </div>
     </div>
   </div>

@@ -196,3 +196,7 @@ html{scroll-behavior:auto}
 .mv-sec-head{max-width:1240px;margin:0 auto;text-align:center}
 .mv-sec-head .mv-lede{font-size:1.1875rem;max-width:660px;margin:22px auto 0;text-wrap:pretty}
 @media (max-width:760px){.mv-sec{padding:70px 16px 0}.mv-h2{font-size:2rem}}
+/* תווית "בקרוב" ליכולת שנמצאת בפיתוח. */
+.mv-soon{display:inline-block;margin-inline-start:8px;padding:2px 9px;border-radius:999px;background:var(--mv-tint);color:var(--mv-green-aa);font-size:0.6875rem;font-weight:800;letter-spacing:.02em;vertical-align:middle}
+.mv-pill-tint .mv-soon{background:rgba(14,16,15,.08);color:var(--mv-ink)}
+.mv-on-dark .mv-soon{background:rgba(112,238,145,.18);color:var(--mv-green)}

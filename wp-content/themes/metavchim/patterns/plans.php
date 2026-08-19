@@ -16,6 +16,7 @@
     <h2 class="mv-h2" id="mv-plans-title">מסלולים<span class="mv-dot" aria-hidden="true">.</span></h2>
     <p class="mv-lede">אותה מערכת, בהיקף שמתאים לגודל שלך. כל מסלול מתחיל בתקופת ניסיון חינם.</p>
     [mv_plans]
+    <p class="mv-plans-note">כל המחירים המוצגים הם לשנה הראשונה.</p>
   </div>
 </section>
 <!-- /wp:html -->

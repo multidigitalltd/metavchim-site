@@ -322,7 +322,7 @@ function mv_plan_feature_labels() {
 		'whatsapp'      => 'ווטסאפ מובנה',
 		'data_io'       => 'ייבוא וייצוא נתונים',
 		'ai_coach'      => 'מאמן AI לסוכן',
-		'voice_intake'  => 'סוכן קולי לקליטת פניות',
+		'voice_intake'  => 'סוכן קולי לקליטת פניות (בקרוב)',
 	);
 }
 
@@ -601,6 +601,30 @@ function mv_pick( array $item, array $keys ) {
 	}
 	return '';
 }
+
+/**
+ * גרסת המיפוי מה-API. שינוי בתרגום שמות היכולות או במבנה השדות מחייב
+ * משיכה מחדש, אחרת המסלולים השמורים ימשיכו להציג את הנוסח הישן עד
+ * הסנכרון המתוזמן הבא.
+ */
+const MV_PLANS_MAP_VERSION = '2';
+
+/**
+ * משיכה מחדש פעם אחת אחרי שינוי במיפוי.
+ */
+function mv_resync_plans_on_map_change() {
+	if ( MV_PLANS_MAP_VERSION === (string) get_option( 'mv_plans_map_version', '' ) ) {
+		return;
+	}
+
+	// מסמנים תחילה, כדי שכשל בבקשה לא ינסה שוב בכל טעינת מסך.
+	update_option( 'mv_plans_map_version', MV_PLANS_MAP_VERSION, false );
+
+	if ( mv_get_plans() ) {
+		mv_sync_plans_from_api();
+	}
+}
+add_action( 'admin_init', 'mv_resync_plans_on_map_change' );
 
 /**
  * ניקוי חד-פעמי: מסך ההגדרות הישן אפשר להזין כתובת ומפתח ידנית, ודפדפנים
