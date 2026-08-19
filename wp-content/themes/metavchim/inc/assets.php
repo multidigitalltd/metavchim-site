@@ -11,7 +11,16 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Whether the current request renders the collaboration ("רשת המשרדים") page.
+ * Whether the current request renders the "אודות" page.
+ *
+ * @return bool
+ */
+function mv_is_about_page() {
+	return is_page( 'about' );
+}
+
+/**
+ * Whether the current request renders the collaboration page.
  *
  * @return bool
  */
@@ -36,6 +45,16 @@ function mv_enqueue_assets() {
 		wp_enqueue_style(
 			'mv-home',
 			MV_THEME_URI . '/assets/css/home.css',
+			array( 'mv-main' ),
+			MV_THEME_VERSION
+		);
+	}
+
+	// About page sections — loaded only on that page.
+	if ( mv_is_about_page() ) {
+		wp_enqueue_style(
+			'mv-about',
+			MV_THEME_URI . '/assets/css/about.css',
 			array( 'mv-main' ),
 			MV_THEME_VERSION
 		);
@@ -85,7 +104,7 @@ add_action( 'wp_enqueue_scripts', 'mv_enqueue_assets' );
  * core stylesheets so user-added blocks (columns, gallery…) render fine.
  */
 function mv_dequeue_core_styles() {
-	if ( ! is_front_page() && ! mv_is_collab_page() ) {
+	if ( ! is_front_page() && ! mv_is_collab_page() && ! mv_is_about_page() ) {
 		return;
 	}
 	wp_dequeue_style( 'wp-block-library' );

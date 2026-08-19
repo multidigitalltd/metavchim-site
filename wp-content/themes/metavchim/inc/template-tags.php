@@ -85,6 +85,8 @@ function mv_primary_menu_fallback() {
 	$home   = is_front_page() ? '' : esc_url( home_url( '/' ) );
 	$collab = get_page_by_path( 'collaboration' );
 	$collab = $collab ? get_permalink( $collab ) : home_url( '/collaboration/' );
+	$about  = get_page_by_path( 'about' );
+	$about  = $about ? get_permalink( $about ) : home_url( '/about/' );
 
 	echo '<ul class="mv-nav-list">';
 	foreach ( $links as $anchor => $label ) {
@@ -105,6 +107,14 @@ function mv_primary_menu_fallback() {
 			}
 		}
 	}
+
+	// "אודות" סוגר את התפריט.
+	if ( function_exists( 'mv_is_about_page' ) && mv_is_about_page() ) {
+		printf( '<li><span class="mv-nav-current" aria-current="page">%s</span></li>', 'אודות' );
+	} else {
+		printf( '<li><a href="%s">%s</a></li>', esc_url( $about ), 'אודות' );
+	}
+
 	echo '</ul>';
 }
 

@@ -151,6 +151,15 @@ function mv_get_collab_content() {
 }
 
 /**
+ * The about page content, assembled from its section pattern.
+ *
+ * @return string
+ */
+function mv_get_about_content() {
+	return mv_get_section_html( 'about' );
+}
+
+/**
  * Keep an installed page's title in sync when the theme renames it.
  *
  * @param int    $page_id Page ID.
@@ -238,15 +247,18 @@ function mv_privacy_content() {
 }
 
 /**
- * Make sure the primary menu links to the collaboration page.
+ * Make sure the primary menu links to a theme page.
  *
  * Runs on every install/repair so menus created before the page existed
- * gain the link, and an item carrying the previous label is renamed.
+ * gain the link, and an item carrying a previous label is renamed.
  *
- * @param int $menu_id Primary menu term ID.
+ * @param int    $menu_id      Primary menu term ID.
+ * @param string $slug         Page slug.
+ * @param string $label        Menu label.
+ * @param string $before_label Existing item to sit in front of, when present.
  */
-function mv_ensure_collab_menu_item( $menu_id ) {
-	$page = get_page_by_path( 'collaboration' );
+function mv_ensure_menu_item( $menu_id, $slug, $label, $before_label = '' ) {
+	$page = get_page_by_path( $slug );
 	if ( ! $menu_id || ! $page instanceof WP_Post ) {
 		return;
 	}
@@ -262,12 +274,12 @@ function mv_ensure_collab_menu_item( $menu_id ) {
 		$is_url_item  = ( untrailingslashit( $item->url ) === untrailingslashit( $url ) );
 
 		if ( $is_page_item || $is_url_item ) {
-			if ( mv_collab_label() !== $item->title ) {
+			if ( $label !== $item->title ) {
 				wp_update_nav_menu_item(
 					$menu_id,
 					$item->ID,
 					array(
-						'menu-item-title'  => mv_collab_label(),
+						'menu-item-title'  => $label,
 						'menu-item-url'    => $url,
 						'menu-item-status' => 'publish',
 					)
@@ -277,23 +289,22 @@ function mv_ensure_collab_menu_item( $menu_id ) {
 		}
 	}
 
-	// Not present yet — add it just before "מסלולים" when that item exists.
 	$new_id = wp_update_nav_menu_item(
 		$menu_id,
 		0,
 		array(
-			'menu-item-title'  => mv_collab_label(),
+			'menu-item-title'  => $label,
 			'menu-item-url'    => $url,
 			'menu-item-status' => 'publish',
 		)
 	);
 
-	if ( is_wp_error( $new_id ) ) {
+	if ( is_wp_error( $new_id ) || '' === $before_label ) {
 		return;
 	}
 
 	foreach ( $items as $item ) {
-		if ( 'מסלולים' === $item->title ) {
+		if ( $before_label === $item->title ) {
 			wp_update_post(
 				array(
 					'ID'         => $new_id,
@@ -311,11 +322,6 @@ function mv_ensure_collab_menu_item( $menu_id ) {
 	}
 }
 
-/**
- * Create the primary + footer menus once.
- *
- * @param array $legal_ids Page IDs keyed by slug.
- */
 function mv_install_menus( array $legal_ids ) {
 	// Primary anchors menu — reuse an existing menu of the same name.
 	$existing = wp_get_nav_menu_object( 'ראשי' );
@@ -342,8 +348,9 @@ function mv_install_menus( array $legal_ids ) {
 			}
 		}
 
-		// Menus created before this page existed still need the link.
-		mv_ensure_collab_menu_item( (int) $menu_id );
+		// Menus created before these pages existed still need the links.
+		mv_ensure_menu_item( (int) $menu_id, 'collaboration', mv_collab_label(), 'מסלולים' );
+		mv_ensure_menu_item( (int) $menu_id, 'about', 'אודות' );
 
 		$locations            = get_theme_mod( 'nav_menu_locations', array() );
 		$locations['primary'] = (int) $menu_id;
@@ -383,7 +390,7 @@ function mv_install_menus( array $legal_ids ) {
  *                         patterns even when the page already has content.
  */
 function mv_install_content( $force_home = false ) {
-	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() && mv_page_content_ok( 'collaboration' ) ) {
+	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() && mv_page_content_ok( 'collaboration' ) && mv_page_content_ok( 'about' ) ) {
 		return;
 	}
 
@@ -391,6 +398,8 @@ function mv_install_content( $force_home = false ) {
 
 	$collab_id = mv_install_page( 'collaboration', mv_collab_label(), mv_get_collab_content(), $force_home );
 	mv_sync_page_title( $collab_id, mv_collab_label() );
+
+	mv_install_page( 'about', 'אודות', mv_get_about_content(), $force_home );
 
 	$legal_ids = array(
 		'terms'         => mv_install_page( 'terms', 'תנאי שימוש', mv_terms_content() ),
