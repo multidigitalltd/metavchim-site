@@ -291,18 +291,35 @@
 
 			var button = form.querySelector( '.mv-form-submit' );
 			var data = new FormData( form );
+			var endpoint = form.getAttribute( 'data-mv-endpoint' ) || form.action;
+
+			// כתובת האתר השמורה בוורדפרס יכולה להיות עם www או ב-http בזמן
+			// שהגולש נמצא בכתובת אחרת. שליחה לכתובת אחרת נחסמת כבקשה
+			// חוצת-מקורות, ולכן מיישרים את הנתיב למקור הנוכחי.
+			try {
+				var target = new URL( endpoint, location.href );
+				target.protocol = location.protocol;
+				target.host = location.host;
+				endpoint = target.toString();
+			} catch ( err ) {
+				endpoint = form.action;
+			}
 			data.append( 'mv_ajax', '1' );
 			if ( button ) {
 				button.disabled = true;
 			}
 
-			fetch( form.action, {
+			fetch( endpoint, {
 				method: 'POST',
 				body: data,
 				credentials: 'same-origin'
 			} ).then( function ( res ) {
 				return res.json().catch( function () {
-					return { ok: false, message: 'השליחה נכשלה. אפשר לנסות שוב.' };
+					// השרת החזיר משהו שאינו JSON — בדרך כלל חומת אש או שגיאת PHP.
+					return {
+						ok: false,
+						message: 'השליחה נכשלה (שגיאה ' + res.status + '). אפשר להתקשר אלינו או לנסות שוב.'
+					};
 				} );
 			} ).then( function ( res ) {
 				note( res.ok, res.message );
@@ -313,7 +330,7 @@
 					window.turnstile.reset( shieldId );
 				}
 			} ).catch( function () {
-				note( false, 'השליחה נכשלה. אפשר לנסות שוב.' );
+				note( false, 'לא הצלחנו להתחבר לשרת. כדאי לבדוק את החיבור ולנסות שוב.' );
 			} ).finally( function () {
 				if ( button ) {
 					button.disabled = false;

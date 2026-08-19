@@ -23,6 +23,7 @@ function mv_lead_fields() {
 	return array(
 		'_mv_lead_phone' => 'sanitize_text_field',
 		'_mv_lead_email' => 'sanitize_email',
+		'_mv_lead_when'  => 'sanitize_text_field',
 		'_mv_lead_note'  => 'sanitize_textarea_field',
 		'_mv_lead_page'  => 'esc_url_raw',
 	);
@@ -85,6 +86,7 @@ add_action( 'add_meta_boxes', 'mv_add_lead_meta_box' );
 function mv_render_lead_meta_box( $post ) {
 	$phone = (string) get_post_meta( $post->ID, '_mv_lead_phone', true );
 	$email = (string) get_post_meta( $post->ID, '_mv_lead_email', true );
+	$when  = (string) get_post_meta( $post->ID, '_mv_lead_when', true );
 	$note  = (string) get_post_meta( $post->ID, '_mv_lead_note', true );
 	$page  = (string) get_post_meta( $post->ID, '_mv_lead_page', true );
 	?>
@@ -102,6 +104,7 @@ function mv_render_lead_meta_box( $post ) {
 			—
 		<?php endif; ?>
 	</p>
+	<p><strong>מועד מועדף:</strong> <?php echo $when ? esc_html( mv_format_lead_when( $when ) ) : 'לא צוין'; ?></p>
 	<?php if ( $note ) : ?>
 		<p><strong>הודעה:</strong><br><?php echo nl2br( esc_html( $note ) ); ?></p>
 	<?php endif; ?>
@@ -122,6 +125,7 @@ function mv_lead_columns( $columns ) {
 	unset( $columns['date'] );
 	$columns['mv_phone'] = 'טלפון';
 	$columns['mv_email'] = 'דוא"ל';
+	$columns['mv_when']  = 'מועד מועדף';
 	if ( $date ) {
 		$columns['date'] = $date;
 	}
@@ -140,6 +144,9 @@ function mv_lead_column_content( $column, $post_id ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_phone', true ) );
 	} elseif ( 'mv_email' === $column ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_email', true ) );
+	} elseif ( 'mv_when' === $column ) {
+		$when = (string) get_post_meta( $post_id, '_mv_lead_when', true );
+		echo esc_html( $when ? mv_format_lead_when( $when ) : '—' );
 	}
 }
 add_action( 'manage_' . MV_LEAD_CPT . '_posts_custom_column', 'mv_lead_column_content', 10, 2 );
@@ -168,13 +175,9 @@ function mv_demo_form_requested( $set = null ) {
  * @return bool
  */
 function mv_demo_form_needed() {
-	if ( is_front_page() || mv_demo_form_requested() ) {
-		return true;
-	}
-
-	// כל עמוד שיש בתוכן שלו קישור אל ‎#demo‎ מקבל את החלון אוטומטית.
-	$post = get_queried_object();
-	return $post instanceof WP_Post && false !== strpos( $post->post_content, '#demo' );
+	// הכפתור בכותרת העליונה פותח את הטופס בכל עמוד, ולכן החלון נטען תמיד.
+	// עדיין אפשר לכבות אותו למקרי קצה דרך המסנן.
+	return (bool) apply_filters( 'mv_demo_form_needed', true );
 }
 
 /**
@@ -195,8 +198,8 @@ function mv_render_demo_form() {
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
 			</button>
 
-			<h2 class="mv-modal-title" id="mv-demo-title">הרשמה ותיאום הדגמה — חינם</h2>
-			<p class="mv-modal-sub">משאירים פרטים, ואנחנו חוזרים אליכם לתיאום הדגמה אישית של המערכת. ללא עלות וללא התחייבות.</p>
+			<h2 class="mv-modal-title" id="mv-demo-title">תיאום הדגמה — חינם</h2>
+			<p class="mv-modal-sub">משאירים פרטים ומועד שנוח לכם, ואנחנו חוזרים אליכם לתיאום הדגמה אישית של המערכת. ללא עלות וללא התחייבות.</p>
 
 			<?php if ( 'ok' === $sent ) : ?>
 				<p class="mv-form-note is-ok" role="status">קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.</p>
@@ -204,7 +207,9 @@ function mv_render_demo_form() {
 				<p class="mv-form-note is-err" role="alert">חלק מהפרטים חסרים או שגויים. אפשר לנסות שוב.</p>
 			<?php endif; ?>
 
-			<form class="mv-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<form class="mv-form" method="post"
+				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+				data-mv-endpoint="<?php echo esc_url( rest_url( 'metavchim/v1/lead' ) ); ?>">
 				<input type="hidden" name="action" value="mv_demo_lead">
 				<input type="hidden" name="mv_source" value="<?php echo esc_url( is_singular() ? (string) get_permalink() : home_url( '/' ) ); ?>">
 
@@ -226,6 +231,20 @@ function mv_render_demo_form() {
 					<input type="email" id="mv-email" name="mv_email" required autocomplete="email" maxlength="120">
 				</p>
 
+				<fieldset class="mv-field-pair">
+					<legend>מועד מועדף להדגמה <span class="mv-field-opt">(לא חובה)</span></legend>
+					<div class="mv-field-row">
+						<p class="mv-field">
+							<label for="mv-date">תאריך</label>
+							<input type="date" id="mv-date" name="mv_date" min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>">
+						</p>
+						<p class="mv-field">
+							<label for="mv-time">שעה</label>
+							<input type="time" id="mv-time" name="mv_time" step="900">
+						</p>
+					</div>
+				</fieldset>
+
 				<?php mv_turnstile_widget(); ?>
 
 				<button type="submit" class="mv-form-submit">שליחה ותיאום הדגמה</button>
@@ -242,63 +261,95 @@ add_action( 'wp_footer', 'mv_render_demo_form', 5 );
  * ---------------------------------------------------------------------- */
 
 /**
- * חזרה למבקר — JSON לשליחה מ-JavaScript, הפניה רגילה לכל השאר.
+ * הצגת המועד המועדף כפי שהמבקר הזין אותו.
  *
- * @param bool   $ok      הצליח.
- * @param string $message הודעה למשתמש.
+ * @param string $when ערך שמור בפורמט Y-m-d[ H:i].
+ * @return string
  */
-function mv_demo_lead_respond( $ok, $message ) {
-	$is_ajax = ! empty( $_POST['mv_ajax'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- ה-nonce נבדק במסלול הקורא.
+function mv_format_lead_when( $when ) {
+	$parts = explode( ' ', trim( (string) $when ) );
+	$date  = isset( $parts[0] ) ? $parts[0] : '';
+	$time  = isset( $parts[1] ) ? $parts[1] : '';
 
-	if ( $is_ajax ) {
-		wp_send_json(
-			array(
-				'ok'      => (bool) $ok,
-				'message' => $message,
-			),
-			$ok ? 200 : 400
-		);
-	}
+	$object = DateTime::createFromFormat( 'Y-m-d', $date );
+	$out    = $object ? $object->format( 'd.m.Y' ) : $date;
 
-	$back = wp_get_referer();
-	if ( ! $back ) {
-		$back = home_url( '/' );
-	}
-	wp_safe_redirect( add_query_arg( 'mv_demo', $ok ? 'ok' : 'err', $back ) . '#demo' );
-	exit;
+	return $time ? $out . ' · ' . $time : $out;
 }
 
 /**
- * שמירת הפנייה ושליחת התראה במייל.
+ * עיבוד פנייה שהגיעה מהטופס. משמש גם את נתיב ה-REST וגם את admin-post,
+ * ולכן מחזיר תוצאה במקום להדפיס אותה.
+ *
+ * @return array{ok:bool,message:string}
  */
-function mv_handle_demo_lead() {
+function mv_process_demo_lead() {
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- טופס ציבורי; ההגנה היא Turnstile, מלכודת בוטים וחסימת הצפה.
+
 	// אימות אנושי של Cloudflare Turnstile, כשמוגדרים מפתחות.
 	$human = mv_turnstile_verify();
 	if ( ! $human['ok'] ) {
-		mv_demo_lead_respond( false, $human['message'] );
+		return array(
+			'ok'      => false,
+			'message' => $human['message'],
+		);
 	}
 
 	// מלכודת בוטים: שדה שאדם לא רואה ולא ממלא.
 	if ( ! empty( $_POST['mv_website'] ) ) {
-		mv_demo_lead_respond( true, 'קיבלנו את הפרטים.' );
+		return array(
+			'ok'      => true,
+			'message' => 'קיבלנו את הפרטים.',
+		);
 	}
 
 	// חסימת הצפה מאותו מבקר.
 	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 	$key = 'mv_lead_' . md5( $ip . '|' . ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' ) );
 	if ( $ip && get_transient( $key ) ) {
-		mv_demo_lead_respond( false, 'הפנייה כבר נשלחה. אם נפלה טעות, אפשר לנסות שוב בעוד רגע.' );
+		return array(
+			'ok'      => false,
+			'message' => 'הפנייה כבר נשלחה. אם נפלה טעות, אפשר לנסות שוב בעוד רגע.',
+		);
 	}
 
 	$name  = isset( $_POST['mv_name'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_name'] ) ) : '';
 	$phone = isset( $_POST['mv_phone'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_phone'] ) ) : '';
 	$email = isset( $_POST['mv_email'] ) ? sanitize_email( wp_unslash( $_POST['mv_email'] ) ) : '';
 	$page  = isset( $_POST['mv_source'] ) ? esc_url_raw( wp_unslash( $_POST['mv_source'] ) ) : '';
+	$date  = isset( $_POST['mv_date'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_date'] ) ) : '';
+	$time  = isset( $_POST['mv_time'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_time'] ) ) : '';
 
 	$digits = preg_replace( '/\D/', '', $phone );
 
 	if ( '' === $name || strlen( $digits ) < 9 || ! is_email( $email ) ) {
-		mv_demo_lead_respond( false, 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.' );
+		return array(
+			'ok'      => false,
+			'message' => 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.',
+		);
+	}
+
+	// המועד אינו חובה, אבל אם הוזן — הוא חייב להיות תקין ולא בעבר.
+	$when = '';
+	if ( '' !== $date ) {
+		$object = DateTime::createFromFormat( 'Y-m-d', $date );
+		if ( ! $object || $object->format( 'Y-m-d' ) !== $date ) {
+			return array(
+				'ok'      => false,
+				'message' => 'התאריך שהוזן אינו תקין.',
+			);
+		}
+		if ( $date < wp_date( 'Y-m-d' ) ) {
+			return array(
+				'ok'      => false,
+				'message' => 'אפשר לבחור רק מועד עתידי.',
+			);
+		}
+		$when = $date;
+
+		if ( '' !== $time && preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $time ) ) {
+			$when .= ' ' . $time;
+		}
 	}
 
 	$lead_id = wp_insert_post(
@@ -311,30 +362,22 @@ function mv_handle_demo_lead() {
 	);
 
 	if ( is_wp_error( $lead_id ) || ! $lead_id ) {
-		mv_demo_lead_respond( false, 'שמירת הפנייה נכשלה. אפשר לנסות שוב בעוד רגע.' );
+		return array(
+			'ok'      => false,
+			'message' => 'שמירת הפנייה נכשלה. אפשר לנסות שוב בעוד רגע.',
+		);
 	}
 
 	update_post_meta( $lead_id, '_mv_lead_phone', $phone );
 	update_post_meta( $lead_id, '_mv_lead_email', $email );
+	update_post_meta( $lead_id, '_mv_lead_when', $when );
 	update_post_meta( $lead_id, '_mv_lead_page', $page );
 
 	if ( $ip ) {
 		set_transient( $key, 1, 30 );
 	}
 
-	$to      = get_option( 'admin_email' );
-	$site    = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
-	$body    = "פנייה חדשה לתיאום הדגמה\n\n"
-		. "שם: {$name}\n"
-		. "טלפון: {$phone}\n"
-		. "דוא\"ל: {$email}\n"
-		. ( $page ? "עמוד: {$page}\n" : '' )
-		. "\nניהול הפניות: " . admin_url( 'edit.php?post_type=' . MV_LEAD_CPT );
-	$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
-
-	if ( $to ) {
-		wp_mail( $to, "[{$site}] פנייה חדשה לתיאום הדגמה — {$name}", $body, $headers );
-	}
+	mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page );
 
 	/**
 	 * נקודת חיבור למערכות חיצוניות (CRM, ווטסאפ וכו').
@@ -349,11 +392,111 @@ function mv_handle_demo_lead() {
 			'name'  => $name,
 			'phone' => $phone,
 			'email' => $email,
+			'when'  => $when,
 			'page'  => $page,
 		)
 	);
 
-	mv_demo_lead_respond( true, 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.' );
+	return array(
+		'ok'      => true,
+		'message' => 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.',
+	);
+	// phpcs:enable WordPress.Security.NonceVerification.Missing
+}
+
+/**
+ * התראה במייל למנהל האתר. כישלון שליחה לא מפיל את הפנייה — היא כבר שמורה.
+ *
+ * @param int    $lead_id מזהה הפנייה.
+ * @param string $name    שם.
+ * @param string $phone   טלפון.
+ * @param string $email   דוא"ל.
+ * @param string $when    מועד מועדף.
+ * @param string $page    העמוד שממנו נשלח.
+ */
+function mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page ) {
+	$to = get_option( 'admin_email' );
+	if ( ! $to ) {
+		return;
+	}
+
+	$site = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
+	$body = "פנייה חדשה לתיאום הדגמה\n\n"
+		. "שם: {$name}\n"
+		. "טלפון: {$phone}\n"
+		. "דוא\"ל: {$email}\n"
+		. ( $when ? 'מועד מועדף: ' . mv_format_lead_when( $when ) . "\n" : '' )
+		. ( $page ? "עמוד: {$page}\n" : '' )
+		. "\nניהול הפניות: " . admin_url( 'post.php?action=edit&post=' . (int) $lead_id );
+
+	try {
+		wp_mail(
+			$to,
+			"[{$site}] פנייה חדשה לתיאום הדגמה — {$name}",
+			$body,
+			array( 'Content-Type: text/plain; charset=UTF-8' )
+		);
+	} catch ( Exception $e ) {
+		// שליחת המייל נכשלה; הפנייה שמורה ומוצגת בלוח הבקרה.
+		return;
+	}
+}
+
+/**
+ * נתיב REST לשליחת הטופס. זהו המסלול שבו משתמש הדפדפן, כי הוא מחזיר
+ * תמיד JSON — להבדיל מ-admin-post.php, שחומות אש של אחסון נוטות לחסום
+ * לגולשים לא מחוברים.
+ */
+function mv_register_lead_route() {
+	register_rest_route(
+		'metavchim/v1',
+		'/lead',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'mv_rest_demo_lead',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', 'mv_register_lead_route' );
+
+/**
+ * תשובת ה-REST. תמיד 200 עם דגל הצלחה, כדי ששכבות ביניים לא יחליפו
+ * גוף תשובה של שגיאה בדף HTML.
+ *
+ * @return WP_REST_Response
+ */
+function mv_rest_demo_lead() {
+	// אזהרת PHP או פלט אחר שנדפס תוך כדי העיבוד היה הופך את התשובה
+	// למשהו שאינו JSON. הבידוד מבטיח שהדפדפן תמיד יקבל תשובה תקינה.
+	ob_start();
+	$result = mv_process_demo_lead();
+	ob_end_clean();
+
+	return new WP_REST_Response(
+		array(
+			'ok'      => (bool) $result['ok'],
+			'message' => (string) $result['message'],
+		),
+		200
+	);
+}
+
+/**
+ * המסלול ללא JavaScript: שליחה רגילה של הטופס וחזרה לעמוד עם הודעה.
+ */
+function mv_handle_demo_lead() {
+	ob_start();
+	$result = mv_process_demo_lead();
+	ob_end_clean();
+
+	$back = wp_get_referer();
+	if ( ! $back ) {
+		$back = home_url( '/' );
+	}
+
+	wp_safe_redirect( add_query_arg( 'mv_demo', $result['ok'] ? 'ok' : 'err', $back ) . '#demo' );
+	exit;
 }
 add_action( 'admin_post_nopriv_mv_demo_lead', 'mv_handle_demo_lead' );
 add_action( 'admin_post_mv_demo_lead', 'mv_handle_demo_lead' );

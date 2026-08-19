@@ -43,7 +43,7 @@ defined( 'ABSPATH' ) || exit;
 
 			<div class="mv-nav-actions">
 				<a class="mv-login" href="<?php echo esc_url( mv_login_url_app() ); ?>">התחברות</a>
-				<a class="mv-btn-dark" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
+				<a class="mv-btn-dark" href="#demo">תיאום הדגמה חינם</a>
 			</div>
 
 			<button type="button" class="mv-nav-toggle" aria-expanded="false" aria-controls="mv-nav">

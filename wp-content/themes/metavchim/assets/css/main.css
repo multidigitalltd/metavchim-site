@@ -171,3 +171,11 @@ html{scroll-behavior:auto}
 @media (max-width:520px){.mv-modal-card{padding:28px 22px;border-radius:18px}}
 .mv-turnstile{margin:0 0 16px;min-height:65px}
 .mv-turnstile:empty{min-height:0}
+.mv-field-pair{border:0;padding:0;margin:0 0 16px;min-inline-size:0}
+.mv-field-pair legend{padding:0;font-size:0.875rem;font-weight:700;margin-bottom:6px}
+.mv-field-opt{font-weight:400;color:var(--mv-muted)}
+.mv-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mv-field-row .mv-field{margin:0}
+.mv-field-row .mv-field label{font-size:0.8125rem;font-weight:600;color:var(--mv-muted)}
+.mv-field input[type=date],.mv-field input[type=time]{text-align:start}
+@media (max-width:400px){.mv-field-row{grid-template-columns:1fr}}
