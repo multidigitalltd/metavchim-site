@@ -194,12 +194,29 @@
 	var form = modal.querySelector( '.mv-form' );
 	var opener = null;
 	var SELECTOR = 'a[href],button:not([disabled]),input:not([type="hidden"]),textarea,select';
+	var shield = modal.querySelector( '.mv-turnstile' );
+	var shieldId = null;
+
+	// Turnstile מרונדר רק כשהחלון נפתח: ווידג'ט שנטען בתוך אלמנט מוסתר
+	// מקבל רוחב אפס. הפונקציה נקראת גם מה-onload של הסקריפט.
+	function mountShield() {
+		if ( ! shield || null !== shieldId || ! window.turnstile || modal.hidden ) {
+			return;
+		}
+		shieldId = window.turnstile.render( shield, {
+			sitekey: shield.getAttribute( 'data-sitekey' ),
+			theme: shield.getAttribute( 'data-theme' ) || 'light',
+			language: 'he'
+		} );
+	}
+	window.mvTurnstileReady = mountShield;
 
 	function open( trigger ) {
 		opener = trigger || null;
 		modal.hidden = false;
 		modal.classList.add( 'is-open' );
 		document.documentElement.style.overflow = 'hidden';
+		mountShield();
 		var first = card.querySelector( '#mv-name' ) || card.querySelector( SELECTOR );
 		if ( first ) {
 			first.focus();
@@ -291,6 +308,9 @@
 				note( res.ok, res.message );
 				if ( res.ok ) {
 					form.remove();
+				} else if ( null !== shieldId && window.turnstile ) {
+					// הטוקן חד-פעמי — אחרי כישלון צריך אימות חדש.
+					window.turnstile.reset( shieldId );
 				}
 			} ).catch( function () {
 				note( false, 'השליחה נכשלה. אפשר לנסות שוב.' );

@@ -2,9 +2,10 @@
 /**
  * טופס הרשמה ותיאום הדגמה (ליד) — חלון קופץ עם שם, טלפון ומייל.
  *
- * הטופס נשלח ל-admin-post.php עם nonce ובדיקות שדות מלאות, נשמר כסוג תוכן
- * פנימי ונשלח גם במייל למנהל האתר. ללא JavaScript החלון נפתח דרך ‎:target‎
- * והשליחה עובדת כטופס רגיל — התנהגות זהה, רק בלי האנימציה.
+ * הטופס נשלח ל-admin-post.php עם בדיקות שדות מלאות, נשמר כסוג תוכן פנימי
+ * ונשלח גם במייל למנהל האתר. ההגנה מפני שליחות אוטומטיות היא Cloudflare
+ * Turnstile (ראו inc/turnstile.php) יחד עם מלכודת בוטים וחסימת הצפה —
+ * ולא nonce, שנשבר מאחורי מטמון עמודים.
  *
  * @package Metavchim
  */
@@ -200,7 +201,6 @@ function mv_render_demo_form() {
 			<form class="mv-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="mv_demo_lead">
 				<input type="hidden" name="mv_source" value="<?php echo esc_url( is_singular() ? (string) get_permalink() : home_url( '/' ) ); ?>">
-				<?php wp_nonce_field( 'mv_demo_lead', 'mv_demo_nonce' ); ?>
 
 				<p class="mv-hp" aria-hidden="true">
 					<label for="mv-website">אל תמלאו שדה זה</label>
@@ -219,6 +219,8 @@ function mv_render_demo_form() {
 					<label for="mv-email">דוא"ל <span aria-hidden="true">*</span></label>
 					<input type="email" id="mv-email" name="mv_email" required autocomplete="email" maxlength="120">
 				</p>
+
+				<?php mv_turnstile_widget(); ?>
 
 				<button type="submit" class="mv-form-submit">שליחה ותיאום הדגמה</button>
 				<span class="mv-form-legal">הפרטים נשמרים לצורך יצירת קשר בלבד.</span>
@@ -264,9 +266,10 @@ function mv_demo_lead_respond( $ok, $message ) {
  * שמירת הפנייה ושליחת התראה במייל.
  */
 function mv_handle_demo_lead() {
-	$nonce = isset( $_POST['mv_demo_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_demo_nonce'] ) ) : '';
-	if ( ! wp_verify_nonce( $nonce, 'mv_demo_lead' ) ) {
-		mv_demo_lead_respond( false, 'פג תוקף הטופס. יש לרענן את העמוד ולנסות שוב.' );
+	// אימות אנושי של Cloudflare Turnstile, כשמוגדרים מפתחות.
+	$human = mv_turnstile_verify();
+	if ( ! $human['ok'] ) {
+		mv_demo_lead_respond( false, $human['message'] );
 	}
 
 	// מלכודת בוטים: שדה שאדם לא רואה ולא ממלא.

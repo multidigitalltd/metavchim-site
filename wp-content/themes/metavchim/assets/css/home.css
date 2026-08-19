@@ -413,7 +413,7 @@
 .mv-plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
 .mv-plan-price{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
 .mv-plan.is-dark .mv-plan-price{color:#fff}
-.mv-plan{border:1px solid var(--mv-border);background:#fff;border-radius:20px;padding:36px 34px;transition:transform .25s ease,box-shadow .25s ease}
+.mv-plan{display:flex;flex-direction:column;border:1px solid var(--mv-border);background:#fff;border-radius:20px;padding:36px 34px;transition:transform .25s ease,box-shadow .25s ease}
 .mv-plan:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(14,16,15,.09)}
 .mv-plan.is-dark{border-color:var(--mv-ink);background:var(--mv-ink);color:#fff}
 .mv-plan-head{display:flex;align-items:center;gap:10px}
@@ -421,9 +421,9 @@
 .mv-plan-badge{font-size:0.75rem;font-weight:800;background:var(--mv-green);color:var(--mv-black);padding:4px 10px;border-radius:8px}
 .mv-plan-sub{font-size:0.9375rem;color:var(--mv-text2);margin:10px 0 26px;line-height:1.6}
 .is-dark .mv-plan-sub{color:rgba(255,255,255,.6)}
-.mv-plan-list{display:flex;flex-direction:column;gap:12px;font-size:0.9375rem;color:var(--mv-text3);margin:0;padding:0;list-style:none}
+.mv-plan-list{display:flex;flex-direction:column;gap:12px;font-size:0.9375rem;color:var(--mv-text3);margin:0 0 30px;padding:0;list-style:none}
 .is-dark .mv-plan-list{color:rgba(255,255,255,.88)}
-.mv-plan-cta{display:block;text-align:center;margin-top:30px;border:1px solid var(--mv-ink);color:var(--mv-ink);font-size:0.96875rem;font-weight:800;padding:14px;border-radius:12px;transition:all .2s ease}
+.mv-plan-cta{display:block;text-align:center;margin-top:auto;border:1px solid var(--mv-ink);color:var(--mv-ink);font-size:0.96875rem;font-weight:800;padding:14px;border-radius:12px;transition:all .2s ease}
 .mv-plan-cta:hover{background:var(--mv-ink);color:#fff}
 .mv-plan-cta.is-green{border:0;background:var(--mv-green);color:var(--mv-black);transition:background .2s ease,transform .2s ease}
 .mv-plan-cta.is-green:hover{background:var(--mv-green-hover);color:var(--mv-black);transform:translateY(-2px)}
@@ -519,3 +519,5 @@
 .rv.in .mv-cap:hover{transition-delay:0s}
 @media (prefers-reduced-motion:reduce){.rv .mv-cap{opacity:1;transform:none}.mv-cap:hover{transform:none}}
 @media (max-width:640px){.mv-caps{grid-template-columns:1fr}.mv-cap-group{margin-bottom:30px}}
+.mv-plan-note{font-size:0.8125rem;color:var(--mv-muted);margin:-2px 0 10px}
+.mv-plan.is-dark .mv-plan-note{color:rgba(255,255,255,.66)}

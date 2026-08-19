@@ -14,7 +14,7 @@
 <section id="plans" class="mv-sec mv-plans-sec" aria-labelledby="mv-plans-title">
   <div class="mv-wrap">
     <h2 class="mv-h2" id="mv-plans-title">מסלולים<span class="mv-dot" aria-hidden="true">.</span></h2>
-    <p class="mv-lede">אותה מערכת, בהיקף שמתאים לגודל שלך. 14 יום ניסיון בכל מסלול.</p>
+    <p class="mv-lede">אותה מערכת, בהיקף שמתאים לגודל שלך. כל מסלול מתחיל בתקופת ניסיון חינם.</p>
     [mv_plans]
   </div>
 </section>

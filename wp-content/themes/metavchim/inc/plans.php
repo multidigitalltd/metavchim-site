@@ -15,6 +15,11 @@ const MV_PLAN_CPT       = 'mv_plan';
 const MV_PLAN_SYNC_HOOK = 'mv_plans_sync_event';
 
 /**
+ * נקודת הקצה הציבורית של המערכת. משמשת כברירת מחדל כשלא הוגדרה כתובת אחרת.
+ */
+const MV_PLANS_DEFAULT_API_URL = 'https://app.metavchim.co.il/api/v1/public/plans';
+
+/**
  * Meta keys handled by the editor screen and the sync, with their sanitizer.
  *
  * @return array<string,string>
@@ -23,6 +28,7 @@ function mv_plan_fields() {
 	return array(
 		'_mv_plan_sub'       => 'sanitize_textarea_field',
 		'_mv_plan_price'     => 'sanitize_text_field',
+		'_mv_plan_note'      => 'sanitize_text_field',
 		'_mv_plan_features'  => 'sanitize_textarea_field',
 		'_mv_plan_badge'     => 'sanitize_text_field',
 		'_mv_plan_cta_label' => 'sanitize_text_field',
@@ -112,6 +118,11 @@ function mv_render_plan_meta_box( $post ) {
 		<label for="mv_plan_price">מחיר (אופציונלי)</label>
 		<input type="text" id="mv_plan_price" name="_mv_plan_price" value="<?php echo esc_attr( $get( '_mv_plan_price' ) ); ?>">
 		<span class="description">אם משאירים ריק — לא מוצג מחיר בכרטיס.</span>
+	</p>
+	<p class="mv-pf">
+		<label for="mv_plan_note">שורת מחיר משנית</label>
+		<input type="text" id="mv_plan_note" name="_mv_plan_note" value="<?php echo esc_attr( $get( '_mv_plan_note' ) ); ?>">
+		<span class="description">למשל: מחיר שנתי, אחוז חיסכון או ימי ניסיון.</span>
 	</p>
 	<p class="mv-pf">
 		<label for="mv_plan_features">מה כלול — שורה לכל פריט</label>
@@ -232,6 +243,9 @@ function mv_render_plans() {
 			<?php if ( $price ) : ?>
 				<div class="mv-plan-price"><?php echo esc_html( $price ); ?></div>
 			<?php endif; ?>
+			<?php if ( $value( '_mv_plan_note' ) ) : ?>
+				<p class="mv-plan-note"><?php echo esc_html( $value( '_mv_plan_note' ) ); ?></p>
+			<?php endif; ?>
 			<?php if ( $value( '_mv_plan_sub' ) ) : ?>
 				<p class="mv-plan-sub"><?php echo esc_html( $value( '_mv_plan_sub' ) ); ?></p>
 			<?php endif; ?>
@@ -268,7 +282,7 @@ function mv_plans_api_url() {
 	if ( defined( 'MV_PLANS_API_URL' ) && MV_PLANS_API_URL ) {
 		return (string) MV_PLANS_API_URL;
 	}
-	return (string) get_option( 'mv_plans_api_url', '' );
+	return (string) get_option( 'mv_plans_api_url', MV_PLANS_DEFAULT_API_URL );
 }
 
 /**
@@ -282,6 +296,117 @@ function mv_plans_api_key() {
 		return (string) MV_PLANS_API_KEY;
 	}
 	return (string) get_option( 'mv_plans_api_key', '' );
+}
+
+/**
+ * תרגום מזהי היכולות שהמערכת מחזירה לשמות בעברית.
+ *
+ * @return array<string,string>
+ */
+function mv_plan_feature_labels() {
+	return array(
+		'analytics'     => 'דוחות וניתוח ביצועים',
+		'automations'   => 'אוטומציות ופולואפ אוטומטי',
+		'telephony'     => 'מרכזייה וניהול שיחות',
+		'transcription' => 'תמלול שיחות',
+		'agreements'    => 'הסכמים וחתימות דיגיטליות',
+		'landing_pages' => 'דף נחיתה לכל נכס',
+		'whatsapp'      => 'ווטסאפ מובנה',
+		'data_io'       => 'ייבוא וייצוא נתונים',
+		'ai_coach'      => 'מאמן AI לסוכן',
+		'voice_intake'  => 'סוכן קולי לקליטת פניות',
+	);
+}
+
+/**
+ * קריאת מגבלה מספרית מחבילה. במערכת ‎null‎ פירושו "ללא הגבלה", ולכן
+ * צריך להבחין בינו לבין מפתח שלא קיים בכלל.
+ *
+ * @param array    $item חבילה מה-API.
+ * @param string[] $keys שמות אפשריים למפתח.
+ * @return int|string|null מספר, המחרוזת 'unlimited', או null כשאין מפתח.
+ */
+function mv_plan_limit( array $item, array $keys ) {
+	foreach ( $keys as $key ) {
+		if ( array_key_exists( $key, $item ) ) {
+			return null === $item[ $key ] ? 'unlimited' : (int) $item[ $key ];
+		}
+	}
+	return null;
+}
+
+/**
+ * בניית שורות "מה כלול" מחבילה שהתקבלה מה-API: קודם המגבלות
+ * (משתמשים ונכסים), אחר כך שורות נוספות מהתיאור, ולבסוף היכולות.
+ *
+ * @param array $item חבילה מה-API.
+ * @return string שורה לכל פריט.
+ */
+function mv_plan_features_from_item( array $item ) {
+	$lines = array();
+
+	$users = mv_plan_limit( $item, array( 'maxUsers', 'max_users' ) );
+	if ( 'unlimited' === $users ) {
+		$lines[] = 'משתמשים ללא הגבלה';
+	} elseif ( 1 === $users ) {
+		$lines[] = 'משתמש אחד';
+	} elseif ( is_int( $users ) && $users > 1 ) {
+		$lines[] = 'עד ' . $users . ' משתמשים';
+	}
+
+	$properties = mv_plan_limit( $item, array( 'maxProperties', 'max_properties' ) );
+	if ( 'unlimited' === $properties ) {
+		$lines[] = 'נכסים ללא הגבלה';
+	} elseif ( is_int( $properties ) && $properties > 0 ) {
+		$lines[] = 'עד ' . $properties . ' נכסים';
+	}
+
+	// תיאור רב-שורתי: השורה הראשונה היא כותרת המשנה, השאר פריטים.
+	$description = (string) mv_pick( $item, array( 'description', 'subtitle', 'tagline', 'summary' ) );
+	$extra       = array_slice( array_filter( array_map( 'trim', explode( "\n", $description ) ) ), 1 );
+	foreach ( $extra as $line ) {
+		$lines[] = $line;
+	}
+
+	$labels   = mv_plan_feature_labels();
+	$features = mv_pick( $item, array( 'features', 'includes', 'benefits' ) );
+	if ( is_array( $features ) ) {
+		foreach ( $features as $feature ) {
+			if ( is_array( $feature ) ) {
+				$feature = (string) mv_pick( $feature, array( 'name', 'title', 'label', 'text' ) );
+			}
+			$feature = (string) $feature;
+			if ( '' === $feature ) {
+				continue;
+			}
+			$lines[] = isset( $labels[ $feature ] ) ? $labels[ $feature ] : $feature;
+		}
+	}
+
+	return implode( "\n", array_unique( $lines ) );
+}
+
+/**
+ * שורת המחיר המשנית: מחיר שנתי, אחוז חיסכון וימי ניסיון.
+ *
+ * @param array $item חבילה מה-API.
+ * @return string
+ */
+function mv_plan_note_from_item( array $item ) {
+	$parts = array();
+
+	$yearly = (string) mv_pick( $item, array( 'yearlyPrice', 'yearly_price' ) );
+	if ( '' !== $yearly ) {
+		$saving = mv_pick( $item, array( 'yearlySavingPercent', 'yearly_saving_percent' ) );
+		$parts[] = 'או ' . $yearly . ' לשנה' . ( $saving ? ' · חיסכון ' . (int) $saving . '%' : '' );
+	}
+
+	$trial = mv_pick( $item, array( 'trialDays', 'trial_days' ) );
+	if ( $trial ) {
+		$parts[] = (int) $trial . ' יום ניסיון חינם';
+	}
+
+	return implode( ' · ', $parts );
 }
 
 /**
@@ -362,7 +487,7 @@ function mv_sync_plans_from_api() {
 			continue;
 		}
 
-		$ext_id = (string) mv_pick( $item, array( 'id', 'code', 'slug', 'key' ) );
+		$ext_id = (string) mv_pick( $item, array( 'code', 'id', 'slug', 'key' ) );
 		$title  = (string) mv_pick( $item, array( 'name', 'title', 'label' ) );
 		if ( '' === $title ) {
 			continue;
@@ -371,18 +496,9 @@ function mv_sync_plans_from_api() {
 			$ext_id = sanitize_title( $title );
 		}
 
-		$features = mv_pick( $item, array( 'features', 'includes', 'benefits' ) );
-		if ( is_array( $features ) ) {
-			$features = implode(
-				"\n",
-				array_map(
-					static function ( $feature ) {
-						return is_array( $feature ) ? (string) mv_pick( $feature, array( 'name', 'title', 'label', 'text' ) ) : (string) $feature;
-					},
-					$features
-				)
-			);
-		}
+		$description = (string) mv_pick( $item, array( 'description', 'subtitle', 'tagline', 'summary' ) );
+		$sub         = trim( (string) strtok( $description, "\n" ) );
+		$price       = (string) mv_pick( $item, array( 'monthlyPrice', 'price_label', 'price', 'amount' ) );
 
 		$existing = get_posts(
 			array(
@@ -413,15 +529,21 @@ function mv_sync_plans_from_api() {
 			continue;
 		}
 
-		$popular = mv_pick( $item, array( 'popular', 'is_popular', 'featured', 'recommended' ) );
-
+		// שדות שבבעלות המערכת — נדרסים בכל סנכרון.
 		update_post_meta( $plan_id, '_mv_plan_ext_id', sanitize_text_field( $ext_id ) );
-		update_post_meta( $plan_id, '_mv_plan_sub', sanitize_textarea_field( (string) mv_pick( $item, array( 'description', 'subtitle', 'tagline', 'summary' ) ) ) );
-		update_post_meta( $plan_id, '_mv_plan_price', sanitize_text_field( (string) mv_pick( $item, array( 'price_label', 'price', 'amount' ) ) ) );
-		update_post_meta( $plan_id, '_mv_plan_features', sanitize_textarea_field( (string) $features ) );
-		update_post_meta( $plan_id, '_mv_plan_badge', $popular ? 'הכי נבחר' : '' );
-		update_post_meta( $plan_id, '_mv_plan_dark', $popular ? 1 : 0 );
-		update_post_meta( $plan_id, '_mv_plan_cta_url', esc_url_raw( (string) mv_pick( $item, array( 'cta_url', 'url', 'signup_url', 'link' ) ) ) );
+		update_post_meta( $plan_id, '_mv_plan_sub', sanitize_textarea_field( $sub ) );
+		update_post_meta( $plan_id, '_mv_plan_price', sanitize_text_field( $price ) );
+		update_post_meta( $plan_id, '_mv_plan_note', sanitize_text_field( mv_plan_note_from_item( $item ) ) );
+		update_post_meta( $plan_id, '_mv_plan_features', sanitize_textarea_field( mv_plan_features_from_item( $item ) ) );
+
+		// שדות שבבעלות העורך — נקבעים רק בפעם הראשונה ולא נדרסים אחר כך.
+		if ( ! $existing ) {
+			$custom = ( '' === $price ) || ! preg_match( '/\d/', $price );
+			update_post_meta( $plan_id, '_mv_plan_cta_label', $custom ? 'קביעת הדגמה' : 'התחלת ניסיון' );
+			update_post_meta( $plan_id, '_mv_plan_cta_url', $custom ? '#demo' : '#cta' );
+			update_post_meta( $plan_id, '_mv_plan_badge', '' );
+			update_post_meta( $plan_id, '_mv_plan_dark', 0 );
+		}
 
 		$seen[] = (int) $plan_id;
 	}
@@ -707,7 +829,14 @@ function mv_maybe_seed_plans() {
 	if ( get_option( 'mv_plans_seeded' ) ) {
 		return;
 	}
-	mv_seed_plans();
+
+	// קודם כול מנסים למשוך את החבילות האמיתיות מהמערכת; רק אם זה נכשל
+	// נופלים לשתי החבילות המובנות, כדי שהסקשן לא יישאר ריק.
+	$sync = mv_sync_plans_from_api();
+	if ( empty( $sync['ok'] ) ) {
+		mv_seed_plans();
+	}
+
 	update_option( 'mv_plans_seeded', 1, false ); // No autoload.
 }
 add_action( 'admin_init', 'mv_maybe_seed_plans' );

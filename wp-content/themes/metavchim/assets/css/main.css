@@ -169,3 +169,5 @@ html{scroll-behavior:auto}
 .mv-hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.mv-modal-card{animation:none}.mv-form-submit:hover{transform:none}}
 @media (max-width:520px){.mv-modal-card{padding:28px 22px;border-radius:18px}}
+.mv-turnstile{margin:0 0 16px;min-height:65px}
+.mv-turnstile:empty{min-height:0}
