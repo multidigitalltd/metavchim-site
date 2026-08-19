@@ -25,6 +25,7 @@ function mv_home_section_slugs() {
 		'orbit',
 		'voice',
 		'features',
+		'capabilities',
 		'security',
 		'plans',
 		'cta',

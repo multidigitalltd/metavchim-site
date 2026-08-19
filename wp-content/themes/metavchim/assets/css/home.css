@@ -494,3 +494,28 @@
 .mv-panel{padding:20px 16px}
 .mv-kpis{grid-template-columns:1fr}
 }
+
+/* ---------- מפת היכולות המלאה ---------- */
+.mv-caps-sec{background:var(--mv-bg)}
+.mv-caps-sec .mv-h2{margin:0 0 12px}
+.mv-caps-sec .mv-lede{max-width:620px;margin:0 0 44px}
+.mv-cap-group{margin:0 0 38px}
+.mv-cap-group:last-child{margin-bottom:0}
+.mv-cap-group-title{display:flex;align-items:center;gap:10px;font-size:1.0625rem;font-weight:800;letter-spacing:-.01em;margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--mv-border)}
+.mv-cap-count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--mv-tint);color:var(--mv-green-aa);font-size:0.78125rem;font-weight:800}
+.mv-caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:14px}
+.mv-cap{background:#fff;border:1px solid var(--mv-border);border-radius:16px;padding:20px 18px;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.mv-cap:hover{transform:translateY(-4px);border-color:var(--mv-green-mid);box-shadow:0 16px 34px rgba(14,16,15,.08)}
+.mv-cap-title{font-size:0.96875rem;font-weight:800;letter-spacing:-.01em;margin:0 0 7px}
+.mv-cap-text{font-size:0.875rem;line-height:1.6;color:var(--mv-text2);margin:0}
+.rv .mv-cap{opacity:0;transform:translateY(18px)}
+.rv.in .mv-cap{opacity:1;transform:translateY(0);transition:opacity .5s ease,transform .5s ease,box-shadow .25s ease,border-color .25s ease}
+.rv.in .mv-cap:nth-child(2){transition-delay:.05s,.05s,0s,0s}
+.rv.in .mv-cap:nth-child(3){transition-delay:.1s,.1s,0s,0s}
+.rv.in .mv-cap:nth-child(4){transition-delay:.15s,.15s,0s,0s}
+.rv.in .mv-cap:nth-child(5){transition-delay:.2s,.2s,0s,0s}
+.rv.in .mv-cap:nth-child(6){transition-delay:.25s,.25s,0s,0s}
+.rv.in .mv-cap:nth-child(7){transition-delay:.3s,.3s,0s,0s}
+.rv.in .mv-cap:hover{transition-delay:0s}
+@media (prefers-reduced-motion:reduce){.rv .mv-cap{opacity:1;transform:none}.mv-cap:hover{transform:none}}
+@media (max-width:640px){.mv-caps{grid-template-columns:1fr}.mv-cap-group{margin-bottom:30px}}
