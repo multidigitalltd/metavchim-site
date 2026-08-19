@@ -142,6 +142,33 @@ function mv_home_page_ok() {
 }
 
 /**
+ * Slugs of the pages the theme owns and keeps populated.
+ *
+ * Any page added here is created on activation and restored on the next
+ * admin request of an existing site — that is what carries new pages into
+ * installs that were set up with an earlier version of the theme.
+ *
+ * @return string[]
+ */
+function mv_theme_page_slugs() {
+	return array( 'home', 'collaboration', 'about' );
+}
+
+/**
+ * Whether every page the theme owns exists and holds content.
+ *
+ * @return bool
+ */
+function mv_theme_pages_ok() {
+	foreach ( mv_theme_page_slugs() as $slug ) {
+		if ( ! mv_page_content_ok( $slug ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
  * The collaboration page content, assembled from its section pattern.
  *
  * @return string
@@ -390,7 +417,7 @@ function mv_install_menus( array $legal_ids ) {
  *                         patterns even when the page already has content.
  */
 function mv_install_content( $force_home = false ) {
-	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_home_page_ok() && mv_page_content_ok( 'collaboration' ) && mv_page_content_ok( 'about' ) ) {
+	if ( ! $force_home && get_option( 'mv_content_installed' ) && mv_theme_pages_ok() ) {
 		return;
 	}
 
@@ -428,7 +455,7 @@ function mv_maybe_repair_content() {
 	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'edit_pages' ) ) {
 		return;
 	}
-	if ( ! mv_home_page_ok() || ! mv_page_content_ok( 'collaboration' ) ) {
+	if ( ! mv_theme_pages_ok() ) {
 		mv_install_content();
 	}
 }
