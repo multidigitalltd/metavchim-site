@@ -410,7 +410,9 @@
 /* ===== 10. Plans ===== */
 .mv-plans-sec .mv-h2{margin:0 0 12px}
 .mv-plans-sec .mv-lede{max-width:540px;margin:0 0 36px}
-.mv-plans{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.mv-plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.mv-plan-price{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.mv-plan.is-dark .mv-plan-price{color:#fff}
 .mv-plan{border:1px solid var(--mv-border);background:#fff;border-radius:20px;padding:36px 34px;transition:transform .25s ease,box-shadow .25s ease}
 .mv-plan:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(14,16,15,.09)}
 .mv-plan.is-dark{border-color:var(--mv-ink);background:var(--mv-ink);color:#fff}

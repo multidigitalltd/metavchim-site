@@ -13,8 +13,7 @@ defined( 'ABSPATH' ) || exit;
 				<?php mv_logo_svg( 20 ); ?>
 				<span class="mv-brand-name mv-footer-brand-name">מתווכים<span class="mv-dot" aria-hidden="true">.</span></span>
 			</div>
-			<span class="mv-ltr">metavchim.co.il</span>
-			<nav class="mv-footer-nav" aria-label="קישורים משפטיים">
+			<nav class="mv-footer-nav" aria-label="קישורים בפוטר">
 				<?php
 				wp_nav_menu(
 					array(
@@ -27,6 +26,7 @@ defined( 'ABSPATH' ) || exit;
 				);
 				?>
 			</nav>
+			<a class="mv-footer-docs" href="https://app.metavchim.co.il/docs">תיעוד ומדריכים</a>
 			<span class="mv-copy">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?></span>
 			<span class="mv-credit">פיתוח: <strong>Multi Digital</strong></span>
 		</div>
@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
 
 	<a class="mv-sticky-cta" href="<?php echo esc_url( ( is_front_page() ? '' : home_url( '/' ) ) . '#cta' ); ?>">
 		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M7 12.5 10.5 16 17 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-		14 יום ניסיון בחינם
+		הצטרפות חינם
 	</a>
 
 	<?php mv_a11y_toolbar(); ?>

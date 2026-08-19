@@ -69,7 +69,7 @@ function mv_get_home_content() {
  */
 function mv_render_default_sections() {
 	// Pattern files contain static, theme-authored markup only.
-	echo do_blocks( mv_get_home_content() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo do_shortcode( do_blocks( mv_get_home_content() ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 /**
@@ -403,6 +403,7 @@ function mv_install_content( $force_home = false ) {
 	}
 
 	mv_install_menus( $legal_ids );
+	mv_maybe_seed_plans();
 
 	update_option( 'mv_content_installed', 1, false ); // No autoload.
 }

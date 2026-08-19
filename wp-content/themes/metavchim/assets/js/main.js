@@ -179,3 +179,137 @@
 
 	applyAll();
 }() );
+
+/* ---------------------------------------------------------------------------
+ * טופס הרשמה ותיאום הדגמה — פתיחה, מלכודת פוקוס ושליחה ללא רענון.
+ * ללא JavaScript החלון עדיין נפתח דרך :target והטופס נשלח רגיל.
+ * ------------------------------------------------------------------------ */
+( function () {
+	var modal = document.getElementById( 'demo' );
+	if ( ! modal ) {
+		return;
+	}
+
+	var card = modal.querySelector( '.mv-modal-card' );
+	var form = modal.querySelector( '.mv-form' );
+	var opener = null;
+	var SELECTOR = 'a[href],button:not([disabled]),input:not([type="hidden"]),textarea,select';
+
+	function open( trigger ) {
+		opener = trigger || null;
+		modal.hidden = false;
+		modal.classList.add( 'is-open' );
+		document.documentElement.style.overflow = 'hidden';
+		var first = card.querySelector( '#mv-name' ) || card.querySelector( SELECTOR );
+		if ( first ) {
+			first.focus();
+		}
+	}
+
+	function close() {
+		modal.classList.remove( 'is-open' );
+		modal.hidden = true;
+		document.documentElement.style.overflow = '';
+		if ( location.hash === '#demo' ) {
+			history.replaceState( null, '', location.pathname + location.search );
+		}
+		if ( opener && document.contains( opener ) ) {
+			opener.focus();
+		}
+		opener = null;
+	}
+
+	// כל קישור אל ‎#demo‎ פותח את החלון.
+	document.addEventListener( 'click', function ( e ) {
+		var link = e.target.closest( 'a[href$="#demo"]' );
+		if ( link ) {
+			e.preventDefault();
+			open( link );
+			return;
+		}
+		if ( e.target.closest( '[data-mv-close]' ) ) {
+			e.preventDefault();
+			close();
+		}
+	} );
+
+	modal.addEventListener( 'keydown', function ( e ) {
+		if ( 'Escape' === e.key ) {
+			close();
+			return;
+		}
+		if ( 'Tab' !== e.key ) {
+			return;
+		}
+		var items = Array.prototype.filter.call(
+			card.querySelectorAll( SELECTOR ),
+			function ( el ) { return el.offsetParent !== null; }
+		);
+		if ( ! items.length ) {
+			return;
+		}
+		var first = items[ 0 ];
+		var last = items[ items.length - 1 ];
+		if ( e.shiftKey && document.activeElement === first ) {
+			e.preventDefault();
+			last.focus();
+		} else if ( ! e.shiftKey && document.activeElement === last ) {
+			e.preventDefault();
+			first.focus();
+		}
+	} );
+
+	// פתיחה אוטומטית כשמגיעים עם ‎#demo‎ בכתובת.
+	if ( location.hash === '#demo' ) {
+		open( null );
+	}
+
+	// שליחה ללא רענון עמוד.
+	if ( form ) {
+		form.addEventListener( 'submit', function ( e ) {
+			if ( ! form.reportValidity() ) {
+				return;
+			}
+			e.preventDefault();
+
+			var button = form.querySelector( '.mv-form-submit' );
+			var data = new FormData( form );
+			data.append( 'mv_ajax', '1' );
+			if ( button ) {
+				button.disabled = true;
+			}
+
+			fetch( form.action, {
+				method: 'POST',
+				body: data,
+				credentials: 'same-origin'
+			} ).then( function ( res ) {
+				return res.json().catch( function () {
+					return { ok: false, message: 'השליחה נכשלה. אפשר לנסות שוב.' };
+				} );
+			} ).then( function ( res ) {
+				note( res.ok, res.message );
+				if ( res.ok ) {
+					form.remove();
+				}
+			} ).catch( function () {
+				note( false, 'השליחה נכשלה. אפשר לנסות שוב.' );
+			} ).finally( function () {
+				if ( button ) {
+					button.disabled = false;
+				}
+			} );
+		} );
+	}
+
+	function note( ok, message ) {
+		var el = card.querySelector( '.mv-form-note' );
+		if ( ! el ) {
+			el = document.createElement( 'p' );
+			card.insertBefore( el, form );
+		}
+		el.className = 'mv-form-note ' + ( ok ? 'is-ok' : 'is-err' );
+		el.setAttribute( 'role', ok ? 'status' : 'alert' );
+		el.textContent = message || ( ok ? 'קיבלנו את הפרטים. נחזור אליכם בהקדם.' : 'השליחה נכשלה.' );
+	}
+}() );

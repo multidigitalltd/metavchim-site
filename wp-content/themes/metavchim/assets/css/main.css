@@ -53,6 +53,8 @@ button{font-family:inherit}
 .mv-footer-list{display:flex;gap:20px;margin:0;padding:0;list-style:none}
 .mv-footer-list a{color:var(--mv-muted)}
 .mv-footer-list a:hover{color:var(--mv-ink)}
+.mv-footer-docs{color:var(--mv-muted);font-weight:700}
+.mv-footer-docs:hover{color:var(--mv-ink)}
 .mv-copy{margin-inline-start:auto}
 
 /* ===== Content pages (legal, accessibility statement) ===== */
@@ -141,3 +143,29 @@ html{scroll-behavior:auto}
 .mv-footer{padding:0 16px 40px}
 .mv-copy{margin-inline-start:0}
 }
+
+/* ---------- טופס הרשמה ותיאום הדגמה (חלון קופץ) ---------- */
+.mv-modal{display:none;position:fixed;inset:0;z-index:120;align-items:center;justify-content:center;padding:24px 18px}
+.mv-modal.is-open,.mv-modal:target{display:flex}
+.mv-modal-backdrop{position:absolute;inset:0;background:rgba(11,15,20,.55);backdrop-filter:blur(2px)}
+.mv-modal-card{position:relative;width:100%;max-width:460px;max-height:calc(100dvh - 48px);overflow:auto;background:#fff;border:1px solid var(--mv-border);border-radius:22px;padding:34px 32px;box-shadow:0 26px 70px rgba(11,15,20,.28);animation:mvModalIn .28s cubic-bezier(.22,1,.36,1) both}
+@keyframes mvModalIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.mv-modal-x{position:absolute;inset-inline-start:14px;inset-block-start:14px;width:38px;height:38px;display:grid;place-items:center;border:0;background:transparent;color:var(--mv-muted);border-radius:10px;cursor:pointer;transition:background .2s ease,color .2s ease}
+.mv-modal-x:hover{background:var(--mv-bg);color:var(--mv-ink)}
+.mv-modal-title{font-size:1.375rem;font-weight:800;letter-spacing:-.02em;margin:0 0 8px;padding-inline-start:46px}
+.mv-modal-sub{font-size:0.9375rem;color:var(--mv-muted);line-height:1.6;margin:0 0 22px}
+.mv-form-note{font-size:0.90625rem;font-weight:700;border-radius:12px;padding:12px 14px;margin:0 0 18px}
+.mv-form-note.is-ok{background:rgba(74,222,128,.18);color:#14532d}
+.mv-form-note.is-err{background:rgba(239,68,68,.12);color:#7f1d1d}
+.mv-field{margin:0 0 16px}
+.mv-field label{display:block;font-size:0.875rem;font-weight:700;margin-bottom:6px}
+.mv-field input{width:100%;font:inherit;font-size:1rem;color:var(--mv-ink);background:#fff;border:1px solid var(--mv-border);border-radius:12px;padding:12px 14px;min-height:48px;transition:border-color .2s ease,box-shadow .2s ease}
+.mv-field input:focus{outline:none;border-color:var(--mv-ink);box-shadow:0 0 0 3px rgba(11,15,20,.10)}
+.mv-field input:user-invalid{border-color:#dc2626}
+.mv-form-submit{width:100%;min-height:52px;border:0;border-radius:12px;background:var(--mv-green);color:var(--mv-black);font:inherit;font-size:1rem;font-weight:800;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.mv-form-submit:hover{background:var(--mv-green-hover);transform:translateY(-2px)}
+.mv-form-submit[disabled]{opacity:.6;transform:none;cursor:progress}
+.mv-form-legal{display:block;text-align:center;font-size:0.8125rem;color:var(--mv-muted);margin-top:12px}
+.mv-hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.mv-modal-card{animation:none}.mv-form-submit:hover{transform:none}}
+@media (max-width:520px){.mv-modal-card{padding:28px 22px;border-radius:18px}}
