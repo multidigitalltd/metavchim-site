@@ -61,9 +61,9 @@
         <div class="mv-scard">
           <div class="mv-scard-head">
             <span class="mv-scard-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3 5 5.5v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10v-5L12 3Z" stroke="#0F8A43" stroke-width="1.9" stroke-linejoin="round"/><path d="m9 11.5 2.2 2.2L15.5 9.5" stroke="#0F8A43" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <h3 class="mv-scard-title">אבטחה ברמה בנקאית</h3>
+            <h3 class="mv-scard-title">הצפנה, גיבוי והפרדת נתונים</h3>
           </div>
-          <p class="mv-scard-text">הצפנה מלאה של כל הנתונים — גם בהעברה וגם באחסון. גיבוי יומי אוטומטי, והפרדה מוחלטת בין הנתונים של כל משרד.</p>
+          <p class="mv-scard-text">הנתונים מוצפנים בהעברה ובאחסון, מגובים אוטומטית מדי יום, וכל משרד מופרד לוגית ממשנהו — משרד אחד לא נחשף לנתונים של אחר.</p>
         </div>
         <div class="mv-scard">
           <div class="mv-scard-head">
@@ -75,9 +75,9 @@
         <div class="mv-scard">
           <div class="mv-scard-head">
             <span class="mv-scard-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#0F8A43" stroke-width="1.9"/><path d="M9 12.5l2 2 4-4.5" stroke="#0F8A43" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <h3 class="mv-scard-title">עומד בחוק הגנת הפרטיות</h3>
+            <h3 class="mv-scard-title">תשתית לעמידה בחוק הגנת הפרטיות</h3>
           </div>
-          <p class="mv-scard-text">ניהול מאגרי מידע לפי הדין הישראלי, כולל זכות עיון ומחיקה ללקוחות שלך — בלי שתצטרך להתעסק בזה.</p>
+          <p class="mv-scard-text">המערכת נבנתה כדי לאפשר לך לעמוד בדרישות חוק הגנת הפרטיות: ניהול הרשאות, מימוש זכות עיון ומחיקה ותיעוד גישה למידע. בקרוב — הסמכה לתקן ת"י ISO/IEC 27001:2022.</p>
         </div>
       </div>
     </div>

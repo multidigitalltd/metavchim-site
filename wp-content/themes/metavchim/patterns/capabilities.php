@@ -74,9 +74,9 @@
     <div class="mv-cap-group">
       <h3 class="mv-cap-group-title">אבטחה ותאימות<span class="mv-cap-count">4</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">אבטחה ברמה בנקאית</h4><p class="mv-cap-text">הצפנה בתעבורה ובאחסון, וגיבויים שוטפים של כל המאגר.</p></div>
+        <div class="mv-cap"><h4 class="mv-cap-title">הצפנה וגיבוי</h4><p class="mv-cap-text">הנתונים מוצפנים בהעברה ובאחסון, עם גיבוי אוטומטי של כל המאגר.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">יומן פעילות</h4><p class="mv-cap-text">כל צפייה, שינוי ושיתוף נרשמים — כדי שתמיד יהיה ברור מי עשה מה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">עמידה בחוק הגנת הפרטיות</h4><p class="mv-cap-text">ניהול הסכמות ושמירת מידע לפי הנדרש בחוק הישראלי.</p></div>
+        <div class="mv-cap"><h4 class="mv-cap-title">תשתית לעמידה בחוק הגנת הפרטיות</h4><p class="mv-cap-text">ניהול הסכמות, זכות עיון ומחיקה ותיעוד גישה — הכלים שנדרשים לעמידה בדין הישראלי. בקרוב הסמכה לת"י ISO/IEC 27001:2022.</p></div>
         <div class="mv-cap"><h4 class="mv-cap-title">הנתונים שלך, לייצוא</h4><p class="mv-cap-text">המאגר נשאר שלך. אפשר לייצא אותו בכל רגע, בלי לבקש רשות.</p></div>
       </div>
     </div>
