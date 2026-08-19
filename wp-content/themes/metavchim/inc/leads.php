@@ -198,7 +198,7 @@ function mv_render_demo_form() {
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
 			</button>
 
-			<h2 class="mv-modal-title" id="mv-demo-title">תיאום הדגמה — חינם</h2>
+			<h2 class="mv-modal-title" id="mv-demo-title">תיאום הדגמה</h2>
 			<p class="mv-modal-sub">משאירים פרטים ומועד שנוח לכם, ואנחנו חוזרים אליכם לתיאום הדגמה אישית של המערכת. ללא עלות וללא התחייבות.</p>
 
 			<?php if ( 'ok' === $sent ) : ?>

@@ -350,3 +350,123 @@
 		el.textContent = message || ( ok ? 'קיבלנו את הפרטים. נחזור אליכם בהקדם.' : 'השליחה נכשלה.' );
 	}
 }() );
+
+/* ---------------------------------------------------------------------------
+ * סימון הסקשן הנוכחי בתפריט. קישורי עמודים מסומנים על ידי וורדפרס,
+ * וכאן מטופלים קישורי העוגן של עמוד הבית.
+ * ------------------------------------------------------------------------ */
+( function () {
+	var links = [];
+
+	Array.prototype.forEach.call(
+		document.querySelectorAll( '.mv-nav-list a[href*="#"]' ),
+		function ( link ) {
+			var hash = link.href.slice( link.href.indexOf( '#' ) );
+			var section = hash.length > 1 ? document.querySelector( hash ) : null;
+			if ( section ) {
+				links.push( { link: link, section: section } );
+			}
+		}
+	);
+
+	if ( ! links.length ) {
+		return;
+	}
+
+	var ticking = false;
+
+	function mark() {
+		ticking = false;
+		var line = window.innerHeight * 0.28; // מעט מתחת לכותרת העליונה.
+		var current = null;
+
+		links.forEach( function ( item ) {
+			var box = item.section.getBoundingClientRect();
+			if ( box.top <= line && box.bottom > line ) {
+				current = item.link;
+			}
+		} );
+
+		links.forEach( function ( item ) {
+			item.link.classList.toggle( 'is-active', item.link === current );
+		} );
+	}
+
+	window.addEventListener( 'scroll', function () {
+		if ( ! ticking ) {
+			ticking = true;
+			window.requestAnimationFrame( mark );
+		}
+	}, { passive: true } );
+
+	mark();
+}() );
+
+/* ---------------------------------------------------------------------------
+ * מסלולים: מתג חיוב חודשי/שנתי ומסילה נגללת עם חיצים.
+ * ------------------------------------------------------------------------ */
+( function () {
+	var box = document.querySelector( '[data-mv-plans]' );
+	if ( ! box ) {
+		return;
+	}
+
+	var rail = box.querySelector( '.mv-plans' );
+	var prev = box.querySelector( '.mv-rail-btn.is-prev' );
+	var next = box.querySelector( '.mv-rail-btn.is-next' );
+	var rtl = 'rtl' === getComputedStyle( rail ).direction;
+
+	/* ----- מתג החיוב ----- */
+	box.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '.mv-cycle-btn' );
+		if ( ! btn ) {
+			return;
+		}
+
+		var cycle = btn.getAttribute( 'data-cycle' );
+
+		box.querySelectorAll( '.mv-cycle-btn' ).forEach( function ( item ) {
+			var on = item === btn;
+			item.classList.toggle( 'is-on', on );
+			item.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+		} );
+
+		box.querySelectorAll( '[data-' + cycle + ']' ).forEach( function ( item ) {
+			item.textContent = item.getAttribute( 'data-' + cycle );
+		} );
+
+		box.querySelectorAll( '.mv-plan-save' ).forEach( function ( item ) {
+			item.hidden = 'year' !== cycle || '' === item.textContent.trim();
+		} );
+	} );
+
+	/* ----- מסילת הגלילה ----- */
+	function step() {
+		var card = rail.querySelector( '.mv-plan' );
+		return card ? card.getBoundingClientRect().width + 18 : rail.clientWidth;
+	}
+
+	function refresh() {
+		var max = rail.scrollWidth - rail.clientWidth;
+		var at = Math.abs( rail.scrollLeft );
+		var scrollable = max > 4;
+
+		prev.hidden = ! scrollable || at <= 2;
+		next.hidden = ! scrollable || at >= max - 2;
+	}
+
+	function scrollBy( dir ) {
+		rail.scrollBy( { left: dir * step() * ( rtl ? -1 : 1 ), behavior: 'smooth' } );
+	}
+
+	prev.addEventListener( 'click', function () {
+		scrollBy( -1 );
+	} );
+	next.addEventListener( 'click', function () {
+		scrollBy( 1 );
+	} );
+
+	rail.addEventListener( 'scroll', refresh, { passive: true } );
+	window.addEventListener( 'resize', refresh );
+	refresh();
+}() );

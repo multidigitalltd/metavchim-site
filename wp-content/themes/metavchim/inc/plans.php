@@ -28,6 +28,9 @@ function mv_plan_fields() {
 	return array(
 		'_mv_plan_sub'       => 'sanitize_textarea_field',
 		'_mv_plan_price'     => 'sanitize_text_field',
+		'_mv_plan_price_year' => 'sanitize_text_field',
+		'_mv_plan_save'      => 'absint',
+		'_mv_plan_trial'     => 'absint',
 		'_mv_plan_note'      => 'sanitize_text_field',
 		'_mv_plan_features'  => 'sanitize_textarea_field',
 		'_mv_plan_badge'     => 'sanitize_text_field',
@@ -118,6 +121,19 @@ function mv_render_plan_meta_box( $post ) {
 		<label for="mv_plan_price">מחיר (אופציונלי)</label>
 		<input type="text" id="mv_plan_price" name="_mv_plan_price" value="<?php echo esc_attr( $get( '_mv_plan_price' ) ); ?>">
 		<span class="description">אם משאירים ריק — לא מוצג מחיר בכרטיס.</span>
+	</p>
+	<p class="mv-pf">
+		<label for="mv_plan_price_year">מחיר שנתי</label>
+		<input type="text" id="mv_plan_price_year" name="_mv_plan_price_year" value="<?php echo esc_attr( $get( '_mv_plan_price_year' ) ); ?>">
+		<span class="description">מוצג כשמחליפים לתצוגה שנתית. ריק = אין מסלול שנתי.</span>
+	</p>
+	<p class="mv-pf">
+		<label for="mv_plan_save">אחוז חיסכון במסלול השנתי</label>
+		<input type="text" id="mv_plan_save" name="_mv_plan_save" value="<?php echo esc_attr( $get( '_mv_plan_save' ) ); ?>" size="4">
+	</p>
+	<p class="mv-pf">
+		<label for="mv_plan_trial">ימי ניסיון</label>
+		<input type="text" id="mv_plan_trial" name="_mv_plan_trial" value="<?php echo esc_attr( $get( '_mv_plan_trial' ) ); ?>" size="4">
 	</p>
 	<p class="mv-pf">
 		<label for="mv_plan_note">שורת מחיר משנית</label>
@@ -213,57 +229,122 @@ function mv_render_plans() {
 		return '';
 	}
 
-	ob_start();
-	echo '<div class="mv-plans">';
-
+	// המתג מוצג רק אם יש בכלל מסלול עם מחיר שנתי.
+	$has_yearly = false;
+	$max_save   = 0;
 	foreach ( $plans as $plan ) {
-		$meta      = get_post_meta( $plan->ID );
-		$value     = static function ( $key ) use ( $meta ) {
-			return isset( $meta[ $key ][0] ) ? $meta[ $key ][0] : '';
-		};
-		$dark      = '1' === $value( '_mv_plan_dark' );
-		$badge     = $value( '_mv_plan_badge' );
-		$price     = $value( '_mv_plan_price' );
-		$cta_label = $value( '_mv_plan_cta_label' );
-		$cta_url   = $value( '_mv_plan_cta_url' );
-		$features  = array_filter( array_map( 'trim', explode( "\n", (string) $value( '_mv_plan_features' ) ) ) );
-
-		// כפתור שמצביע ל-#demo פותח את טופס ההרשמה — נדאג שהחלון ייטען בעמוד.
-		if ( '#demo' === $cta_url && function_exists( 'mv_demo_form_requested' ) ) {
-			mv_demo_form_requested( true );
+		if ( '' !== (string) get_post_meta( $plan->ID, '_mv_plan_price_year', true ) ) {
+			$has_yearly = true;
+			$max_save   = max( $max_save, (int) get_post_meta( $plan->ID, '_mv_plan_save', true ) );
 		}
-		?>
-		<div class="mv-plan<?php echo $dark ? ' is-dark' : ''; ?>">
-			<div class="mv-plan-head">
-				<h3 class="mv-plan-title"><?php echo esc_html( get_the_title( $plan ) ); ?></h3>
-				<?php if ( $badge ) : ?>
-					<span class="mv-plan-badge"><?php echo esc_html( $badge ); ?></span>
-				<?php endif; ?>
-			</div>
-			<?php if ( $price ) : ?>
-				<div class="mv-plan-price"><?php echo esc_html( $price ); ?></div>
-			<?php endif; ?>
-			<?php if ( $value( '_mv_plan_note' ) ) : ?>
-				<p class="mv-plan-note"><?php echo esc_html( $value( '_mv_plan_note' ) ); ?></p>
-			<?php endif; ?>
-			<?php if ( $value( '_mv_plan_sub' ) ) : ?>
-				<p class="mv-plan-sub"><?php echo esc_html( $value( '_mv_plan_sub' ) ); ?></p>
-			<?php endif; ?>
-			<?php if ( $features ) : ?>
-				<ul class="mv-plan-list">
-					<?php foreach ( $features as $feature ) : ?>
-						<li><?php echo esc_html( $feature ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-			<?php endif; ?>
-			<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : mv_signup_url() ); ?>">
-				<?php echo esc_html( $cta_label ? $cta_label : 'קביעת הדגמה' ); ?>
-			</a>
-		</div>
-		<?php
 	}
 
-	echo '</div>';
+	ob_start();
+	?>
+	<div class="mv-plans-box" data-mv-plans>
+		<?php if ( $has_yearly ) : ?>
+			<div class="mv-cycle" role="group" aria-label="בחירת אופן החיוב">
+				<button type="button" class="mv-cycle-btn is-on" data-cycle="month" aria-pressed="true">חיוב חודשי</button>
+				<button type="button" class="mv-cycle-btn" data-cycle="year" aria-pressed="false">
+					חיוב שנתי
+					<?php if ( $max_save ) : ?>
+						<span class="mv-cycle-save">חיסכון עד <?php echo esc_html( $max_save ); ?>%</span>
+					<?php endif; ?>
+				</button>
+			</div>
+		<?php endif; ?>
+
+		<div class="mv-rail">
+			<button type="button" class="mv-rail-btn is-prev" aria-label="המסלול הקודם" hidden>
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+
+			<div class="mv-plans" role="list">
+				<?php
+				foreach ( $plans as $plan ) {
+					$meta  = get_post_meta( $plan->ID );
+					$value = static function ( $key ) use ( $meta ) {
+						return isset( $meta[ $key ][0] ) ? $meta[ $key ][0] : '';
+					};
+
+					$dark      = '1' === $value( '_mv_plan_dark' );
+					$badge     = $value( '_mv_plan_badge' );
+					$month     = $value( '_mv_plan_price' );
+					$year      = $value( '_mv_plan_price_year' );
+					$save      = (int) $value( '_mv_plan_save' );
+					$trial     = (int) $value( '_mv_plan_trial' );
+					$cta_label = $value( '_mv_plan_cta_label' );
+					$cta_url   = $value( '_mv_plan_cta_url' );
+					$features  = array_filter( array_map( 'trim', explode( "\n", (string) $value( '_mv_plan_features' ) ) ) );
+
+					// מחיר מספרי מקבל סיומת תקופה; "בהתאמה" נשאר כמו שהוא.
+					$numeric = (bool) preg_match( '/\d/', (string) $month );
+
+					if ( '#demo' === $cta_url && function_exists( 'mv_demo_form_requested' ) ) {
+						mv_demo_form_requested( true );
+					}
+					?>
+					<article class="mv-plan<?php echo $dark ? ' is-dark' : ''; ?>" role="listitem">
+						<?php if ( $badge ) : ?>
+							<span class="mv-plan-badge"><?php echo esc_html( $badge ); ?></span>
+						<?php endif; ?>
+
+						<header class="mv-plan-head">
+							<h3 class="mv-plan-title"><?php echo esc_html( get_the_title( $plan ) ); ?></h3>
+							<?php if ( $value( '_mv_plan_sub' ) ) : ?>
+								<p class="mv-plan-sub"><?php echo esc_html( $value( '_mv_plan_sub' ) ); ?></p>
+							<?php endif; ?>
+						</header>
+
+						<?php if ( $month ) : ?>
+							<div class="mv-plan-price">
+								<span class="mv-price-val"
+									data-month="<?php echo esc_attr( $month ); ?>"
+									data-year="<?php echo esc_attr( $year ? $year : $month ); ?>"><?php echo esc_html( $month ); ?></span>
+								<?php if ( $numeric ) : ?>
+									<span class="mv-price-per"
+										data-month="לחודש"
+										data-year="<?php echo $year ? 'לשנה' : 'לחודש'; ?>">לחודש</span>
+								<?php endif; ?>
+							</div>
+							<p class="mv-plan-save" hidden>
+								<?php if ( $year && $save ) : ?>
+									חיסכון של <?php echo esc_html( $save ); ?>% מול חיוב חודשי
+								<?php endif; ?>
+							</p>
+						<?php endif; ?>
+
+						<?php if ( $trial ) : ?>
+							<p class="mv-plan-trial"><?php echo esc_html( $trial ); ?> יום ניסיון חינם</p>
+						<?php endif; ?>
+
+						<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : mv_signup_url() ); ?>">
+							<?php echo esc_html( $cta_label ? $cta_label : 'קביעת הדגמה' ); ?>
+						</a>
+
+						<?php if ( $features ) : ?>
+							<p class="mv-plan-list-title">מה כלול במסלול</p>
+							<ul class="mv-plan-list">
+								<?php foreach ( $features as $feature ) : ?>
+									<li>
+										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 12.5 10 16.5 18 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+										<span><?php echo esc_html( $feature ); ?></span>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						<?php endif; ?>
+					</article>
+					<?php
+				}
+				?>
+			</div>
+
+			<button type="button" class="mv-rail-btn is-next" aria-label="המסלול הבא" hidden>
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 5-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+		</div>
+	</div>
+	<?php
 	return (string) ob_get_clean();
 }
 add_shortcode( 'mv_plans', 'mv_render_plans' );
@@ -541,7 +622,10 @@ function mv_sync_plans_from_api() {
 		update_post_meta( $plan_id, '_mv_plan_ext_id', sanitize_text_field( $ext_id ) );
 		update_post_meta( $plan_id, '_mv_plan_sub', sanitize_textarea_field( $sub ) );
 		update_post_meta( $plan_id, '_mv_plan_price', sanitize_text_field( $price ) );
-		update_post_meta( $plan_id, '_mv_plan_note', sanitize_text_field( mv_plan_note_from_item( $item ) ) );
+		update_post_meta( $plan_id, '_mv_plan_price_year', sanitize_text_field( (string) mv_pick( $item, array( 'yearlyPrice', 'yearly_price' ) ) ) );
+		update_post_meta( $plan_id, '_mv_plan_save', absint( mv_pick( $item, array( 'yearlySavingPercent', 'yearly_saving_percent' ) ) ) );
+		update_post_meta( $plan_id, '_mv_plan_trial', absint( mv_pick( $item, array( 'trialDays', 'trial_days' ) ) ) );
+		update_post_meta( $plan_id, '_mv_plan_note', '' );
 		update_post_meta( $plan_id, '_mv_plan_features', sanitize_textarea_field( mv_plan_features_from_item( $item ) ) );
 
 		// שדות שבבעלות העורך — נקבעים רק בפעם הראשונה ולא נדרסים אחר כך.

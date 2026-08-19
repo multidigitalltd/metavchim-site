@@ -48,6 +48,29 @@ function mv_login_url_app() {
 }
 
 /**
+ * וורדפרס מסמן כל קישור עוגן של עמוד הבית כפריט הנוכחי, ולכן בעמוד הבית
+ * כל פריטי התפריט קיבלו סימון. פריטי עוגן מסומנים כאן רק לפי הסקשן שבו
+ * הגולש נמצא בפועל (ראו assets/js/main.js); פריטי עמוד נשארים כרגיל.
+ *
+ * @param string[] $classes מחלקות הפריט.
+ * @param WP_Post  $item    פריט התפריט.
+ * @return string[]
+ */
+function mv_clean_anchor_menu_classes( $classes, $item ) {
+	if ( ! is_array( $classes ) || false === strpos( (string) $item->url, '#' ) ) {
+		return $classes;
+	}
+
+	return array_values(
+		array_diff(
+			$classes,
+			array( 'current-menu-item', 'current_page_item', 'current-menu-ancestor', 'current-menu-parent', 'current_page_parent', 'current_page_ancestor' )
+		)
+	);
+}
+add_filter( 'nav_menu_css_class', 'mv_clean_anchor_menu_classes', 10, 2 );
+
+/**
  * Inline brand logo SVG (avoids an extra HTTP request in the header/footer).
  *
  * @param int    $size   Square size in px.
