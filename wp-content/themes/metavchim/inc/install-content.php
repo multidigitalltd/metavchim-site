@@ -100,6 +100,7 @@ function mv_install_page( $slug, $title, $content, $force = false ) {
 				)
 			);
 			kses_init_filters();
+			update_post_meta( $existing->ID, '_mv_content_hash', md5( $content ) );
 		}
 		return (int) $existing->ID;
 	}
@@ -117,6 +118,10 @@ function mv_install_page( $slug, $title, $content, $force = false ) {
 		)
 	);
 	kses_init_filters();
+
+	if ( $page_id ) {
+		update_post_meta( $page_id, '_mv_content_hash', md5( $content ) );
+	}
 
 	return $page_id;
 }
@@ -151,7 +156,29 @@ function mv_home_page_ok() {
  * @return string[]
  */
 function mv_theme_page_slugs() {
-	return array( 'home', 'collaboration', 'about' );
+	return array_keys( mv_theme_pages() );
+}
+
+/**
+ * The pages the theme owns: slug => title + content builder.
+ *
+ * @return array<string,array{title:string,content:callable}>
+ */
+function mv_theme_pages() {
+	return array(
+		'home'          => array(
+			'title'   => 'בית',
+			'content' => 'mv_get_home_content',
+		),
+		'collaboration' => array(
+			'title'   => mv_collab_label(),
+			'content' => 'mv_get_collab_content',
+		),
+		'about'         => array(
+			'title'   => 'אודות',
+			'content' => 'mv_get_about_content',
+		),
+	);
 }
 
 /**
@@ -450,6 +477,79 @@ add_action( 'after_switch_theme', 'mv_install_content' );
  * Self-heal: if the home page is missing or was stripped empty (e.g. the
  * theme was activated without a privileged user), reinstall on the next
  * admin visit. Cheap when healthy — a single cached page lookup.
+ */
+function mv_pages_needing_rebuild( $add = null ) {
+	static $titles = array();
+	if ( null !== $add ) {
+		$titles[] = $add;
+	}
+	return $titles;
+}
+
+/**
+ * רענון תוכן העמודים כשגרסה חדשה של התבנית מביאה נוסח חדש.
+ *
+ * עמוד שלא נערך ידנית (התוכן שלו זהה למה שהתבנית כתבה) מתעדכן לבד —
+ * אחרת שינוי טקסט בתבנית לא היה מגיע לאתר בלי בנייה מחדש. עמוד שנערך
+ * בעורך לא נגענו בו, ובמקום זה מוצגת הודעה בלוח הבקרה. בכל מקרה
+ * וורדפרס שומר גרסה קודמת, כך שאפשר לשחזר.
+ */
+function mv_refresh_theme_pages() {
+	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'edit_pages' ) ) {
+		return;
+	}
+
+	foreach ( mv_theme_pages() as $slug => $page ) {
+		$post = get_page_by_path( $slug );
+		if ( ! $post instanceof WP_Post ) {
+			continue;
+		}
+
+		$content = call_user_func( $page['content'] );
+		if ( '' === trim( (string) $content ) ) {
+			continue;
+		}
+
+		$stored = (string) get_post_meta( $post->ID, '_mv_content_hash', true );
+		if ( $stored === md5( $content ) ) {
+			continue; // כבר מעודכן.
+		}
+
+		// נערך ידנית אחרי שהתבנית כתבה אותו — לא דורסים.
+		if ( '' !== $stored && md5( $post->post_content ) !== $stored ) {
+			mv_pages_needing_rebuild( $page['title'] );
+			continue;
+		}
+
+		mv_install_page( $slug, $page['title'], $content, true );
+	}
+}
+add_action( 'admin_init', 'mv_refresh_theme_pages', 11 );
+
+/**
+ * הודעה על עמודים שנערכו ידנית ולכן לא רועננו.
+ */
+function mv_rebuild_notice() {
+	$titles = mv_pages_needing_rebuild();
+	if ( ! $titles || ! current_user_can( 'edit_theme_options' ) ) {
+		return;
+	}
+	?>
+	<div class="notice notice-warning">
+		<p>
+			גרסה חדשה של התבנית כוללת נוסח מעודכן לעמודים:
+			<strong><?php echo esc_html( implode( ', ', $titles ) ); ?></strong>.
+			העמודים האלה נערכו ידנית ולכן לא עודכנו אוטומטית.
+			<a href="<?php echo esc_url( admin_url( 'themes.php?page=mv-content' ) ); ?>">מעבר לבנייה מחדש</a>
+			(העריכות הקיימות יישמרו בהיסטוריית הגרסאות של העמוד).
+		</p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', 'mv_rebuild_notice' );
+
+/**
+ * Restore missing or emptied theme pages.
  */
 function mv_maybe_repair_content() {
 	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'edit_pages' ) ) {
