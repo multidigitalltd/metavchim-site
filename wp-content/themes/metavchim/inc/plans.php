@@ -282,7 +282,15 @@ function mv_plans_api_url() {
 	if ( defined( 'MV_PLANS_API_URL' ) && MV_PLANS_API_URL ) {
 		return (string) MV_PLANS_API_URL;
 	}
-	return (string) get_option( 'mv_plans_api_url', MV_PLANS_DEFAULT_API_URL );
+
+	// ערך שמור מגרסאות קודמות מתקבל רק אם הוא כתובת תקינה; אחרת חוזרים
+	// לנקודת הקצה המובנית, כדי ששדה שהתמלא בטעות לא ישבור את הסנכרון.
+	$stored = (string) get_option( 'mv_plans_api_url', '' );
+	if ( $stored && filter_var( $stored, FILTER_VALIDATE_URL ) && 0 === strpos( $stored, 'http' ) ) {
+		return $stored;
+	}
+
+	return MV_PLANS_DEFAULT_API_URL;
 }
 
 /**
@@ -595,6 +603,19 @@ function mv_pick( array $item, array $keys ) {
 }
 
 /**
+ * ניקוי חד-פעמי: מסך ההגדרות הישן אפשר להזין כתובת ומפתח ידנית, ודפדפנים
+ * מילאו שם לעיתים פרטי התחברות. הערכים נמחקים אם אינם כתובת תקינה.
+ */
+function mv_cleanup_plans_credentials() {
+	$stored = (string) get_option( 'mv_plans_api_url', '' );
+	if ( '' !== $stored && ! filter_var( $stored, FILTER_VALIDATE_URL ) ) {
+		delete_option( 'mv_plans_api_url' );
+		delete_option( 'mv_plans_api_key' );
+	}
+}
+add_action( 'admin_init', 'mv_cleanup_plans_credentials' );
+
+/**
  * Twice-daily background sync, scheduled only while an endpoint is set.
  */
 function mv_schedule_plans_sync() {
@@ -646,9 +667,11 @@ function mv_render_plans_sync_page() {
 	}
 
 	$synced   = (int) get_option( 'mv_plans_synced_at', 0 );
+	$url      = mv_plans_api_url();
 	$by_const = defined( 'MV_PLANS_API_URL' ) && MV_PLANS_API_URL;
 	$notice   = isset( $_GET['mv_msg'] ) ? sanitize_text_field( wp_unslash( $_GET['mv_msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only.
 	$ok       = isset( $_GET['mv_ok'] ) && '1' === $_GET['mv_ok']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only.
+	$count    = count( mv_get_plans() );
 	?>
 	<div class="wrap">
 		<h1>סנכרון מסלולים מהמערכת</h1>
@@ -657,84 +680,44 @@ function mv_render_plans_sync_page() {
 			<div class="notice notice-<?php echo $ok ? 'success' : 'error'; ?> is-dismissible"><p><?php echo esc_html( $notice ); ?></p></div>
 		<?php endif; ?>
 
-		<p>המסלולים באתר נבנים מתוך רשימת המסלולים שבתפריט הצד. אפשר לערוך אותם ידנית, ובנוסף לחבר כתובת API של המערכת — ואז הרשימה מתעדכנת אוטומטית פעמיים ביום.</p>
+		<p>המסלולים באתר נמשכים אוטומטית מהמערכת פעמיים ביום, ומוצגים בעמוד הבית לפי הרשימה שבתפריט הצד. אפשר לערוך כל מסלול ידנית — שם, מחיר, מה כלול, תווית והכפתור.</p>
 
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'mv_plans_settings' ); ?>
-			<input type="hidden" name="action" value="mv_plans_settings">
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><label for="mv_plans_api_url">כתובת ה-API</label></th>
-					<td>
-						<input type="url" class="regular-text" id="mv_plans_api_url" name="mv_plans_api_url" value="<?php echo esc_attr( get_option( 'mv_plans_api_url', '' ) ); ?>" <?php disabled( $by_const ); ?>>
-						<p class="description">
-							<?php if ( $by_const ) : ?>
-								מוגדר בקוד דרך הקבוע <code>MV_PLANS_API_URL</code>.
-							<?php else : ?>
-								למשל <code>https://app.metavchim.co.il/api/plans</code>. צריך להחזיר JSON עם רשימת חבילות.
-							<?php endif; ?>
-						</p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="mv_plans_api_key">מפתח API (אם נדרש)</label></th>
-					<td>
-						<input type="password" class="regular-text" id="mv_plans_api_key" name="mv_plans_api_key" value="" autocomplete="off" <?php disabled( defined( 'MV_PLANS_API_KEY' ) && MV_PLANS_API_KEY ); ?>>
-						<p class="description">
-							<?php if ( defined( 'MV_PLANS_API_KEY' ) && MV_PLANS_API_KEY ) : ?>
-								מוגדר בקוד דרך הקבוע <code>MV_PLANS_API_KEY</code>.
-							<?php else : ?>
-								מומלץ להגדיר ב-<code>wp-config.php</code> כ-<code>MV_PLANS_API_KEY</code> במקום כאן. השארה ריקה לא מוחקת מפתח קיים.
-							<?php endif; ?>
-						</p>
-					</td>
-				</tr>
-			</table>
-			<?php submit_button( 'שמירה' ); ?>
-		</form>
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row">נקודת הקצה</th>
+				<td>
+					<code><?php echo esc_html( $url ); ?></code>
+					<p class="description">
+						<?php if ( $by_const ) : ?>
+							מוגדר בקוד דרך הקבוע <code>MV_PLANS_API_URL</code>.
+						<?php else : ?>
+							ברירת המחדל של המערכת. לשינוי — הגדרת <code>MV_PLANS_API_URL</code> בקובץ <code>wp-config.php</code>.
+						<?php endif; ?>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">סנכרון אחרון</th>
+				<td>
+					<?php if ( $synced ) : ?>
+						<?php echo esc_html( wp_date( 'd.m.Y H:i', $synced ) ); ?> · <?php echo esc_html( $count ); ?> מסלולים פעילים
+					<?php else : ?>
+						טרם בוצע סנכרון.
+					<?php endif; ?>
+				</td>
+			</tr>
+		</table>
 
-		<hr>
-		<h2>סנכרון עכשיו</h2>
-		<p>
-			<?php if ( $synced ) : ?>
-				סנכרון אחרון: <?php echo esc_html( wp_date( 'd.m.Y H:i', $synced ) ); ?>.
-			<?php else : ?>
-				טרם בוצע סנכרון.
-			<?php endif; ?>
-		</p>
-		<p>חבילה שנעלמה מהמערכת עוברת לטיוטה ולא נמחקת, כדי לא לאבד עריכות ידניות.</p>
+		<p>חבילה שנעלמה מהמערכת עוברת לטיוטה ולא נמחקת, כדי לא לאבד עריכות ידניות. תווית ההדגשה, הכרטיס הכהה והכפתור נשמרים בין סנכרונים.</p>
+
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'mv_plans_sync' ); ?>
 			<input type="hidden" name="action" value="mv_plans_sync">
-			<?php submit_button( 'משיכת החבילות מהמערכת', 'secondary' ); ?>
+			<?php submit_button( 'משיכת המסלולים מהמערכת עכשיו' ); ?>
 		</form>
 	</div>
 	<?php
 }
-
-/**
- * Save the sync settings.
- */
-function mv_handle_plans_settings() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'אין לך הרשאה לבצע פעולה זו.', 'metavchim' ) );
-	}
-	check_admin_referer( 'mv_plans_settings' );
-
-	if ( ! defined( 'MV_PLANS_API_URL' ) || ! MV_PLANS_API_URL ) {
-		$url = isset( $_POST['mv_plans_api_url'] ) ? esc_url_raw( wp_unslash( $_POST['mv_plans_api_url'] ) ) : '';
-		update_option( 'mv_plans_api_url', $url, false );
-	}
-
-	// An empty field leaves the stored key untouched.
-	if ( ( ! defined( 'MV_PLANS_API_KEY' ) || ! MV_PLANS_API_KEY ) && ! empty( $_POST['mv_plans_api_key'] ) ) {
-		update_option( 'mv_plans_api_key', sanitize_text_field( wp_unslash( $_POST['mv_plans_api_key'] ) ), false );
-	}
-
-	mv_schedule_plans_sync();
-	mv_redirect_to_sync_page( true, 'ההגדרות נשמרו.' );
-}
-add_action( 'admin_post_mv_plans_settings', 'mv_handle_plans_settings' );
 
 /**
  * Run the sync on demand.
