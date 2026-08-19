@@ -42,8 +42,8 @@ defined( 'ABSPATH' ) || exit;
 			</nav>
 
 			<div class="mv-nav-actions">
-				<a class="mv-login" href="https://app.metavchim.co.il/">התחברות</a>
-				<a class="mv-btn-dark" href="<?php echo esc_url( ( is_front_page() ? '' : home_url( '/' ) ) . '#cta' ); ?>">הדגמה של 20 דקות</a>
+				<a class="mv-login" href="<?php echo esc_url( mv_login_url_app() ); ?>">התחברות</a>
+				<a class="mv-btn-dark" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
 			</div>
 
 			<button type="button" class="mv-nav-toggle" aria-expanded="false" aria-controls="mv-nav">

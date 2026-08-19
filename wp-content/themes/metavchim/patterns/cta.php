@@ -17,8 +17,8 @@
     <h2 class="mv-h2" id="mv-cta-title">נראה לך את ההתאמות שכבר יושבות במאגר שלך<span class="mv-dot" aria-hidden="true">.</span></h2>
     <p class="mv-lede">הדגמה של 20 דקות על הנתונים שלך. בלי מצגת.</p>
     <div class="mv-btn-row">
-      <a class="mv-btn-green" href="#cta">קביעת הדגמה</a>
-      <a class="mv-btn-ghost" href="#plans">מסלולים</a>
+      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
+      <a class="mv-btn-ghost" href="#demo">קביעת הדגמה</a>
     </div>
   </div>
 </section>

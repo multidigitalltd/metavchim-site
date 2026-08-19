@@ -168,7 +168,13 @@ function mv_demo_form_requested( $set = null ) {
  * @return bool
  */
 function mv_demo_form_needed() {
-	return is_front_page() || mv_demo_form_requested();
+	if ( is_front_page() || mv_demo_form_requested() ) {
+		return true;
+	}
+
+	// כל עמוד שיש בתוכן שלו קישור אל ‎#demo‎ מקבל את החלון אוטומטית.
+	$post = get_queried_object();
+	return $post instanceof WP_Post && false !== strpos( $post->post_content, '#demo' );
 }
 
 /**

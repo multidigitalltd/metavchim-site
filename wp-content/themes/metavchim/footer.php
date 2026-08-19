@@ -26,13 +26,13 @@ defined( 'ABSPATH' ) || exit;
 				);
 				?>
 			</nav>
-			<a class="mv-footer-docs" href="https://app.metavchim.co.il/docs">תיעוד ומדריכים</a>
+			<a class="mv-footer-docs" href="<?php echo esc_url( mv_app_url( 'docs' ) ); ?>">תיעוד ומדריכים</a>
 			<span class="mv-copy">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?></span>
 			<span class="mv-credit">פיתוח: <strong>Multi Digital</strong></span>
 		</div>
 	</footer>
 
-	<a class="mv-sticky-cta" href="<?php echo esc_url( ( is_front_page() ? '' : home_url( '/' ) ) . '#cta' ); ?>">
+	<a class="mv-sticky-cta" href="<?php echo esc_url( mv_signup_url() ); ?>">
 		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M7 12.5 10.5 16 17 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
 		הצטרפות חינם
 	</a>

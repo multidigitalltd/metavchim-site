@@ -25,7 +25,7 @@
         <h1 class="mv-c-h1" id="mv-c-hero-title">רשת שיתופי הפעולה<br>היחידה למתווכים בישראל<span class="mv-dot" aria-hidden="true">.</span></h1>
         <p class="mv-c-hero-p">היום כל משרד יושב לבד על נכסים שאין להם קונה ועל קונים שאין להם נכס. ברשת של מתווכים. המאגרים מוצלבים אוטומטית בין משרדים שבחרתם לעבוד יחד — בלי לחשוף פרט אחד לפני שהסכמתם, ועם עמלה שסגורה בכתב מראש.</p>
         <div class="mv-c-btns mv-c-hero-btns">
-          <a class="mv-c-btn-green" href="#cta">התחל חינם</a>
+          <a class="mv-c-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
           <a class="mv-c-btn-ghost" href="#flow">איך זה עובד, שלב שלב</a>
         </div>
       </div>
@@ -440,7 +440,7 @@
         <h2 class="mv-c-join-h2" id="mv-c-join-title">נכנסים לרשת בלי לשלם<span class="mv-dot" aria-hidden="true">.</span></h2>
         <p class="mv-c-join-p">מעלים למערכת כמה נכסים וכמה קונים שרוצים — ללא הגבלה. גם ההצטרפות לרשת המשרדים היא בחינם, כולל פרסום של מספר לידים לרשת. מעבר לכמות החינמית עוברים למסלול בתשלום, ורק אז.</p>
         <div class="mv-c-btns mv-c-join-btns">
-          <a class="mv-c-btn-green" href="#cta">הצטרפות בחינם</a>
+          <a class="mv-c-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון — בחינם</a>
           <a class="mv-c-btn-line" href="<?php echo esc_url( home_url( '/#plans' ) ); ?>">כל המסלולים</a>
         </div>
       </div>
@@ -489,7 +489,7 @@
     <h2 id="mv-c-cta-title">נראה לך אילו משרדים באזור שלך כבר ברשת<span class="mv-dot" aria-hidden="true">.</span></h2>
     <p>הדגמה של 20 דקות על הנתונים שלך. בלי מצגת.</p>
     <div class="mv-c-btns">
-      <a class="mv-c-btn-green" href="#cta">קביעת הדגמה</a>
+      <a class="mv-c-btn-green" href="#demo">קביעת הדגמה</a>
       <a class="mv-c-btn-ghost" href="<?php echo esc_url( home_url( '/' ) ); ?>">חזרה לדף הבית</a>
     </div>
   </div>

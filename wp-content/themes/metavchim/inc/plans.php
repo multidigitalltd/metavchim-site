@@ -139,7 +139,7 @@ function mv_render_plan_meta_box( $post ) {
 	<p class="mv-pf">
 		<label for="mv_plan_cta_url">קישור הכפתור</label>
 		<input type="text" id="mv_plan_cta_url" name="_mv_plan_cta_url" value="<?php echo esc_attr( $get( '_mv_plan_cta_url' ) ); ?>">
-		<span class="description">כתובת מלאה, או עוגן: <code>#cta</code> לאזור ההרשמה בעמוד, <code>#demo</code> לפתיחת טופס תיאום הדגמה. ריק = <code>#cta</code>.</span>
+		<span class="description">כתובת מלאה, או <code>#demo</code> לפתיחת טופס תיאום הדגמה. ריק = עמוד פתיחת החשבון במערכת.</span>
 	</p>
 	<p class="mv-pf">
 		<label><input type="checkbox" name="_mv_plan_dark" value="1" <?php checked( '1', (string) $get( '_mv_plan_dark' ) ); ?>> כרטיס בעיצוב כהה (מודגש)</label>
@@ -256,7 +256,7 @@ function mv_render_plans() {
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>
-			<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : '#cta' ); ?>">
+			<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : mv_signup_url() ); ?>">
 				<?php echo esc_html( $cta_label ? $cta_label : 'קביעת הדגמה' ); ?>
 			</a>
 		</div>
@@ -540,7 +540,7 @@ function mv_sync_plans_from_api() {
 		if ( ! $existing ) {
 			$custom = ( '' === $price ) || ! preg_match( '/\d/', $price );
 			update_post_meta( $plan_id, '_mv_plan_cta_label', $custom ? 'קביעת הדגמה' : 'התחלת ניסיון' );
-			update_post_meta( $plan_id, '_mv_plan_cta_url', $custom ? '#demo' : '#cta' );
+			update_post_meta( $plan_id, '_mv_plan_cta_url', $custom ? '#demo' : mv_signup_url() );
 			update_post_meta( $plan_id, '_mv_plan_badge', '' );
 			update_post_meta( $plan_id, '_mv_plan_dark', 0 );
 		}
@@ -785,7 +785,7 @@ function mv_seed_plans() {
 			'sub'      => 'כל מה שצריך כדי לנהל לבד מאגר, לידים והתאמות — כולל חיבור לרשת המשרדים.',
 			'features' => "מאגר נכסים וקונים ללא הגבלה\nתמלול שיחות וכרטיס אוטומטי\nהתאמות בתוך המאגר שלך\nדף נחיתה לכל נכס\nחיבור לרשת המשרדים",
 			'cta'      => 'התחלת ניסיון',
-			'cta_url'  => '#cta',
+			'cta_url'  => '',
 			'badge'    => '',
 			'dark'     => 0,
 		),

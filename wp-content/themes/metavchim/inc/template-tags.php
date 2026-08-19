@@ -8,6 +8,46 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * כתובת הבסיס של המערכת. אפשר לשנות בקבוע MV_APP_URL או במסנן.
+ *
+ * @param string $path נתיב פנימי, למשל 'signup'.
+ * @return string
+ */
+function mv_app_url( $path = '' ) {
+	$base = defined( 'MV_APP_URL' ) && MV_APP_URL ? (string) MV_APP_URL : 'https://app.metavchim.co.il';
+	/**
+	 * כתובת הבסיס של המערכת.
+	 *
+	 * @param string $base כתובת הבסיס.
+	 */
+	$base = (string) apply_filters( 'mv_app_url', $base );
+	return '' === $path ? $base . '/' : untrailingslashit( $base ) . '/' . ltrim( $path, '/' );
+}
+
+/**
+ * פתיחת חשבון — הרשמה עצמאית למערכת.
+ *
+ * @return string
+ */
+function mv_signup_url() {
+	/**
+	 * כתובת פתיחת החשבון.
+	 *
+	 * @param string $url כתובת ההרשמה.
+	 */
+	return (string) apply_filters( 'mv_signup_url', mv_app_url( 'signup' ) );
+}
+
+/**
+ * התחברות למערכת.
+ *
+ * @return string
+ */
+function mv_login_url_app() {
+	return mv_app_url();
+}
+
+/**
  * Inline brand logo SVG (avoids an extra HTTP request in the header/footer).
  *
  * @param int    $size   Square size in px.
