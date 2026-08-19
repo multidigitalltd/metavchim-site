@@ -42,7 +42,6 @@
 .mv-hero-tag-line{width:34px;height:1px;background:rgba(255,255,255,.25)}
 .mv-h1{margin:26px 0 0;font-size:4.75rem;font-weight:900;line-height:1.03;letter-spacing:-.035em;text-wrap:balance}
 .mv-hero-sub{font-size:1.25rem;line-height:1.6;color:rgba(255,255,255,.62);max-width:610px;margin:28px auto 36px;text-wrap:pretty}
-.mv-hero-trust{margin-top:20px;font-size:0.84375rem;color:rgba(255,255,255,.4)}
 /* Product screenshot mock */
 .mv-shot{position:relative;max-width:1180px;margin:60px auto 0}
 .mv-shot-frame{border:1px solid rgba(255,255,255,.1);border-radius:22px 22px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:10px 10px 0}

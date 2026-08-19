@@ -23,7 +23,6 @@
       <a class="mv-btn-green" href="#cta">התחלת 14 יום ניסיון</a>
       <a class="mv-btn-ghost" href="#network">איך עובדים שיתופי הפעולה</a>
     </div>
-    <p class="mv-hero-trust">בלי כרטיס אשראי · ייבוא מאקסל · עברית ו‑RTL מלא</p>
   </div>
 
   <div class="mv-shot" role="img" aria-label="הדמיית מסך המערכת: רשימת התאמות פתוחות עם ציוני התאמה ותמלול שיחה נכנסת בזמן אמת">
