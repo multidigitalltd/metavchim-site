@@ -24,7 +24,7 @@ function mv_home_section_slugs() {
 		'product',
 		'orbit',
 		'voice',
-		'features',
+		'companion',
 		'capabilities',
 		'security',
 		'plans',

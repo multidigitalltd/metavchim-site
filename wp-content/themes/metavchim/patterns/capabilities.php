@@ -4,7 +4,7 @@
  * Slug: metavchim/capabilities
  * Categories: metavchim
  * Viewport Width: 1400
- * Description: מפת היכולות המלאה של המערכת — קובייה לכל פיצ'ר עם שם והסבר, מסודרת לפי תחומים.
+ * Description: מפת היכולות של המערכת — אייקון, שם והסבר קצר לכל יכולת, מסודר לפי תחומים.
  *
  * @package Metavchim
  */
@@ -13,73 +13,79 @@
 <!-- wp:html -->
 <section id="capabilities" class="mv-sec mv-caps-sec" aria-labelledby="mv-caps-title">
   <div class="mv-wrap">
-    <h2 class="mv-h2" id="mv-caps-title">כל מה שהמערכת עושה בשבילך<span class="mv-dot" aria-hidden="true">.</span></h2>
-    <p class="mv-lede">מפת היכולות המלאה — מהרגע שנכס או קונה נכנסים למאגר ועד סגירת העסקה והחשבון מול השותף.</p>
+    <div class="mv-sec-head">
+      <h2 class="mv-h2" id="mv-caps-title">כל מה שהמערכת עושה בשבילך<span class="mv-dot" aria-hidden="true">.</span></h2>
+      <p class="mv-lede">מהרגע שנכס או קונה נכנסים למאגר — ועד סגירת העסקה והחשבון מול השותף.</p>
+    </div>
 
     <div class="mv-cap-group">
       <h3 class="mv-cap-group-title">מאגר וניהול יומיומי<span class="mv-cap-count">7</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">מאגר נכסים</h4><p class="mv-cap-text">כרטיס מלא לכל נכס: פרטים, מחיר, בעלים, תמונות ומסמכים — במקום אחד שכל הצוות עובד עליו.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">מאגר קונים ודרישות</h4><p class="mv-cap-text">מה כל קונה מחפש: אזור, תקציב, חדרים וצרכים מיוחדים — שמור ומעודכן אחרי כל שיחה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">מנוע התאמות</h4><p class="mv-cap-text">המערכת מצליבה ברקע כל נכס מול כל קונה, ומעלה התאמה חדשה לפני שהספקת לחפש אותה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">ייבוא מהמאגר הקיים</h4><p class="mv-cap-text">אקסל של נכסים וקונים נכנס כמו שהוא, עם מיפוי עמודות וניקוי כפילויות.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">היסטוריה מלאה ללקוח</h4><p class="mv-cap-text">שיחות, הצעות, סיורים והודעות על אותו כרטיס. כל סוכן נכנס לתמונה בשנייה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">פולואפ אוטומטי</h4><p class="mv-cap-text">ליד שלא נגעת בו יומיים עולה לראש הרשימה, כדי שאף הזדמנות לא תישאר תלויה באוויר.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">יומן סיורים ופגישות</h4><p class="mv-cap-text">כל הסיורים, ההצעות והפגישות ביומן אחד — שלך ושל המשרד.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'building', 21 ); ?></span><h4 class="mv-cap-title">מאגר נכסים</h4><p class="mv-cap-text">כרטיס אחד לכל נכס — פרטים, תמונות ומסמכים.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'users', 21 ); ?></span><h4 class="mv-cap-title">מאגר קונים</h4><p class="mv-cap-text">מה כל קונה מחפש, מעודכן אחרי כל שיחה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'match', 21 ); ?></span><h4 class="mv-cap-title">מנוע התאמות</h4><p class="mv-cap-text">המערכת מצליבה נכסים וקונים ברקע.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'upload', 21 ); ?></span><h4 class="mv-cap-title">ייבוא מאקסל</h4><p class="mv-cap-text">המאגר הקיים נכנס כמו שהוא.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'history', 21 ); ?></span><h4 class="mv-cap-title">היסטוריית לקוח</h4><p class="mv-cap-text">כל שיחה, הצעה וסיור על אותו כרטיס.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'bell', 21 ); ?></span><h4 class="mv-cap-title">פולואפ אוטומטי</h4><p class="mv-cap-text">ליד ששכחת עולה לראש הרשימה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'calendar', 21 ); ?></span><h4 class="mv-cap-title">יומן סיורים</h4><p class="mv-cap-text">כל הפגישות של המשרד במקום אחד.</p></div>
       </div>
     </div>
 
     <div class="mv-cap-group">
-      <h3 class="mv-cap-group-title">שיחות ובינה מלאכותית<span class="mv-cap-count">4</span></h3>
+      <h3 class="mv-cap-group-title">שיחות ובינה מלאכותית<span class="mv-cap-count">6</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">תמלול שיחות</h4><p class="mv-cap-text">כל שיחה עם לקוח מתומללת ונשמרת על הכרטיס — בלי לרשום מילה בזמן הנהיגה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">כרטיס קונה אוטומטי</h4><p class="mv-cap-text">מהשיחה נבנה כרטיס קונה עם הדרישות שנאמרו בה, מוכן לאישור שלך.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">סוכן קולי<span class="mv-soon">בקרוב</span></h4><p class="mv-cap-text">יענה לפניות גם כשאתה בסיור, יאסוף את הפרטים ויעביר לך ליד מסודר. בפיתוח מתקדם.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">סיכום ותובנות</h4><p class="mv-cap-text">מה נאמר בשיחה, מה השלב הבא ומה חשוב לזכור — בשורות ספורות מעל הכרטיס.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'mic', 21 ); ?></span><h4 class="mv-cap-title">תמלול שיחות</h4><p class="mv-cap-text">כל שיחה נשמרת מתומללת על הכרטיס.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'card', 21 ); ?></span><h4 class="mv-cap-title">כרטיס אוטומטי</h4><p class="mv-cap-text">הדרישות מהשיחה הופכות לכרטיס קונה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'sparkle', 21 ); ?></span><h4 class="mv-cap-title">סיכום ותובנות</h4><p class="mv-cap-text">מה נאמר ומה השלב הבא, בשתי שורות.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'whatsapp', 21 ); ?></span><h4 class="mv-cap-title">סוכן בווטסאפ</h4><p class="mv-cap-text">מנהלים את המערכת מהצ'אט.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'mentor', 21 ); ?></span><h4 class="mv-cap-title">מנטור AI</h4><p class="mv-cap-text">יעדים אישיים, מעקב ודחיפה קדימה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'phone', 21 ); ?></span><h4 class="mv-cap-title">סוכן קולי<span class="mv-soon">בקרוב</span></h4><p class="mv-cap-text">יענה לפניות כשאתה בשטח.</p></div>
       </div>
     </div>
 
     <div class="mv-cap-group">
-      <h3 class="mv-cap-group-title">שיווק הנכס ומכירה<span class="mv-cap-count">4</span></h3>
+      <h3 class="mv-cap-group-title">שיווק ומכירה<span class="mv-cap-count">4</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">דף נחיתה לכל נכס</h4><p class="mv-cap-text">נוצר מהכרטיס עם המיתוג שלך. פנייה מהדף נוחתת בלידים ומסומנת במקור.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">הצעה ממותגת לקונה</h4><p class="mv-cap-text">דף הצעה מעוצב במקום צילומי מסך בווטסאפ — כזה שהקונה באמת פותח.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">מעקב צפיות</h4><p class="mv-cap-text">מי פתח את ההצעה, מתי וכמה זמן — כדי לדעת למי להתקשר קודם.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">לידים לפי מקור</h4><p class="mv-cap-text">כל פנייה מסומנת מאיפה הגיעה, כך שרואים מה באמת מביא עסקאות.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'page', 21 ); ?></span><h4 class="mv-cap-title">דף נחיתה לנכס</h4><p class="mv-cap-text">נוצר מהכרטיס, עם המיתוג שלך.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'offer', 21 ); ?></span><h4 class="mv-cap-title">הצעה ממותגת</h4><p class="mv-cap-text">דף מעוצב במקום צילומי מסך.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'eye', 21 ); ?></span><h4 class="mv-cap-title">מעקב צפיות</h4><p class="mv-cap-text">מי פתח, מתי, וכמה זמן.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'funnel', 21 ); ?></span><h4 class="mv-cap-title">לידים לפי מקור</h4><p class="mv-cap-text">רואים מה באמת מביא עסקאות.</p></div>
       </div>
     </div>
 
     <div class="mv-cap-group">
-      <h3 class="mv-cap-group-title">רשת שיתופי הפעולה<span class="mv-cap-count">6</span></h3>
+      <h3 class="mv-cap-group-title">רשת שיתופי הפעולה<span class="mv-cap-count">7</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">חשיפה חלקית</h4><p class="mv-cap-text">השותף רואה רק את מה שדרוש להתאמה. פרטי הבעלים והקונה נשארים אצלך עד להסכמה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">הסכם עמלה מראש</h4><p class="mv-cap-text">מציעים חלוקת עמלה ומבקשים אישור — בכתב, לפני שנחשף פרט מזהה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">יומן חשיפות</h4><p class="mv-cap-text">מה נחשף, למי ומתי. רישום מלא שאפשר להציג בכל רגע.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">חלל עבודה לעסקה</h4><p class="mv-cap-text">שני הצדדים עובדים על אותה עסקה: מסמכים, סיורים והתקדמות במקום אחד.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">תוקף וניתוק בלחיצה</h4><p class="mv-cap-text">לכל שיתוף יש תאריך תפוגה, ואפשר לנתק גישה מיידית בכל שלב.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">דוח שיתופי פעולה</h4><p class="mv-cap-text">עם מי עבדת, כמה עסקאות נסגרו וכמה עמלות נכנסו מהרשת.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'partial', 21 ); ?></span><h4 class="mv-cap-title">חשיפה חלקית</h4><p class="mv-cap-text">השותף רואה רק מה שדרוש להתאמה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'handshake', 21 ); ?></span><h4 class="mv-cap-title">עמלה מוסכמת מראש</h4><p class="mv-cap-text">בכתב, לפני שנחשף פרט מזהה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'log', 21 ); ?></span><h4 class="mv-cap-title">יומן חשיפות</h4><p class="mv-cap-text">מה נחשף, למי ומתי.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'workspace', 21 ); ?></span><h4 class="mv-cap-title">חלל עבודה לעסקה</h4><p class="mv-cap-text">שני הצדדים על אותה עסקה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'timer', 21 ); ?></span><h4 class="mv-cap-title">תוקף וניתוק</h4><p class="mv-cap-text">לכל שיתוף תפוגה, וניתוק בלחיצה.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'chart', 21 ); ?></span><h4 class="mv-cap-title">דוח שיתופי פעולה</h4><p class="mv-cap-text">כמה עסקאות וכמה עמלות מהרשת.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'forum', 21 ); ?></span><h4 class="mv-cap-title">פורום אנונימי</h4><p class="mv-cap-text">מתייעצים בלי שם ובלי משרד.</p></div>
       </div>
     </div>
 
     <div class="mv-cap-group">
       <h3 class="mv-cap-group-title">ניהול משרד<span class="mv-cap-count">4</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">ניהול סוכנים והרשאות</h4><p class="mv-cap-text">מי רואה מה, מי מטפל במה — הרשאות ברמת הסוכן ולא ברמת המשרד.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">חלוקת לידים</h4><p class="mv-cap-text">כל פנייה מגיעה לסוכן הנכון, עם מעקב מי טיפל ומתי.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">יעדים ודוחות ביצועים</h4><p class="mv-cap-text">יעד לכל סוכן ודוח שאפשר להציג בישיבת צוות בלי להכין אותו מראש.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">מעקב הכנסות מעמלות</h4><p class="mv-cap-text">עסקאות שנסגרו, עמלות שנכנסו והחלוקה מול שותפים — מסודר לרבעון.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'usercog', 21 ); ?></span><h4 class="mv-cap-title">סוכנים והרשאות</h4><p class="mv-cap-text">מי רואה מה, ברמת הסוכן.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'split', 21 ); ?></span><h4 class="mv-cap-title">חלוקת לידים</h4><p class="mv-cap-text">כל פנייה לסוכן הנכון, עם מעקב.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'target', 21 ); ?></span><h4 class="mv-cap-title">יעדים ודוחות</h4><p class="mv-cap-text">מוכן להצגה בישיבת צוות.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'coins', 21 ); ?></span><h4 class="mv-cap-title">מעקב עמלות</h4><p class="mv-cap-text">מה נסגר, מה נכנס ומה מתחלק.</p></div>
       </div>
     </div>
 
     <div class="mv-cap-group">
       <h3 class="mv-cap-group-title">אבטחה ותאימות<span class="mv-cap-count">4</span></h3>
       <div class="mv-caps">
-        <div class="mv-cap"><h4 class="mv-cap-title">הצפנה וגיבוי</h4><p class="mv-cap-text">הנתונים מוצפנים בהעברה ובאחסון, עם גיבוי אוטומטי של כל המאגר.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">יומן פעילות</h4><p class="mv-cap-text">כל צפייה, שינוי ושיתוף נרשמים — כדי שתמיד יהיה ברור מי עשה מה.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">תשתית לעמידה בחוק הגנת הפרטיות</h4><p class="mv-cap-text">ניהול הסכמות, זכות עיון ומחיקה ותיעוד גישה — הכלים שנדרשים לעמידה בדין הישראלי. בקרוב הסמכה לת"י ISO/IEC 27001:2022.</p></div>
-        <div class="mv-cap"><h4 class="mv-cap-title">ייצוא הנתונים שלך</h4><p class="mv-cap-text">המאגר נשאר בבעלותך. ייצוא מלא של הנכסים, הקונים והפעילות זמין מתוך המערכת בכל רגע, בלחיצה אחת.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'lock', 21 ); ?></span><h4 class="mv-cap-title">הצפנה וגיבוי</h4><p class="mv-cap-text">בהעברה, באחסון, וגיבוי אוטומטי.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'activity', 21 ); ?></span><h4 class="mv-cap-title">יומן פעילות</h4><p class="mv-cap-text">כל צפייה ושינוי נרשמים.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'scale', 21 ); ?></span><h4 class="mv-cap-title">תשתית לחוק הפרטיות</h4><p class="mv-cap-text">הכלים לעמידה בדין הישראלי.</p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( 'download', 21 ); ?></span><h4 class="mv-cap-title">ייצוא הנתונים</h4><p class="mv-cap-text">המאגר שלך, בלחיצה אחת.</p></div>
       </div>
     </div>
+
   </div>
 </section>
 <!-- /wp:html -->

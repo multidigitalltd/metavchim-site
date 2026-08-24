@@ -32,10 +32,13 @@ defined( 'ABSPATH' ) || exit;
 		</div>
 	</footer>
 
-	<a class="mv-sticky-cta" href="<?php echo esc_url( mv_signup_url() ); ?>">
-		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M7 12.5 10.5 16 17 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-		הצטרפות חינם
-	</a>
+	<div class="mv-sticky">
+		<a class="mv-sticky-cta" href="#demo">
+			<?php mv_icon( 'calendar', 17 ); ?>
+			תיאום הדגמה חינם
+		</a>
+		<a class="mv-sticky-alt" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
+	</div>
 
 	<?php mv_a11y_toolbar(); ?>
 
