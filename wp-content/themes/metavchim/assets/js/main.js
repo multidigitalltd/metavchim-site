@@ -470,3 +470,88 @@
 	window.addEventListener( 'resize', refresh );
 	refresh();
 }() );
+
+/* ---------------------------------------------------------------------------
+ * הסכמה למדידה. Google Analytics נטען רק אחרי אישור מפורש, והבחירה
+ * נשמרת בדפדפן של המבקר בלבד.
+ * ------------------------------------------------------------------------ */
+( function () {
+	var box = document.getElementById( 'mv-consent' );
+	var KEY = 'mv-consent-v1';
+	var choice = null;
+
+	try {
+		choice = window.localStorage.getItem( KEY );
+	} catch ( e ) {
+		choice = null;
+	}
+
+	// דפדפן ששולח אות פרטיות נחשב כמסרב, בלי לשאול.
+	if ( ! choice && true === navigator.globalPrivacyControl ) {
+		choice = 'no';
+	}
+
+	function loadAnalytics() {
+		if ( ! box || window.mvAnalyticsLoaded ) {
+			return;
+		}
+		var id = box.getAttribute( 'data-ga' );
+		if ( ! id ) {
+			return;
+		}
+		window.mvAnalyticsLoaded = true;
+
+		var tag = document.createElement( 'script' );
+		tag.async = true;
+		tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent( id );
+		document.head.appendChild( tag );
+
+		window.dataLayer = window.dataLayer || [];
+		window.gtag = function () {
+			window.dataLayer.push( arguments );
+		};
+		window.gtag( 'js', new Date() );
+		window.gtag( 'config', id, { anonymize_ip: true } );
+	}
+
+	if ( 'yes' === choice ) {
+		loadAnalytics();
+	} else if ( box && 'no' !== choice ) {
+		box.hidden = false;
+	}
+
+	if ( ! box ) {
+		return;
+	}
+
+	box.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '[data-consent]' );
+		if ( ! btn ) {
+			return;
+		}
+
+		var value = btn.getAttribute( 'data-consent' );
+		try {
+			window.localStorage.setItem( KEY, value );
+		} catch ( err ) {
+			// דפדפן שחוסם אחסון — הבחירה תקפה לביקור הנוכחי בלבד.
+		}
+
+		box.hidden = true;
+		if ( 'yes' === value ) {
+			loadAnalytics();
+		}
+	} );
+
+	// קישור בפוטר לשינוי הבחירה בכל רגע.
+	document.addEventListener( 'click', function ( e ) {
+		if ( e.target.closest( '[data-mv-consent-open]' ) ) {
+			e.preventDefault();
+			box.hidden = false;
+			var first = box.querySelector( '[data-consent]' );
+			if ( first ) {
+				first.focus();
+			}
+		}
+	} );
+}() );
