@@ -418,11 +418,21 @@
         <p class="mrt-lead-9">מקומות מוגבלים — כדאי להירשם עכשיו.</p>
         <div class="mrt-row-20">
           <a class="mrt-btn-4" href="#register">שמרו לי מקום</a>
-          <a class="mrt-h3-8" href="[mv_event field="whatsapp"]" dir="ltr">[mv_event field="phone"]</a>
+          <a class="mrt-h3-8" href="[mv_event field="whatsapp"]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.5.3-.7.3-1.3.2-1.5 0-.1-.2-.2-.5-.3Z"/><path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 1.7.5 3.4 1.3 4.9L2.1 21.9l5.2-1.4c1.4.8 3.1 1.2 4.7 1.2 5.4 0 9.8-4.4 9.8-9.8S17.4 2.2 12 2.2Zm0 17.9c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.3-1.3-2.9-1.3-4.5C3.6 7.4 7.4 3.6 12 3.6S20.4 7.4 20.4 12 16.6 20.1 12 20.1Z"/></svg>
+            <span dir="ltr">[mv_event field="phone"]</span>
+          </a>
         </div>
       </div>
     </div>
   </section>
+
+  <a class="mrt-float" href="#register">
+    <span class="mrt-float-ico" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="3"></rect><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"></path><path d="M9 15.2l2 2 4-4.4"></path></svg>
+    </span>
+    שמרו לי מקום
+  </a>
 
   <footer class="mrt-sec-3">
     <div class="mrt-row-21">

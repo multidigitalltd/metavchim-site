@@ -34,7 +34,7 @@ function mv_event_fields() {
 		),
 		'address' => array(
 			'label'   => 'כתובת',
-			'default' => '[כתובת]',
+			'default' => 'סוקולוב 41, בני ברק',
 			'help'    => 'הכתובת המדויקת של האירוע.',
 		),
 		'phone'   => array(
