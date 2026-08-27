@@ -42,11 +42,11 @@
         <div class="mrt-u-2">
           <span class="mrt-pill">
             <span class="mrt-pill-2"></span>
-            אירוע חד־פעמי · מקומות מוגבלים
+            שני מפגשים · מקומות מוגבלים
           </span>
 
           <h1 class="mrt-title">מרתון השת״פים<span class="mrt-dot-2">.</span></h1>
-          <p class="mrt-lead">בוקר עבודה אחד: מעלים למערכת את הנכסים והקונים שיש לכם ביד, המערכת מצליבה בין כל מי שנמצא בחדר, ואתם סוגרים שיתופי פעולה בלייב — עם הסכם עמלה כתוב.</p>
+          <p class="mrt-lead">בוקר עבודה אחד: מעלים למערכת את הנכסים והקונים שיש לכם ביד, המערכת מצליבה בין כל מי שנמצא בחדר, ואתם סוגרים שיתופי פעולה בלייב — עם הסכם עמלה כתוב. מפגש למתווכים ב[mv_event field="weekday"], ומפגש נפרד למתווכות ב[mv_event field="weekday_w"].</p>
 
           <div class="mrt-row-5">
             <div class="mrt-row-6">
@@ -55,7 +55,16 @@
               </span>
               <div class="mrt-u-3">
                 <div class="mrt-lead-2" dir="ltr">[mv_event field="date"]</div>
-                <div class="mrt-text-2">[mv_event field="weekday"]</div>
+                <div class="mrt-text-2">[mv_event field="weekday"] · מתווכים</div>
+              </div>
+            </div>
+            <div class="mrt-row-6">
+              <span class="mrt-ico">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#70EE91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="3"></rect><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"></path></svg>
+              </span>
+              <div class="mrt-u-3">
+                <div class="mrt-lead-2" dir="ltr">[mv_event field="date_w"]</div>
+                <div class="mrt-text-2">[mv_event field="weekday_w"] · מתווכות</div>
               </div>
             </div>
             <div class="mrt-row-6">
@@ -334,6 +343,16 @@
           </p>
 
           <div class="mrt-form-row">
+            <fieldset>
+              <legend class="mrt-field-label">לאיזה מפגש?</legend>
+              <div class="mrt-choice">
+                <input type="radio" id="mrt-group-m" name="mv_group" value="מתווכים" required>
+                <label for="mrt-group-m">מתווכים · [mv_event field="weekday"]</label>
+                <input type="radio" id="mrt-group-w" name="mv_group" value="מתווכות">
+                <label for="mrt-group-w">מתווכות · [mv_event field="weekday_w"]</label>
+              </div>
+              <span class="mrt-error" id="mrt-group-err" role="alert"></span>
+            </fieldset>
             <div>
               <label class="mrt-field-label" for="mrt-name">שם מלא</label>
               <input class="mrt-field" type="text" id="mrt-name" name="mv_name" placeholder="השם שלכם" autocomplete="name" maxlength="120" required aria-describedby="mrt-name-err">
@@ -431,7 +450,7 @@
     <span class="mrt-float-ico" aria-hidden="true">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="3"></rect><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"></path><path d="M9 15.2l2 2 4-4.4"></path></svg>
     </span>
-    שמרו לי מקום
+    <span class="mrt-float-txt">שמרו לי מקום</span>
   </a>
 
   <footer class="mrt-sec-3">

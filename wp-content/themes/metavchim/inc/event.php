@@ -17,27 +17,37 @@ defined( 'ABSPATH' ) || exit;
  */
 function mv_event_fields() {
 	return array(
-		'date'    => array(
-			'label'   => 'תאריך',
+		'date'      => array(
+			'label'   => 'תאריך — מתווכים',
 			'default' => '31.08.26',
 			'help'    => 'מוצג כמו שנכתב, בכיוון משמאל לימין.',
 		),
-		'weekday' => array(
-			'label'   => 'יום בשבוע',
+		'weekday'   => array(
+			'label'   => 'יום בשבוע — מתווכים',
 			'default' => 'יום שני',
 			'help'    => '',
 		),
-		'time'    => array(
+		'date_w'    => array(
+			'label'   => 'תאריך — מתווכות',
+			'default' => '01.09.26',
+			'help'    => 'המועד הנפרד למתווכות.',
+		),
+		'weekday_w' => array(
+			'label'   => 'יום בשבוע — מתווכות',
+			'default' => 'יום שלישי',
+			'help'    => '',
+		),
+		'time'      => array(
 			'label'   => 'שעה',
 			'default' => '10:00',
 			'help'    => 'למשל 10:00. המילה "בבוקר" מתווספת בעיצוב.',
 		),
-		'address' => array(
+		'address'   => array(
 			'label'   => 'כתובת',
 			'default' => 'סוקולוב 41, בני ברק',
 			'help'    => 'הכתובת המדויקת של האירוע.',
 		),
-		'phone'   => array(
+		'phone'     => array(
 			'label'   => 'טלפון להרשמה',
 			'default' => '050-414-3564',
 			'help'    => 'מוצג בדף ומשמש גם לקישור הוואטסאפ.',
@@ -188,6 +198,76 @@ function mv_save_event_settings() {
 	exit;
 }
 add_action( 'admin_post_mv_save_event', 'mv_save_event_settings' );
+
+/**
+ * חלון "לא מסתדר לכם התאריך" — רשימת המתנה למועד הבא.
+ *
+ * מוצג בדף הנחיתה בלבד, ורק אחרי שהייה קצרה או בסימן יציאה, כדי לא
+ * לקפוץ למבקר בפנים ברגע הכניסה. הבחירה נשמרת בדפדפן שלו.
+ */
+function mv_render_waitlist_popup() {
+	if ( ! is_page( 'marathon' ) ) {
+		return;
+	}
+	?>
+	<div class="mrt-pop" id="mrt-waitlist" role="dialog" aria-modal="true" aria-labelledby="mrt-pop-title" hidden>
+		<div class="mrt-pop-back" data-mrt-close></div>
+		<div class="mrt-pop-card" role="document">
+			<button type="button" class="mrt-pop-x" data-mrt-close aria-label="סגירת החלון">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+			</button>
+
+			<span class="mrt-pop-ico" aria-hidden="true">
+				<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"></circle><path d="M12 7.6V12l3 1.8"></path></svg>
+			</span>
+
+			<h2 class="mrt-pop-title" id="mrt-pop-title">לא מסתדר לכם התאריך<span class="mrt-pop-dot">?</span></h2>
+			<p class="mrt-pop-text">השאירו פרטים ונעדכן אתכם ברגע שנפתחת קבוצה חדשה. אפשר לציין בהערות אם נוח לכם יותר בשעות הבוקר או בשעות הערב.</p>
+
+			<form class="mrt-pop-form" method="post" novalidate
+				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+				data-mv-endpoint="<?php echo esc_url( rest_url( 'metavchim/v1/lead' ) ); ?>">
+				<input type="hidden" name="action" value="mv_demo_lead">
+				<input type="hidden" name="mv_form" value="waitlist">
+				<input type="hidden" name="mv_source" value="<?php echo esc_url( (string) get_permalink() ); ?>">
+
+				<p class="mrt-hp" aria-hidden="true">
+					<label for="mrt-pop-website">אל תמלאו שדה זה</label>
+					<input type="text" id="mrt-pop-website" name="mv_website" tabindex="-1" autocomplete="off">
+				</p>
+
+				<div>
+					<label class="mrt-pop-label" for="mrt-pop-name">שם מלא</label>
+					<input class="mrt-pop-field" type="text" id="mrt-pop-name" name="mv_name" placeholder="השם שלכם" autocomplete="name" maxlength="120" required aria-describedby="mrt-pop-name-err">
+					<span class="mrt-error" id="mrt-pop-name-err" role="alert"></span>
+				</div>
+				<div>
+					<label class="mrt-pop-label" for="mrt-pop-phone">טלפון</label>
+					<input class="mrt-pop-field" type="tel" id="mrt-pop-phone" name="mv_phone" dir="ltr" placeholder="050-0000000" autocomplete="tel" inputmode="tel" maxlength="30" required aria-describedby="mrt-pop-phone-err">
+					<span class="mrt-error" id="mrt-pop-phone-err" role="alert"></span>
+				</div>
+				<div>
+					<label class="mrt-pop-label" for="mrt-pop-note">הערות <span class="mrt-pop-opt">— בוקר או ערב?</span></label>
+					<textarea class="mrt-pop-field" id="mrt-pop-note" name="mv_note" rows="2" maxlength="500" placeholder="למשל: מעדיף שעות ערב"></textarea>
+				</div>
+
+				<?php mv_turnstile_widget(); ?>
+
+				<button class="mrt-pop-btn" type="submit">עדכנו אותי במועד הבא</button>
+			</form>
+
+			<div class="mrt-pop-done" hidden>
+				<span class="mrt-pop-ico" aria-hidden="true">
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"></path></svg>
+				</span>
+				<p class="mrt-pop-title">רשמנו אתכם<span class="mrt-pop-dot">.</span></p>
+				<p class="mrt-pop-text">נעדכן ברגע שייפתח מועד נוסף.</p>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+add_action( 'wp_footer', 'mv_render_waitlist_popup', 7 );
 
 /**
  * דף הנחיתה עומד בפני עצמו — אין בו את חלון תיאום ההדגמה של האתר.
