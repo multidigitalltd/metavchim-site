@@ -15,6 +15,15 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return bool
  */
+function mv_is_event_page() {
+	return is_page( 'marathon' );
+}
+
+/**
+ * Whether the current request renders the "אודות" page.
+ *
+ * @return bool
+ */
 function mv_is_about_page() {
 	return is_page( 'about' );
 }
@@ -45,6 +54,16 @@ function mv_enqueue_assets() {
 		wp_enqueue_style(
 			'mv-home',
 			MV_THEME_URI . '/assets/css/home.css',
+			array( 'mv-main' ),
+			MV_THEME_VERSION
+		);
+	}
+
+	// Event landing page — a self-contained design, loaded only there.
+	if ( mv_is_event_page() ) {
+		wp_enqueue_style(
+			'mv-marathon',
+			MV_THEME_URI . '/assets/css/marathon.css',
 			array( 'mv-main' ),
 			MV_THEME_VERSION
 		);
@@ -82,6 +101,20 @@ function mv_enqueue_assets() {
 		)
 	);
 
+	// Event landing page behaviour.
+	if ( mv_is_event_page() ) {
+		wp_enqueue_script(
+			'mv-marathon',
+			MV_THEME_URI . '/assets/js/marathon.js',
+			array(),
+			MV_THEME_VERSION,
+			array(
+				'strategy'  => 'defer',
+				'in_footer' => true,
+			)
+		);
+	}
+
 	// Demo tabs exist only on the homepage.
 	if ( is_front_page() ) {
 		wp_enqueue_script(
@@ -104,7 +137,7 @@ add_action( 'wp_enqueue_scripts', 'mv_enqueue_assets' );
  * core stylesheets so user-added blocks (columns, gallery…) render fine.
  */
 function mv_dequeue_core_styles() {
-	if ( ! is_front_page() && ! mv_is_collab_page() && ! mv_is_about_page() ) {
+	if ( ! is_front_page() && ! mv_is_collab_page() && ! mv_is_about_page() && ! mv_is_event_page() ) {
 		return;
 	}
 	wp_dequeue_style( 'wp-block-library' );

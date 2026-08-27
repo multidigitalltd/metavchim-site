@@ -24,6 +24,10 @@ function mv_lead_fields() {
 		'_mv_lead_phone' => 'sanitize_text_field',
 		'_mv_lead_email' => 'sanitize_email',
 		'_mv_lead_when'  => 'sanitize_text_field',
+		'_mv_lead_office' => 'sanitize_text_field',
+		'_mv_lead_area'  => 'sanitize_text_field',
+		'_mv_lead_member' => 'sanitize_text_field',
+		'_mv_lead_form'  => 'sanitize_key',
 		'_mv_lead_note'  => 'sanitize_textarea_field',
 		'_mv_lead_page'  => 'esc_url_raw',
 	);
@@ -104,6 +108,12 @@ function mv_render_lead_meta_box( $post ) {
 			—
 		<?php endif; ?>
 	</p>
+	<?php if ( 'marathon' === (string) get_post_meta( $post->ID, '_mv_lead_form', true ) ) : ?>
+		<p><strong>מקור:</strong> הרשמה למרתון השת״פים</p>
+		<p><strong>משרד / סוכנות:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_office', true ) ); ?></p>
+		<p><strong>אזור פעילות:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_area', true ) ); ?></p>
+		<p><strong>כבר במערכת:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_member', true ) ); ?></p>
+	<?php endif; ?>
 	<p><strong>מועד מועדף:</strong> <?php echo $when ? esc_html( mv_format_lead_when( $when ) ) : 'לא צוין'; ?></p>
 	<?php if ( $note ) : ?>
 		<p><strong>הודעה:</strong><br><?php echo nl2br( esc_html( $note ) ); ?></p>
@@ -317,15 +327,31 @@ function mv_process_demo_lead() {
 	$phone = isset( $_POST['mv_phone'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_phone'] ) ) : '';
 	$email = isset( $_POST['mv_email'] ) ? sanitize_email( wp_unslash( $_POST['mv_email'] ) ) : '';
 	$page  = isset( $_POST['mv_source'] ) ? esc_url_raw( wp_unslash( $_POST['mv_source'] ) ) : '';
+	$form   = isset( $_POST['mv_form'] ) ? sanitize_key( wp_unslash( $_POST['mv_form'] ) ) : 'demo';
+	$office = isset( $_POST['mv_office'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_office'] ) ) : '';
+	$area   = isset( $_POST['mv_area'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_area'] ) ) : '';
+	$member = isset( $_POST['mv_member'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_member'] ) ) : '';
 	$date  = isset( $_POST['mv_date'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_date'] ) ) : '';
 	$time  = isset( $_POST['mv_time'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_time'] ) ) : '';
 
 	$digits = preg_replace( '/\D/', '', $phone );
 
-	if ( '' === $name || strlen( $digits ) < 9 || ! is_email( $email ) ) {
+	// טופס האירוע אינו מבקש דוא"ל, ולכן הוא נדרש רק בטופס שכולל אותו.
+	$needs_email = 'marathon' !== $form;
+
+	if ( '' === $name || strlen( $digits ) < 9 || ( $needs_email && ! is_email( $email ) ) ) {
 		return array(
 			'ok'      => false,
-			'message' => 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.',
+			'message' => $needs_email
+				? 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.'
+				: 'חסרים פרטים: יש למלא שם וטלפון תקין.',
+		);
+	}
+
+	if ( 'marathon' === $form && ( '' === $office || '' === $area || '' === $member ) ) {
+		return array(
+			'ok'      => false,
+			'message' => 'חסרים פרטים: יש למלא את כל השדות בטופס.',
 		);
 	}
 
@@ -372,12 +398,16 @@ function mv_process_demo_lead() {
 	update_post_meta( $lead_id, '_mv_lead_email', $email );
 	update_post_meta( $lead_id, '_mv_lead_when', $when );
 	update_post_meta( $lead_id, '_mv_lead_page', $page );
+	update_post_meta( $lead_id, '_mv_lead_form', $form );
+	update_post_meta( $lead_id, '_mv_lead_office', $office );
+	update_post_meta( $lead_id, '_mv_lead_area', $area );
+	update_post_meta( $lead_id, '_mv_lead_member', $member );
 
 	if ( $ip ) {
 		set_transient( $key, 1, 30 );
 	}
 
-	mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page );
+	mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page, $form, $office, $area, $member );
 
 	/**
 	 * נקודת חיבור למערכות חיצוניות (CRM, ווטסאפ וכו').
@@ -392,14 +422,20 @@ function mv_process_demo_lead() {
 			'name'  => $name,
 			'phone' => $phone,
 			'email' => $email,
-			'when'  => $when,
-			'page'  => $page,
+			'when'   => $when,
+			'page'   => $page,
+			'form'   => $form,
+			'office' => $office,
+			'area'   => $area,
+			'member' => $member,
 		)
 	);
 
 	return array(
 		'ok'      => true,
-		'message' => 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.',
+		'message' => 'marathon' === $form
+			? 'נשמר לכם מקום. נחזור אליכם עם אישור והכתובת המדויקת.'
+			: 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.',
 	);
 	// phpcs:enable WordPress.Security.NonceVerification.Missing
 }
@@ -414,17 +450,21 @@ function mv_process_demo_lead() {
  * @param string $when    מועד מועדף.
  * @param string $page    העמוד שממנו נשלח.
  */
-function mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page ) {
+function mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page, $form = 'demo', $office = '', $area = '', $member = '' ) {
 	$to = get_option( 'admin_email' );
 	if ( ! $to ) {
 		return;
 	}
 
-	$site = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
-	$body = "פנייה חדשה לתיאום הדגמה\n\n"
+	$site  = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
+	$title = 'marathon' === $form ? 'הרשמה חדשה למרתון השת״פים' : 'פנייה חדשה לתיאום הדגמה';
+	$body = $title . "\n\n"
 		. "שם: {$name}\n"
 		. "טלפון: {$phone}\n"
 		. "דוא\"ל: {$email}\n"
+		. ( $office ? "משרד: {$office}\n" : '' )
+		. ( $area ? "אזור פעילות: {$area}\n" : '' )
+		. ( $member ? "כבר במערכת: {$member}\n" : '' )
 		. ( $when ? 'מועד מועדף: ' . mv_format_lead_when( $when ) . "\n" : '' )
 		. ( $page ? "עמוד: {$page}\n" : '' )
 		. "\nניהול הפניות: " . admin_url( 'post.php?action=edit&post=' . (int) $lead_id );
@@ -432,7 +472,7 @@ function mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page ) {
 	try {
 		wp_mail(
 			$to,
-			"[{$site}] פנייה חדשה לתיאום הדגמה — {$name}",
+			"[{$site}] {$title} — {$name}",
 			$body,
 			array( 'Content-Type: text/plain; charset=UTF-8' )
 		);

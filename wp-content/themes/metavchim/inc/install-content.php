@@ -84,21 +84,25 @@ function mv_render_default_sections() {
  * @param string $title   Page title.
  * @param string $content Block content (theme-authored, trusted).
  * @param bool   $force   Overwrite existing content even when not empty.
+ * @param string $excerpt Optional description used for search results and sharing.
  * @return int Page ID (0 on failure).
  */
-function mv_install_page( $slug, $title, $content, $force = false ) {
+function mv_install_page( $slug, $title, $content, $force = false, $excerpt = '' ) {
 	$existing = get_page_by_path( $slug );
 
 	if ( $existing instanceof WP_Post ) {
 		if ( $force || '' === trim( $existing->post_content ) ) {
-			kses_remove_filters();
-			wp_update_post(
-				array(
-					'ID'           => $existing->ID,
-					'post_content' => $content,
-					'post_status'  => 'publish',
-				)
+			$update = array(
+				'ID'           => $existing->ID,
+				'post_content' => $content,
+				'post_status'  => 'publish',
 			);
+			if ( '' !== $excerpt ) {
+				$update['post_excerpt'] = $excerpt;
+			}
+
+			kses_remove_filters();
+			wp_update_post( $update );
 			kses_init_filters();
 			update_post_meta( $existing->ID, '_mv_content_hash', md5( $content ) );
 		}
@@ -113,6 +117,7 @@ function mv_install_page( $slug, $title, $content, $force = false ) {
 			'post_name'      => $slug,
 			'post_title'     => $title,
 			'post_content'   => $content,
+			'post_excerpt'   => $excerpt,
 			'comment_status' => 'closed',
 			'ping_status'    => 'closed',
 		)
@@ -178,6 +183,11 @@ function mv_theme_pages() {
 			'title'   => 'אודות',
 			'content' => 'mv_get_about_content',
 		),
+		'marathon'      => array(
+			'title'   => 'מרתון השת״פים',
+			'content' => 'mv_get_event_content',
+			'excerpt' => 'בוקר עבודה אחד: מעלים למערכת את הנכסים והקונים שיש לכם ביד, המערכת מצליבה בין כל מי שנמצא בחדר, ואתם סוגרים שיתופי פעולה בלייב — עם הסכם עמלה כתוב.',
+		),
 		'privacy'       => array(
 			'title'   => 'פרטיות',
 			'content' => 'mv_privacy_content',
@@ -223,6 +233,15 @@ function mv_get_collab_content() {
  */
 function mv_get_about_content() {
 	return mv_get_section_html( 'about' );
+}
+
+/**
+ * The event landing page content.
+ *
+ * @return string
+ */
+function mv_get_event_content() {
+	return mv_get_section_html( 'marathon' );
 }
 
 /**
@@ -501,17 +520,24 @@ function mv_install_content( $force_home = false ) {
 		return;
 	}
 
-	$home_id = mv_install_page( 'home', 'בית', mv_get_home_content(), $force_home );
+	// עמוד אחד לכל ערך ב-mv_theme_pages(), כך שהוספת עמוד לרשימה מספיקה.
+	$ids = array();
+	foreach ( mv_theme_pages() as $slug => $page ) {
+		$ids[ $slug ] = mv_install_page(
+			$slug,
+			$page['title'],
+			call_user_func( $page['content'] ),
+			$force_home,
+			isset( $page['excerpt'] ) ? $page['excerpt'] : ''
+		);
+		mv_sync_page_title( $ids[ $slug ], $page['title'] );
+	}
 
-	$collab_id = mv_install_page( 'collaboration', mv_collab_label(), mv_get_collab_content(), $force_home );
-	mv_sync_page_title( $collab_id, mv_collab_label() );
-
-	mv_install_page( 'about', 'אודות', mv_get_about_content(), $force_home );
-
+	$home_id   = isset( $ids['home'] ) ? $ids['home'] : 0;
 	$legal_ids = array(
-		'terms'         => mv_install_page( 'terms', 'תנאי שימוש', mv_terms_content() ),
-		'privacy'       => mv_install_page( 'privacy', 'פרטיות', mv_privacy_content() ),
-		'accessibility' => mv_install_page( 'accessibility', 'הצהרת נגישות', mv_accessibility_statement_content() ),
+		'terms'         => isset( $ids['terms'] ) ? $ids['terms'] : 0,
+		'privacy'       => isset( $ids['privacy'] ) ? $ids['privacy'] : 0,
+		'accessibility' => isset( $ids['accessibility'] ) ? $ids['accessibility'] : 0,
 	);
 
 	if ( $home_id && mv_home_page_ok() ) {
@@ -574,7 +600,7 @@ function mv_refresh_theme_pages() {
 			continue;
 		}
 
-		mv_install_page( $slug, $page['title'], $content, true );
+		mv_install_page( $slug, $page['title'], $content, true, isset( $page['excerpt'] ) ? $page['excerpt'] : '' );
 	}
 }
 add_action( 'admin_init', 'mv_refresh_theme_pages', 11 );
