@@ -82,7 +82,7 @@
               </span>
               <div class="mrt-u-3">
                 <div class="mrt-lead-3">[mv_event field="address"]</div>
-                <div class="mrt-text-2">חניה במקום</div>
+                <div class="mrt-text-2">הכתובת תישלח לנרשמים</div>
               </div>
             </div>
           </div>

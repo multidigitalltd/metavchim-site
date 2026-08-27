@@ -43,9 +43,9 @@ function mv_event_fields() {
 			'help'    => 'למשל 10:00. המילה "בבוקר" מתווספת בעיצוב.',
 		),
 		'address'   => array(
-			'label'   => 'כתובת',
-			'default' => 'סוקולוב 41, בני ברק',
-			'help'    => 'הכתובת המדויקת של האירוע.',
+			'label'   => 'מיקום',
+			'default' => 'בני ברק',
+			'help'    => 'המיקום כפי שמוצג בדף. הכתובת המדויקת נשלחת לנרשמים.',
 		),
 		'phone'     => array(
 			'label'   => 'טלפון להרשמה',
@@ -69,6 +69,23 @@ function mv_event( $key ) {
 	$value = get_option( 'mv_event_' . $key, '' );
 	return '' !== $value ? $value : $fields[ $key ]['default'];
 }
+
+/**
+ * ניקוי חד-פעמי: אתרים שנשמרה בהם הכתובת המלאה הישנה כברירת מחדל
+ * עוברים למיקום העירוני. ערך שנקבע ידנית על ידי המנהל אינו נוגע.
+ */
+function mv_event_migrate_address() {
+	if ( '1' === get_option( 'mv_event_addr_v', '' ) ) {
+		return;
+	}
+
+	if ( 'סוקולוב 41, בני ברק' === get_option( 'mv_event_address', '' ) ) {
+		delete_option( 'mv_event_address' );
+	}
+
+	update_option( 'mv_event_addr_v', '1', false );
+}
+add_action( 'admin_init', 'mv_event_migrate_address', 9 );
 
 /**
  * קישור וואטסאפ לפי הטלפון שהוגדר.
