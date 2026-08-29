@@ -17,37 +17,32 @@ defined( 'ABSPATH' ) || exit;
  */
 function mv_event_fields() {
 	return array(
-		'date'      => array(
-			'label'   => 'תאריך — מתווכים',
+		'date'        => array(
+			'label'   => 'תאריך',
 			'default' => '31.08.26',
 			'help'    => 'מוצג כמו שנכתב, בכיוון משמאל לימין.',
 		),
-		'weekday'   => array(
-			'label'   => 'יום בשבוע — מתווכים',
+		'weekday'     => array(
+			'label'   => 'יום בשבוע',
 			'default' => 'יום שני',
 			'help'    => '',
 		),
-		'date_w'    => array(
-			'label'   => 'תאריך — מתווכות',
-			'default' => '01.09.26',
-			'help'    => 'המועד הנפרד למתווכות.',
-		),
-		'weekday_w' => array(
-			'label'   => 'יום בשבוע — מתווכות',
-			'default' => 'יום שלישי',
-			'help'    => '',
-		),
-		'time'      => array(
+		'time'        => array(
 			'label'   => 'שעה',
 			'default' => '10:00',
 			'help'    => 'למשל 10:00. המילה "בבוקר" מתווספת בעיצוב.',
 		),
-		'address'   => array(
-			'label'   => 'מיקום',
-			'default' => 'בני ברק',
-			'help'    => 'המיקום כפי שמוצג בדף. הכתובת המדויקת נשלחת לנרשמים.',
+		'address'     => array(
+			'label'   => 'כתובת',
+			'default' => 'בית נועה, בר כוכבא 16',
+			'help'    => 'השורה הראשונה בכרטיס המיקום.',
 		),
-		'phone'     => array(
+		'address_sub' => array(
+			'label'   => 'עיר וקומה',
+			'default' => 'בני ברק · קומה 10',
+			'help'    => 'השורה השנייה בכרטיס המיקום.',
+		),
+		'phone'       => array(
 			'label'   => 'טלפון להרשמה',
 			'default' => '050-414-3564',
 			'help'    => 'מוצג בדף ומשמש גם לקישור הוואטסאפ.',
@@ -71,21 +66,99 @@ function mv_event( $key ) {
 }
 
 /**
- * ניקוי חד-פעמי: אתרים שנשמרה בהם הכתובת המלאה הישנה כברירת מחדל
- * עוברים למיקום העירוני. ערך שנקבע ידנית על ידי המנהל אינו נוגע.
+ * ניקוי חד-פעמי: אתר ששמר ערך שהיה בעבר ברירת מחדל עובר לברירת המחדל
+ * העדכנית מקובץ העיצוב. ערך שהמנהל הקליד בעצמו נשאר כפי שהוא.
  */
 function mv_event_migrate_address() {
-	if ( '1' === get_option( 'mv_event_addr_v', '' ) ) {
+	if ( '2' === get_option( 'mv_event_addr_v', '' ) ) {
 		return;
 	}
 
-	if ( 'סוקולוב 41, בני ברק' === get_option( 'mv_event_address', '' ) ) {
+	$old = array( 'סוקולוב 41, בני ברק', 'בני ברק' );
+	if ( in_array( get_option( 'mv_event_address', '' ), $old, true ) ) {
 		delete_option( 'mv_event_address' );
 	}
 
-	update_option( 'mv_event_addr_v', '1', false );
+	update_option( 'mv_event_addr_v', '2', false );
 }
 add_action( 'admin_init', 'mv_event_migrate_address', 9 );
+
+/**
+ * לוגואים של שותפי האירוע, כפי שהם מופיעים בקובץ העיצוב.
+ *
+ * @return array<string,array{file:string,alt:string,w:int,h:int}>
+ */
+function mv_event_partners() {
+	return array(
+		'kanko'    => array(
+			'file' => 'partner-kanko.png',
+			'alt'  => 'Kanko',
+			'w'    => 859,
+			'h'    => 223,
+		),
+		'bahadrei' => array(
+			'file' => 'partner-bahadrei.svg',
+			'alt'  => 'קבוצת בחדרי',
+			'w'    => 121,
+			'h'    => 91,
+		),
+	);
+}
+
+/**
+ * שורטקוד ללוגו שותף: [mv_partner name="kanko" class="…" height="38"].
+ *
+ * הכתובת נבנית בזמן ההצגה ולא נשמרת בתוכן העמוד, כך שהעברת האתר
+ * לדומיין אחר לא שוברת את התמונות.
+ *
+ * @param array $atts מאפייני השורטקוד.
+ * @return string
+ */
+function mv_partner_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'name'    => 'kanko',
+			'class'   => '',
+			'height'  => '38',
+			'loading' => 'lazy',
+		),
+		$atts,
+		'mv_partner'
+	);
+
+	$list = mv_event_partners();
+	$key  = sanitize_key( $atts['name'] );
+	if ( ! isset( $list[ $key ] ) ) {
+		return '';
+	}
+
+	$logo   = $list[ $key ];
+	$height = max( 1, (int) $atts['height'] );
+	$width  = (int) round( $height * $logo['w'] / $logo['h'] );
+	$lazy   = 'eager' === $atts['loading'] ? 'eager' : 'lazy';
+
+	return sprintf(
+		'<img src="%s" alt="%s" class="%s" width="%d" height="%d" loading="%s" decoding="async">',
+		esc_url( MV_THEME_URI . '/assets/img/' . $logo['file'] ),
+		esc_attr( $logo['alt'] ),
+		esc_attr( $atts['class'] ),
+		$width,
+		$height,
+		esc_attr( $lazy )
+	);
+}
+add_shortcode( 'mv_partner', 'mv_partner_shortcode' );
+
+/**
+ * טופס ההרשמה בדף הנחיתה נשמר בתוכן העמוד, ולכן הסקריפט של Turnstile
+ * נטען כאן ולא דרך רכיב הטופס עצמו.
+ */
+function mv_event_enqueue_turnstile() {
+	if ( is_page( 'marathon' ) && mv_turnstile_enabled() ) {
+		wp_enqueue_script( 'mv-turnstile', MV_TURNSTILE_API_URL, array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- סקריפט צד שלישי בגרסה מתגלגלת.
+	}
+}
+add_action( 'wp_enqueue_scripts', 'mv_event_enqueue_turnstile' );
 
 /**
  * קישור וואטסאפ לפי הטלפון שהוגדר.

@@ -14,7 +14,6 @@
 	var button = form.querySelector( 'button[type="submit"]' );
 
 	var RULES = [
-		{ name: 'mv_group', err: 'mrt-group-err', msg: 'צריך לבחור מפגש.' },
 		{ name: 'mv_name', err: 'mrt-name-err', msg: 'צריך למלא שם מלא.' },
 		{ name: 'mv_phone', err: 'mrt-phone-err', msg: 'מספר טלפון נייד לא תקין. למשל 050-0000000.', test: function ( v ) {
 			return /^0(5\d)[- ]?\d{3}[- ]?\d{4}$/.test( v.replace( /\s/g, '' ) );
@@ -132,9 +131,6 @@
 	form.addEventListener( 'change', function ( e ) {
 		if ( 'mv_member' === e.target.name ) {
 			say( 'mrt-member-err', '' );
-		}
-		if ( 'mv_group' === e.target.name ) {
-			say( 'mrt-group-err', '' );
 		}
 	} );
 }() );

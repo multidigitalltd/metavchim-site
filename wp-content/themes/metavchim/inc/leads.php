@@ -114,7 +114,10 @@ function mv_render_lead_meta_box( $post ) {
 	<?php endif; ?>
 	<?php if ( 'marathon' === (string) get_post_meta( $post->ID, '_mv_lead_form', true ) ) : ?>
 		<p><strong>מקור:</strong> הרשמה למרתון השת״פים</p>
-		<p><strong>מפגש:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_group', true ) ); ?></p>
+		<?php $group = (string) get_post_meta( $post->ID, '_mv_lead_group', true ); ?>
+		<?php if ( $group ) : // נשמר בפניות מהתקופה שבה היו שני מפגשים. ?>
+			<p><strong>מפגש:</strong> <?php echo esc_html( $group ); ?></p>
+		<?php endif; ?>
 		<p><strong>משרד / סוכנות:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_office', true ) ); ?></p>
 		<p><strong>אזור פעילות:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_area', true ) ); ?></p>
 		<p><strong>כבר במערכת:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_member', true ) ); ?></p>
@@ -355,7 +358,7 @@ function mv_process_demo_lead() {
 		);
 	}
 
-	if ( 'marathon' === $form && ( '' === $office || '' === $area || '' === $member || '' === $group ) ) {
+	if ( 'marathon' === $form && ( '' === $office || '' === $area || '' === $member ) ) {
 		return array(
 			'ok'      => false,
 			'message' => 'חסרים פרטים: יש למלא את כל השדות בטופס.',
