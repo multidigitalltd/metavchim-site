@@ -691,7 +691,7 @@ function mv_pick( array $item, array $keys ) {
  * משיכה מחדש, אחרת המסלולים השמורים ימשיכו להציג את הנוסח הישן עד
  * הסנכרון המתוזמן הבא.
  */
-const MV_PLANS_MAP_VERSION = '2';
+const MV_PLANS_MAP_VERSION = '3';
 
 /**
  * משיכה מחדש פעם אחת אחרי שינוי במיפוי.
@@ -704,8 +704,42 @@ function mv_resync_plans_on_map_change() {
 	// מסמנים תחילה, כדי שכשל בבקשה לא ינסה שוב בכל טעינת מסך.
 	update_option( 'mv_plans_map_version', MV_PLANS_MAP_VERSION, false );
 
+	// תיקון מקומי של הנוסח, כדי שגם אתר שהבקשה ל-API נכשלה בו
+	// לא ימשיך להציג את הטקסט הישן.
+	mv_plans_relabel_features();
+
 	if ( mv_get_plans() ) {
 		mv_sync_plans_from_api();
+	}
+}
+
+/**
+ * החלפת שורות יכולת ששמן השתנה, במסלולים שכבר שמורים במסד.
+ */
+function mv_plans_relabel_features() {
+	$map = array(
+		'סוכן קולי לקליטת פניות (בקרוב)' => 'סוכן קולי לקליטת פניות',
+	);
+
+	foreach ( mv_get_plans() as $plan ) {
+		$features = (string) get_post_meta( $plan->ID, '_mv_plan_features', true );
+		if ( '' === $features ) {
+			continue;
+		}
+
+		$lines   = array_map( 'trim', explode( "\n", $features ) );
+		$changed = false;
+
+		foreach ( $lines as $i => $line ) {
+			if ( isset( $map[ $line ] ) ) {
+				$lines[ $i ] = $map[ $line ];
+				$changed     = true;
+			}
+		}
+
+		if ( $changed ) {
+			update_post_meta( $plan->ID, '_mv_plan_features', implode( "\n", $lines ) );
+		}
 	}
 }
 add_action( 'admin_init', 'mv_resync_plans_on_map_change' );
