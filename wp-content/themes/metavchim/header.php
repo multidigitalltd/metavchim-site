@@ -29,6 +29,8 @@ defined( 'ABSPATH' ) || exit;
 
 			<nav class="mv-nav" id="mv-nav" aria-label="ניווט ראשי">
 				<?php
+				mv_mega_menu();
+
 				wp_nav_menu(
 					array(
 						'theme_location' => 'primary',

@@ -20,24 +20,6 @@
 
     <div class="mv-comp-grid">
 
-      <article class="mv-comp mv-comp-wa">
-        <div class="mv-comp-top">
-          <span class="mv-comp-ico"><?php mv_icon( 'whatsapp', 26 ); ?></span>
-          <h3 class="mv-comp-title">הסוכן בווטסאפ</h3>
-        </div>
-        <p class="mv-comp-text">הכול נעשה מהצ'אט. כותבים הודעה — והמערכת מבצעת.</p>
-        <ul class="mv-comp-list">
-          <li><?php mv_icon( 'check', 15 ); ?>מוסיף נכס או קונה</li>
-          <li><?php mv_icon( 'check', 15 ); ?>שולף התאמות</li>
-          <li><?php mv_icon( 'check', 15 ); ?>קובע סיור</li>
-          <li><?php mv_icon( 'check', 15 ); ?>שולח הצעה ללקוח</li>
-        </ul>
-        <div class="mv-chat" aria-hidden="true">
-          <span class="mv-chat-me">תוסיף 4 חדרים בגבעתיים, 2.9</span>
-          <span class="mv-chat-bot">נוסף<span class="mv-chat-dot">.</span> 3 קונים מתאימים במאגר</span>
-        </div>
-      </article>
-
       <article class="mv-comp mv-comp-ai">
         <div class="mv-comp-top">
           <span class="mv-comp-ico"><?php mv_icon( 'mentor', 26 ); ?></span>

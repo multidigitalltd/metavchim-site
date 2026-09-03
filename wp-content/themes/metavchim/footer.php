@@ -27,6 +27,7 @@ defined( 'ABSPATH' ) || exit;
 				?>
 			</nav>
 			<a class="mv-footer-docs" href="<?php echo esc_url( mv_app_url( 'docs' ) ); ?>">תיעוד ומדריכים</a>
+				<?php mv_social_icons(); ?>
 			<?php if ( mv_ga_id() ) : ?>
 				<button type="button" class="mv-consent-link" data-mv-consent-open>הגדרות פרטיות</button>
 			<?php endif; ?>

@@ -52,3 +52,116 @@
 
 	select( 0, false );
 }() );
+
+/**
+ * הדגמת השיחה עם הסוכן בווטסאפ.
+ *
+ * ההודעות כתובות ב-HTML ומוצגות כרגיל; הסקריפט רק מסתיר אותן ומחזיר
+ * אותן אחת-אחת עם סימן הקלדה, כדי שמי שאין לו JS עדיין רואה את כל
+ * השיחה. ההנפשה רצה רק כשהאזור על המסך, ולא רצה כלל למי שביקש
+ * תנועה מופחתת.
+ */
+( function () {
+	'use strict';
+
+	var log = document.querySelector( '.mv-wa-log' );
+	if ( ! log ) {
+		return;
+	}
+
+	var still = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' );
+	if ( still && still.matches ) {
+		return;
+	}
+
+	var steps = Array.prototype.slice.call( log.querySelectorAll( '.mv-wa-msg' ) );
+	var typing = log.querySelector( '.mv-wa-typing' );
+	if ( ! steps.length || ! typing ) {
+		return;
+	}
+
+	var timer = null;
+	var index = 0;
+	var running = false;
+
+	log.classList.add( 'is-anim' );
+
+	function later( fn, ms ) {
+		timer = window.setTimeout( fn, ms );
+	}
+
+	function toBottom() {
+		log.scrollTop = log.scrollHeight;
+	}
+
+	function reset() {
+		steps.forEach( function ( step ) {
+			step.classList.remove( 'is-in' );
+		} );
+		typing.hidden = true;
+		index = 0;
+		log.scrollTop = 0;
+	}
+
+	function next() {
+		if ( ! running ) {
+			return;
+		}
+
+		if ( index >= steps.length ) {
+			later( function () {
+				reset();
+				next();
+			}, 4200 );
+			return;
+		}
+
+		var step = steps[ index ];
+		var fromAgent = step.classList.contains( 'is-bot' );
+
+		function reveal() {
+			typing.hidden = true;
+			step.classList.add( 'is-in' );
+			toBottom();
+			index += 1;
+			later( next, fromAgent ? 1500 : 900 );
+		}
+
+		if ( fromAgent ) {
+			typing.hidden = false;
+			toBottom();
+			later( reveal, 1100 );
+			return;
+		}
+
+		reveal();
+	}
+
+	function start() {
+		if ( running ) {
+			return;
+		}
+		running = true;
+		next();
+	}
+
+	function stop() {
+		running = false;
+		window.clearTimeout( timer );
+	}
+
+	if ( ! ( 'IntersectionObserver' in window ) ) {
+		start();
+		return;
+	}
+
+	new IntersectionObserver( function ( entries ) {
+		entries.forEach( function ( entry ) {
+			if ( entry.isIntersecting ) {
+				start();
+			} else {
+				stop();
+			}
+		} );
+	}, { threshold: 0.25 } ).observe( log );
+}() );

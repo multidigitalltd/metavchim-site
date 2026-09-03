@@ -28,10 +28,51 @@ function mv_lead_fields() {
 		'_mv_lead_area'  => 'sanitize_text_field',
 		'_mv_lead_member' => 'sanitize_text_field',
 		'_mv_lead_group' => 'sanitize_text_field',
+		'_mv_lead_consent' => 'sanitize_text_field',
 		'_mv_lead_form'  => 'sanitize_key',
 		'_mv_lead_note'  => 'sanitize_textarea_field',
 		'_mv_lead_page'  => 'esc_url_raw',
 	);
+}
+
+/**
+ * שם הטופס שממנו הגיעה הפנייה, לתצוגה בניהול ובמייל.
+ *
+ * @return array<string,string>
+ */
+function mv_lead_form_labels() {
+	return array(
+		'demo'     => 'תיאום הדגמה',
+		'marathon' => 'הרשמה למרתון השת״פים',
+		'waitlist' => 'רשימת המתנה למועד הבא',
+		'news'     => 'הרשמה לעדכונים',
+	);
+}
+
+/**
+ * תווית הטופס.
+ *
+ * @param string $form מזהה הטופס.
+ * @return string
+ */
+function mv_lead_form_label( $form ) {
+	$labels = mv_lead_form_labels();
+	return isset( $labels[ $form ] ) ? $labels[ $form ] : $labels['demo'];
+}
+
+/**
+ * ההודעה שמוצגת למבקר אחרי שליחה מוצלחת.
+ *
+ * @param string $form מזהה הטופס.
+ * @return string
+ */
+function mv_lead_success_message( $form ) {
+	$messages = array(
+		'marathon' => 'נשמר לכם מקום. נחזור אליכם עם אישור והכתובת המדויקת.',
+		'waitlist' => 'רשמנו אתכם. נעדכן ברגע שייפתח מועד נוסף.',
+		'news'     => 'נרשמתם. כל יכולת חדשה תגיע אליכם למייל.',
+	);
+	return isset( $messages[ $form ] ) ? $messages[ $form ] : 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.';
 }
 
 /**
@@ -109,11 +150,13 @@ function mv_render_lead_meta_box( $post ) {
 			—
 		<?php endif; ?>
 	</p>
-	<?php if ( 'waitlist' === (string) get_post_meta( $post->ID, '_mv_lead_form', true ) ) : ?>
-		<p><strong>מקור:</strong> רשימת המתנה למועד הבא</p>
+	<?php $form = (string) get_post_meta( $post->ID, '_mv_lead_form', true ); ?>
+	<p><strong>מקור:</strong> <?php echo esc_html( mv_lead_form_label( $form ) ); ?></p>
+	<?php $consent = (string) get_post_meta( $post->ID, '_mv_lead_consent', true ); ?>
+	<?php if ( $consent ) : ?>
+		<p><strong>אישור מדיניות פרטיות ותנאי שימוש:</strong> <?php echo esc_html( $consent ); ?></p>
 	<?php endif; ?>
-	<?php if ( 'marathon' === (string) get_post_meta( $post->ID, '_mv_lead_form', true ) ) : ?>
-		<p><strong>מקור:</strong> הרשמה למרתון השת״פים</p>
+	<?php if ( 'marathon' === $form ) : ?>
 		<?php $group = (string) get_post_meta( $post->ID, '_mv_lead_group', true ); ?>
 		<?php if ( $group ) : // נשמר בפניות מהתקופה שבה היו שני מפגשים. ?>
 			<p><strong>מפגש:</strong> <?php echo esc_html( $group ); ?></p>
@@ -141,6 +184,7 @@ function mv_render_lead_meta_box( $post ) {
 function mv_lead_columns( $columns ) {
 	$date = isset( $columns['date'] ) ? $columns['date'] : '';
 	unset( $columns['date'] );
+	$columns['mv_form']  = 'מקור';
 	$columns['mv_phone'] = 'טלפון';
 	$columns['mv_email'] = 'דוא"ל';
 	$columns['mv_when']  = 'מועד מועדף';
@@ -158,7 +202,9 @@ add_filter( 'manage_' . MV_LEAD_CPT . '_posts_columns', 'mv_lead_columns' );
  * @param int    $post_id מזהה הפנייה.
  */
 function mv_lead_column_content( $column, $post_id ) {
-	if ( 'mv_phone' === $column ) {
+	if ( 'mv_form' === $column ) {
+		echo esc_html( mv_lead_form_label( (string) get_post_meta( $post_id, '_mv_lead_form', true ) ) );
+	} elseif ( 'mv_phone' === $column ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_phone', true ) );
 	} elseif ( 'mv_email' === $column ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_email', true ) );
@@ -343,18 +389,35 @@ function mv_process_demo_lead() {
 	$group  = isset( $_POST['mv_group'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_group'] ) ) : '';
 	$date  = isset( $_POST['mv_date'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_date'] ) ) : '';
 	$time  = isset( $_POST['mv_time'] ) ? sanitize_text_field( wp_unslash( $_POST['mv_time'] ) ) : '';
+	$agreed = ! empty( $_POST['mv_consent'] );
 
 	$digits = preg_replace( '/\D/', '', $phone );
 
 	// טפסי האירוע אינם מבקשים דוא"ל, ולכן הוא נדרש רק בטופס שכולל אותו.
 	$needs_email = ! in_array( $form, array( 'marathon', 'waitlist' ), true );
+	// ברשימת התפוצה הדוא"ל הוא העיקר, והטלפון אינו חובה.
+	$needs_phone = 'news' !== $form;
 
-	if ( '' === $name || strlen( $digits ) < 9 || ( $needs_email && ! is_email( $email ) ) ) {
+	if ( '' === $name || ( $needs_phone && strlen( $digits ) < 9 ) || ( $needs_email && ! is_email( $email ) ) ) {
+		if ( ! $needs_phone ) {
+			$missing = 'חסרים פרטים: יש למלא שם וכתובת דוא"ל תקינה.';
+		} elseif ( $needs_email ) {
+			$missing = 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.';
+		} else {
+			$missing = 'חסרים פרטים: יש למלא שם וטלפון תקין.';
+		}
+
 		return array(
 			'ok'      => false,
-			'message' => $needs_email
-				? 'חסרים פרטים: יש למלא שם, טלפון תקין וכתובת דוא"ל תקינה.'
-				: 'חסרים פרטים: יש למלא שם וטלפון תקין.',
+			'message' => $missing,
+		);
+	}
+
+	// הרשמה לדיוור מחייבת אישור מפורש, והוא נשמר עם חותמת זמן.
+	if ( 'news' === $form && ! $agreed ) {
+		return array(
+			'ok'      => false,
+			'message' => 'צריך לאשר את מדיניות הפרטיות ותנאי השימוש לפני השליחה.',
 		);
 	}
 
@@ -414,6 +477,7 @@ function mv_process_demo_lead() {
 	update_post_meta( $lead_id, '_mv_lead_member', $member );
 	update_post_meta( $lead_id, '_mv_lead_note', $note );
 	update_post_meta( $lead_id, '_mv_lead_group', $group );
+	update_post_meta( $lead_id, '_mv_lead_consent', $agreed ? wp_date( 'd.m.Y H:i' ) : '' );
 
 	if ( $ip ) {
 		set_transient( $key, 1, 30 );
@@ -447,11 +511,7 @@ function mv_process_demo_lead() {
 
 	return array(
 		'ok'      => true,
-		'message' => 'marathon' === $form
-			? 'נשמר לכם מקום. נחזור אליכם עם אישור והכתובת המדויקת.'
-			: ( 'waitlist' === $form
-				? 'רשמנו אתכם. נעדכן ברגע שייפתח מועד נוסף.'
-				: 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.' ),
+		'message' => mv_lead_success_message( $form ),
 	);
 	// phpcs:enable WordPress.Security.NonceVerification.Missing
 }
@@ -473,11 +533,7 @@ function mv_notify_new_lead( $lead_id, $name, $phone, $email, $when, $page, $for
 	}
 
 	$site  = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
-	$titles = array(
-		'marathon' => 'הרשמה חדשה למרתון השת״פים',
-		'waitlist' => 'הצטרפות לרשימת ההמתנה למועד הבא',
-	);
-	$title  = isset( $titles[ $form ] ) ? $titles[ $form ] : 'פנייה חדשה לתיאום הדגמה';
+	$title = 'פנייה חדשה · ' . mv_lead_form_label( $form );
 	$body = $title . "\n\n"
 		. "שם: {$name}\n"
 		. "טלפון: {$phone}\n"

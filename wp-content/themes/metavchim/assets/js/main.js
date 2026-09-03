@@ -1,9 +1,23 @@
 /**
- * Metavchim — site-wide behavior (vanilla JS, no dependencies, deferred).
- * 1. Mobile nav toggle
- * 2. Scroll reveal via IntersectionObserver (content visible without JS)
- * 3. Accessibility toolbar (persists preferences in localStorage)
+ * Metavchim — front-end behaviour (vanilla JS, no dependencies).
  */
+
+/**
+ * רישום ווידג'טים של Turnstile. הסקריפט נטען עם onload יחיד, ולכן כל
+ * חלון רושם כאן את פונקציית ההרכבה שלו במקום לדרוס את הקודמת.
+ */
+var mvTurnstileWaiting = [];
+function mvTurnstileRegister( mount ) {
+	mvTurnstileWaiting.push( mount );
+	if ( window.turnstile ) {
+		mount();
+	}
+}
+window.mvTurnstileReady = function () {
+	mvTurnstileWaiting.forEach( function ( mount ) {
+		mount();
+	} );
+};
 ( function () {
 	'use strict';
 
@@ -209,7 +223,7 @@
 			language: 'he'
 		} );
 	}
-	window.mvTurnstileReady = mountShield;
+	mvTurnstileRegister( mountShield );
 
 	function open( trigger ) {
 		opener = trigger || null;
@@ -552,6 +566,263 @@
 			if ( first ) {
 				first.focus();
 			}
+		}
+	} );
+}() );
+
+/**
+ * חלון ההרשמה לעדכונים.
+ *
+ * נפתח פעם אחת לדפדפן: אחרי שהייה קצרה בעמוד או כשהסמן יוצא ממנו
+ * למעלה. הבחירה נשמרת אצל המבקר בלבד, ולא נשלחת לשרת.
+ */
+( function () {
+	'use strict';
+
+	var pop = document.getElementById( 'mv-news' );
+	if ( ! pop ) {
+		return;
+	}
+
+	var KEY = 'mv-news-v1';
+	var card = pop.querySelector( '.mv-modal-card' );
+	var form = pop.querySelector( '.mv-news-form' );
+	var done = pop.querySelector( '.mv-news-done' );
+	var button = form.querySelector( 'button[type="submit"]' );
+	var shield = pop.querySelector( '.mv-turnstile' );
+	var shieldId = null;
+	var opener = null;
+	var shown = false;
+	var SELECTOR = 'a[href],button:not([disabled]),input:not([type="hidden"]),textarea,select';
+
+	try {
+		if ( window.localStorage.getItem( KEY ) ) {
+			return;
+		}
+	} catch ( e ) {
+		// דפדפן שחוסם אחסון — החלון יוצג פעם אחת בביקור.
+	}
+
+	function remember() {
+		try {
+			window.localStorage.setItem( KEY, '1' );
+		} catch ( e ) {
+			// אין אחסון; אין מה לזכור.
+		}
+	}
+
+	function mountShield() {
+		if ( ! shield || null !== shieldId || ! window.turnstile || pop.hidden ) {
+			return;
+		}
+		shieldId = window.turnstile.render( shield, {
+			sitekey: shield.getAttribute( 'data-sitekey' ),
+			theme: shield.getAttribute( 'data-theme' ) || 'light',
+			language: 'he'
+		} );
+	}
+	mvTurnstileRegister( mountShield );
+
+	function open() {
+		var demo = document.getElementById( 'demo' );
+		if ( shown || ( demo && ! demo.hidden ) ) {
+			return; // המבקר כבר באמצע טופס אחר.
+		}
+		shown = true;
+		opener = document.activeElement;
+		pop.hidden = false;
+		pop.classList.add( 'is-open' );
+		document.documentElement.style.overflow = 'hidden';
+		mountShield();
+		var first = pop.querySelector( '#mv-news-name' );
+		if ( first ) {
+			first.focus();
+		}
+	}
+
+	function close() {
+		pop.classList.remove( 'is-open' );
+		pop.hidden = true;
+		document.documentElement.style.overflow = '';
+		remember();
+		if ( opener && document.contains( opener ) && opener.focus ) {
+			opener.focus();
+		}
+	}
+
+	var timer = window.setTimeout( open, 14000 );
+
+	document.addEventListener( 'mouseout', function ( e ) {
+		if ( ! e.relatedTarget && e.clientY <= 0 ) {
+			window.clearTimeout( timer );
+			open();
+		}
+	} );
+
+	pop.addEventListener( 'click', function ( e ) {
+		if ( e.target.closest( '[data-mv-news-close]' ) ) {
+			close();
+		}
+	} );
+
+	pop.addEventListener( 'keydown', function ( e ) {
+		if ( 'Escape' === e.key ) {
+			close();
+			return;
+		}
+		if ( 'Tab' !== e.key ) {
+			return;
+		}
+		var items = Array.prototype.filter.call(
+			card.querySelectorAll( SELECTOR ),
+			function ( el ) { return el.offsetParent !== null; }
+		);
+		if ( ! items.length ) {
+			return;
+		}
+		var first = items[ 0 ];
+		var last = items[ items.length - 1 ];
+		if ( e.shiftKey && document.activeElement === first ) {
+			e.preventDefault();
+			last.focus();
+		} else if ( ! e.shiftKey && document.activeElement === last ) {
+			e.preventDefault();
+			first.focus();
+		}
+	} );
+
+	function say( message ) {
+		var box = document.getElementById( 'mv-news-err' );
+		if ( box ) {
+			box.textContent = message;
+		}
+	}
+
+	form.addEventListener( 'submit', function ( e ) {
+		e.preventDefault();
+
+		var name = form.elements.mv_name.value.trim();
+		var email = form.elements.mv_email.value.trim();
+		var okMail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test( email );
+
+		if ( ! name ) {
+			say( 'צריך למלא שם.' );
+			form.elements.mv_name.focus();
+			return;
+		}
+		if ( ! okMail ) {
+			say( 'כתובת הדוא"ל אינה תקינה.' );
+			form.elements.mv_email.focus();
+			return;
+		}
+		if ( ! form.elements.mv_consent.checked ) {
+			say( 'צריך לאשר את מדיניות הפרטיות ותנאי השימוש.' );
+			form.elements.mv_consent.focus();
+			return;
+		}
+		say( '' );
+
+		form.elements.mv_source.value = location.href;
+
+		var endpoint = form.getAttribute( 'data-mv-endpoint' ) || form.action;
+		try {
+			var url = new URL( endpoint, location.href );
+			url.protocol = location.protocol;
+			url.host = location.host;
+			endpoint = url.toString();
+		} catch ( err ) {
+			endpoint = form.action;
+		}
+
+		var data = new FormData( form );
+		data.append( 'mv_ajax', '1' );
+		button.disabled = true;
+
+		fetch( endpoint, { method: 'POST', body: data, credentials: 'same-origin' } )
+			.then( function ( res ) {
+				return res.json().catch( function () {
+					return { ok: false, message: 'השליחה נכשלה (שגיאה ' + res.status + ').' };
+				} );
+			} )
+			.then( function ( res ) {
+				if ( res.ok ) {
+					form.hidden = true;
+					done.hidden = false;
+					done.setAttribute( 'role', 'status' );
+					remember();
+					window.setTimeout( close, 3200 );
+					return;
+				}
+				say( res.message || 'השליחה נכשלה. אפשר לנסות שוב.' );
+				if ( window.turnstile && null !== shieldId ) {
+					window.turnstile.reset( shieldId );
+				}
+			} )
+			.catch( function () {
+				say( 'לא הצלחנו להתחבר לשרת. אפשר לנסות שוב.' );
+			} )
+			.finally( function () {
+				button.disabled = false;
+			} );
+	} );
+
+	form.addEventListener( 'input', function () {
+		say( '' );
+	} );
+}() );
+
+/**
+ * התפריט הנפתח "פיצ'רים במערכת".
+ *
+ * נפתח בלחיצה (ולא במעבר עכבר בלבד), נסגר ב-Escape, בלחיצה מחוץ לו
+ * וכשהפוקוס יוצא ממנו — כך שהוא עובד גם במקלדת וגם במגע.
+ */
+( function () {
+	'use strict';
+
+	var wrap = document.querySelector( '.mv-mega-wrap' );
+	if ( ! wrap ) {
+		return;
+	}
+
+	var button = wrap.querySelector( '.mv-mega-btn' );
+	var panel = wrap.querySelector( '.mv-mega' );
+	if ( ! button || ! panel ) {
+		return;
+	}
+
+	function setOpen( open ) {
+		panel.hidden = ! open;
+		button.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+	}
+
+	button.addEventListener( 'click', function () {
+		setOpen( panel.hidden );
+	} );
+
+	document.addEventListener( 'click', function ( e ) {
+		if ( ! wrap.contains( e.target ) ) {
+			setOpen( false );
+		}
+	} );
+
+	document.addEventListener( 'keydown', function ( e ) {
+		if ( 'Escape' === e.key && ! panel.hidden ) {
+			setOpen( false );
+			button.focus();
+		}
+	} );
+
+	wrap.addEventListener( 'focusout', function ( e ) {
+		if ( ! wrap.contains( e.relatedTarget ) ) {
+			setOpen( false );
+		}
+	} );
+
+	// בחירת יכולת סוגרת את הפאנל ומשאירה את הגלילה לעוגן.
+	panel.addEventListener( 'click', function ( e ) {
+		if ( e.target.closest( 'a' ) ) {
+			setOpen( false );
 		}
 	} );
 }() );

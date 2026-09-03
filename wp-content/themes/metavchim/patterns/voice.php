@@ -14,9 +14,9 @@
 <section id="voice" class="mv-sec mv-voice-sec" aria-labelledby="mv-voice-title">
   <div class="mv-voice-card">
     <div>
-      <p class="mv-pill-tint">סוכן קולי<span class="mv-soon">בקרוב</span></p>
+      <p class="mv-pill-tint">סוכן קולי</p>
       <h2 class="mv-h2" id="mv-voice-title">אומרים למערכת מה לעשות. היא עושה<span class="mv-dot" aria-hidden="true">.</span></h2>
-      <p class="mv-lede">בין סיור לסיור, ביד אחת על ההגה, אין זמן לטפסים. הסוכן הקולי יבין עברית מדוברת ויבצע את הפעולה בפועל במערכת — בלי הקלדה אחת. היכולת בפיתוח מתקדם ותושק בקרוב.</p>
+      <p class="mv-lede">בין סיור לסיור, ביד אחת על ההגה, אין זמן לטפסים. הסוכן הקולי מבין עברית מדוברת ומבצע את הפעולה בפועל במערכת — בלי הקלדה אחת.</p>
       <div class="mv-checks">
         <div class="mv-check"><span class="mv-check-ico" aria-hidden="true">✓</span><span class="mv-check-text">הכנסת נכס חדש בדיבור, כולל חדרים, קומה ומחיר</span></div>
         <div class="mv-check"><span class="mv-check-ico" aria-hidden="true">✓</span><span class="mv-check-text">תיאום סיורים ופגישות ישירות ביומן, עם הודעה ללקוח</span></div>

@@ -550,7 +550,7 @@
 /* ===== הליווי האישי: ווטסאפ, מנטור ופורום ===== */
 .mv-comp-sec .mv-sec-head{margin:0 0 44px}
 .mv-comp-sec .mv-pill-tint{margin:0 0 16px}
-.mv-comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.mv-comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .mv-comp{display:flex;flex-direction:column;background:#fff;border:1px solid var(--mv-border);border-radius:24px;padding:30px 28px;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
 .mv-comp:hover{transform:translateY(-5px);border-color:var(--mv-green-mid);box-shadow:0 24px 50px rgba(14,16,15,.1)}
 .mv-comp-top{display:flex;align-items:center;gap:13px;margin:0 0 14px}
@@ -587,3 +587,125 @@
 .rv.in .mv-comp:hover{transition-delay:0s}
 @media (prefers-reduced-motion:reduce){.rv .mv-comp{opacity:1;transform:none}.mv-comp:hover{transform:none}.rv .mv-goal-bar span{width:70%}}
 @media (max-width:1000px){.mv-comp-grid{grid-template-columns:1fr}}
+
+/* ---------- הסוכן בווטסאפ: אזור כהה עם הדגמת שיחה ---------- */
+.mv-wa-sec{padding-top:96px}
+.mv-wa-card{position:relative;max-width:1240px;margin:0 auto;background:var(--mv-black);color:#fff;border-radius:30px;padding:56px 52px;overflow:hidden}
+.mv-wa-glow{position:absolute;inset:-160px -140px auto auto;width:620px;height:520px;background:radial-gradient(circle,rgba(112,238,145,.22),transparent 66%);animation:mvWaGlow 8s ease-in-out infinite;pointer-events:none}
+.mv-wa-mesh{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:58px 58px;mask-image:radial-gradient(80% 70% at 70% 30%,#000,transparent 76%);-webkit-mask-image:radial-gradient(80% 70% at 70% 30%,#000,transparent 76%);pointer-events:none}
+@keyframes mvWaGlow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.mv-wa-grid{position:relative;display:grid;grid-template-columns:1fr 400px;gap:56px;align-items:center}
+.mv-wa-pill{display:inline-flex;align-items:center;gap:9px;margin:0;padding:9px 18px;border-radius:999px;background:rgba(112,238,145,.14);border:1px solid rgba(112,238,145,.3);color:var(--mv-green);font-size:0.9375rem;font-weight:800}
+.mv-wa-card .mv-h2{margin:20px 0 0;font-size:2.875rem;line-height:1.1;letter-spacing:-.03em}
+.mv-wa-dot{color:var(--mv-green)}
+.mv-wa-lede{margin:18px 0 0;font-size:1.125rem;line-height:1.65;color:#C4CFC7;max-width:560px;text-wrap:pretty}
+.mv-wa-feats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0 0}
+.mv-wa-feat{display:flex;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;transition:border-color .2s ease,background .2s ease,transform .2s ease}
+.mv-wa-feat:hover{border-color:rgba(112,238,145,.36);background:rgba(112,238,145,.07);transform:translateY(-3px)}
+.mv-wa-feat-ico{flex:0 0 auto;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(112,238,145,.16);color:var(--mv-green)}
+.mv-wa-feat-title{margin:0;font-size:1.0625rem;font-weight:800;letter-spacing:-.01em}
+.mv-wa-feat-text{margin:5px 0 0;font-size:0.9375rem;line-height:1.5;color:#A9B3AB}
+.mv-wa-note{display:flex;align-items:center;gap:9px;margin:24px 0 0;font-size:0.9375rem;color:#8A938B}
+.mv-wa-note svg{flex:none;color:var(--mv-green)}
+
+/* המכשיר */
+.mv-wa-demo{display:flex;justify-content:center}
+.mv-wa-phone{width:100%;max-width:376px;background:#0B140F;border:1px solid rgba(255,255,255,.14);border-radius:34px;padding:10px;box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 0 8px rgba(255,255,255,.03);overflow:hidden}
+.mv-wa-top{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:26px 26px 0 0;background:rgba(255,255,255,.06)}
+.mv-wa-avatar{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:rgba(112,238,145,.16)}
+.mv-wa-who{flex:1;min-width:0}
+.mv-wa-name{margin:0;font-size:0.9375rem;font-weight:800}
+.mv-wa-status{display:flex;align-items:center;gap:7px;margin:2px 0 0;font-size:0.75rem;color:#8A938B}
+.mv-wa-live{width:7px;height:7px;border-radius:999px;background:var(--mv-green);animation:mvWaLive 1.8s ease-in-out infinite}
+@keyframes mvWaLive{0%,100%{opacity:1}50%{opacity:.25}}
+.mv-wa-call{flex:none;color:#8A938B}
+.mv-wa-log{position:relative;height:430px;overflow:hidden;padding:14px 12px;display:flex;flex-direction:column;gap:10px;background:
+  radial-gradient(circle at 12% 8%,rgba(112,238,145,.05),transparent 24%),
+  radial-gradient(circle at 82% 46%,rgba(112,238,145,.05),transparent 22%),
+  radial-gradient(circle at 30% 82%,rgba(112,238,145,.04),transparent 20%),#0B140F}
+.mv-wa-day{align-self:center;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.07);font-size:0.6875rem;font-weight:700;color:#8A938B}
+.mv-wa-msg{max-width:86%;border-radius:16px;padding:11px 13px;font-size:0.875rem;line-height:1.5}
+.mv-wa-msg.is-me{align-self:flex-start;background:rgba(112,238,145,.16);border:1px solid rgba(112,238,145,.26);border-end-start-radius:5px}
+.mv-wa-msg.is-bot{align-self:flex-end;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-end-end-radius:5px}
+.mv-wa-text{margin:0;color:#EAF1EC}
+.mv-wa-meta{display:block;margin-top:5px;font-size:0.6875rem;color:#8A938B;text-align:start}
+.mv-wa-ticks{margin-inline-start:5px;color:var(--mv-green)}
+.mv-wa-mini{display:flex;align-items:center;gap:10px;margin-top:9px;padding:10px;border-radius:13px;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.08)}
+.mv-wa-mini-ico{flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:rgba(112,238,145,.14);color:var(--mv-green)}
+.mv-wa-mini-body{flex:1;min-width:0}
+.mv-wa-mini-title{margin:0;font-size:0.8125rem;font-weight:800;color:#fff}
+.mv-wa-mini-meta{margin:2px 0 0;font-size:0.6875rem;color:#8A938B;line-height:1.4}
+.mv-wa-tag{flex:none;padding:3px 9px;border-radius:999px;background:rgba(112,238,145,.18);color:var(--mv-green);font-size:0.6875rem;font-weight:800}
+.mv-wa-score{flex:none;font-size:0.8125rem;font-weight:900;color:var(--mv-green)}
+.mv-wa-typing{align-self:flex-end;display:flex;gap:4px;padding:12px 14px;border-radius:16px;border-end-end-radius:5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}
+.mv-wa-typing[hidden]{display:none}
+.mv-wa-typing span{width:6px;height:6px;border-radius:999px;background:#8A938B;animation:mvWaType 1.2s ease-in-out infinite}
+.mv-wa-typing span:nth-child(2){animation-delay:.18s}
+.mv-wa-typing span:nth-child(3){animation-delay:.36s}
+@keyframes mvWaType{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.mv-wa-input{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:0 0 26px 26px;background:rgba(255,255,255,.06)}
+.mv-wa-field{flex:1;padding:9px 14px;border-radius:999px;background:rgba(0,0,0,.35);color:#6B736C;font-size:0.8125rem}
+.mv-wa-send{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--mv-green);color:var(--mv-black)}
+
+/* ההנפשה מופעלת רק כשה-JS רץ; בלעדיו כל השיחה פשוט מוצגת.
+   הודעה שטרם הופיעה יוצאת מהפריסה לגמרי, כדי שהשיחה תיבנה מלמעלה
+   למטה ותיגלל בדיוק כמו צ'אט אמיתי. */
+.mv-wa-log.is-anim .mv-wa-msg{display:none}
+.mv-wa-log.is-anim .mv-wa-msg.is-in{display:block;animation:mvWaIn .34s cubic-bezier(.22,1,.36,1) both}
+@keyframes mvWaIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+
+@media (max-width:1180px){
+.mv-wa-grid{grid-template-columns:1fr;gap:40px}
+.mv-wa-lede{max-width:none}
+}
+@media (max-width:760px){
+.mv-wa-sec{padding:70px 16px 0}
+.mv-wa-card{padding:34px 20px;border-radius:24px}
+.mv-wa-card .mv-h2{font-size:2rem}
+.mv-wa-feats{grid-template-columns:1fr}
+.mv-wa-log{height:390px}
+}
+
+@media (prefers-reduced-motion:reduce){
+.mv-wa-glow,.mv-wa-live,.mv-wa-typing span{animation:none}
+.mv-wa-log.is-anim .mv-wa-msg{display:block;animation:none}
+}
+
+/* ---------- מי כבר איתנו ---------- */
+.mv-clients-sec{padding-top:76px}
+.mv-clients-sec .mv-sec-head{margin:0 0 30px}
+.mv-clients-sec .mv-h2{font-size:2.25rem}
+.mv-clients{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;margin:0;padding:0;list-style:none}
+.mv-client{display:grid;place-items:center;min-height:98px;padding:20px 18px;background:#fff;border:1px solid var(--mv-border);border-radius:18px;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.mv-client:hover{border-color:var(--mv-green-mid);box-shadow:0 16px 34px -22px rgba(16,24,18,.5);transform:translateY(-3px)}
+.mv-client-img{max-height:46px;width:auto;filter:grayscale(1);opacity:.72;transition:filter .2s ease,opacity .2s ease}
+.mv-client:hover .mv-client-img{filter:none;opacity:1}
+
+/* ---------- הצטרפות לעדכונים ---------- */
+.mv-join-sec{padding-top:96px}
+.mv-join{max-width:1240px;margin:0 auto;background:linear-gradient(140deg,var(--mv-pale),#fff 62%);border:1px solid var(--mv-border);border-radius:28px;padding:44px;display:grid;grid-template-columns:1fr 420px;gap:44px;align-items:center}
+.mv-join-copy .mv-h2{margin:16px 0 0;font-size:2.375rem;line-height:1.12}
+.mv-join-copy .mv-lede{margin:16px 0 0;text-wrap:pretty}
+.mv-join-btns{display:grid;gap:12px}
+.mv-join-btn{display:flex;align-items:center;gap:14px;padding:15px 18px;background:#fff;border:1px solid var(--mv-border);border-radius:18px;color:inherit;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.mv-join-btn:hover{color:inherit;border-color:var(--mv-green-mid);box-shadow:0 18px 36px -24px rgba(16,24,18,.5);transform:translateY(-3px)}
+.mv-join-ico{flex:0 0 auto;width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:var(--mv-tint);color:var(--mv-green-aa)}
+.mv-join-btn.is-whatsapp .mv-join-ico{background:rgba(37,211,102,.16);color:#0E8A46}
+.mv-join-btn.is-facebook .mv-join-ico{background:#E8F0FE;color:#1B5FC1}
+.mv-join-btn.is-instagram .mv-join-ico{background:#FCEBF2;color:#B02E7A}
+.mv-join-btn.is-youtube .mv-join-ico{background:#FDECEC;color:#B62B26}
+.mv-join-btn.is-linkedin .mv-join-ico{background:#E8F1F8;color:#0A5FB0}
+.mv-join-btn.is-tiktok .mv-join-ico{background:#F1F2F0;color:var(--mv-ink)}
+.mv-join-body{min-width:0}
+.mv-join-name{display:block;font-size:1.0625rem;font-weight:800;letter-spacing:-.01em}
+.mv-join-cta{display:block;margin-top:2px;font-size:0.9375rem;color:var(--mv-text2)}
+
+@media (max-width:980px){
+.mv-join{grid-template-columns:1fr;gap:28px;padding:32px 24px}
+.mv-clients{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+@media (max-width:760px){
+.mv-clients-sec{padding:60px 16px 0}
+.mv-join-sec{padding:70px 16px 0}
+.mv-join-copy .mv-h2{font-size:1.875rem}
+}

@@ -403,7 +403,7 @@ function mv_plan_feature_labels() {
 		'whatsapp'      => 'ווטסאפ מובנה',
 		'data_io'       => 'ייבוא וייצוא נתונים',
 		'ai_coach'      => 'מאמן AI לסוכן',
-		'voice_intake'  => 'סוכן קולי לקליטת פניות (בקרוב)',
+		'voice_intake'  => 'סוכן קולי לקליטת פניות',
 	);
 }
 

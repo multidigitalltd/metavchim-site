@@ -52,6 +52,12 @@ function mv_icon_path( $name ) {
 		'forum'     => '<path d="M4 5.5h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H8l-4 3v-10a2 2 0 0 1 2-2Z" stroke-linejoin="round"/><path d="M17.5 9H19a2 2 0 0 1 2 2v8l-3-2.4"/>',
 		'phone'     => '<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2C11.4 19 5 12.6 4.5 5.7A2 2 0 0 1 6.5 3.5Z"/>',
 		'check'     => '<path d="M6 12.5 10 16.5 18 8"/>',
+		'facebook'  => '<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M15 8.2h-1.6c-.9 0-1.4.5-1.4 1.4V20"/><path d="M9.6 12.4h4.6"/>',
+		'instagram' => '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><path d="M16.9 7.2h.01"/>',
+		'youtube'   => '<rect x="2.8" y="6" width="18.4" height="12" rx="3.6"/><path d="m10.4 9.6 4.6 2.4-4.6 2.4V9.6Z" stroke-linejoin="round"/>',
+		'linkedin'  => '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 10.6V16"/><path d="M8 7.6h.01"/><path d="M11.8 16v-3.1a1.9 1.9 0 0 1 3.8 0V16"/><path d="M11.8 10.6V16"/>',
+		'tiktok'    => '<path d="M14 3.6v10.2a3.5 3.5 0 1 1-3.1-3.5"/><path d="M14 3.6c.4 2.3 2 3.7 4.3 3.9"/>',
+		'link'      => '<path d="M10.5 13.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M13.5 10.5a3.5 3.5 0 0 0-5 0L6 13a3.5 3.5 0 0 0 5 5l1-1"/>',
 	);
 
 	return isset( $icons[ $name ] ) ? $icons[ $name ] : $icons['check'];

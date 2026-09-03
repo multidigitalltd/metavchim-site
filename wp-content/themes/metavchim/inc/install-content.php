@@ -20,14 +20,17 @@ function mv_home_section_slugs() {
 	return array(
 		'hero',
 		'stats',
+		'clients',
 		'network',
 		'product',
 		'orbit',
 		'voice',
+		'whatsapp',
 		'companion',
 		'capabilities',
 		'security',
 		'plans',
+		'community',
 		'cta',
 	);
 }
@@ -619,7 +622,7 @@ function mv_rebuild_notice() {
 			גרסה חדשה של התבנית כוללת נוסח מעודכן לעמודים:
 			<strong><?php echo esc_html( implode( ', ', $titles ) ); ?></strong>.
 			העמודים האלה נערכו ידנית ולכן לא עודכנו אוטומטית.
-			<a href="<?php echo esc_url( admin_url( 'themes.php?page=mv-content' ) ); ?>">מעבר לבנייה מחדש</a>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=mv-content' ) ); ?>">מעבר לבנייה מחדש</a>
 			(העריכות הקיימות יישמרו בהיסטוריית הגרסאות של העמוד).
 		</p>
 	</div>
@@ -641,52 +644,87 @@ function mv_maybe_repair_content() {
 add_action( 'admin_init', 'mv_maybe_repair_content' );
 
 /**
- * Admin screen: עיצוב ← תוכן התבנית — rebuild the home page from the
- * theme's section patterns on demand (e.g. after a theme update).
+ * מסך "תוכן העמודים" בלוח הבקרה — רשימת העמודים של התבנית עם קישורי
+ * עריכה, ובנייה מחדש מהתבנית בעת הצורך.
  */
 function mv_register_content_admin_page() {
-	add_theme_page(
-		'תוכן התבנית',
-		'תוכן התבנית',
+	add_submenu_page(
+		MV_DASH_SLUG,
+		'תוכן העמודים',
+		'תוכן העמודים',
 		'manage_options',
 		'mv-content',
 		'mv_render_content_admin_page'
 	);
 }
-add_action( 'admin_menu', 'mv_register_content_admin_page' );
+add_action( 'admin_menu', 'mv_register_content_admin_page', 12 );
 
 /**
  * Render the content tools screen.
  */
 function mv_render_content_admin_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		return;
+		wp_die( 'אין הרשאה לצפות בעמוד זה.' );
 	}
 
 	$rebuilt = isset( $_GET['mv_done'] ) ? absint( $_GET['mv_done'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only flag.
-	$home    = get_page_by_path( 'home' );
 	?>
 	<div class="wrap">
-		<h1>תוכן התבנית — מתווכים</h1>
+		<h1>תוכן העמודים</h1>
 		<?php if ( $rebuilt ) : ?>
-			<div class="notice notice-success is-dismissible"><p>עמוד הבית נבנה מחדש מהסקשנים של התבנית.</p></div>
+			<div class="notice notice-success is-dismissible"><p>העמודים נבנו מחדש מהתבנית.</p></div>
 		<?php endif; ?>
+
 		<p>
-			מצב עמוד הבית:
-			<?php if ( mv_home_page_ok() && $home instanceof WP_Post ) : ?>
-				<strong style="color:#0B6E35">תקין</strong> —
-				<a href="<?php echo esc_url( get_edit_post_link( $home->ID ) ); ?>">עריכת העמוד</a> ·
-				<a href="<?php echo esc_url( get_permalink( $home->ID ) ); ?>">צפייה</a>
-			<?php else : ?>
-				<strong style="color:#b32d2e">חסר או ריק</strong>
-			<?php endif; ?>
+			כל עמוד כאן הוא עמוד וורדפרס רגיל — לוחצים על "עריכה" ומשנים טקסטים ישירות בעורך.
+			אזורים שמתעדכנים לבד (מספרים, לוגואים, רשתות חברתיות, פרטי האירוע והמסלולים)
+			נערכים במסכים הייעודיים שלהם בלוח הבקרה.
 		</p>
+
+		<table class="widefat striped" style="max-width:820px">
+			<thead>
+				<tr><th>עמוד</th><th>מצב</th><th>פעולות</th></tr>
+			</thead>
+			<tbody>
+				<?php foreach ( mv_theme_pages() as $slug => $page ) : ?>
+					<?php $post = get_page_by_path( $slug ); ?>
+					<tr>
+						<td><strong><?php echo esc_html( $page['title'] ); ?></strong><br><code><?php echo esc_html( $slug ); ?></code></td>
+						<td>
+							<?php if ( $post instanceof WP_Post && '' !== trim( (string) $post->post_content ) ) : ?>
+								<?php
+								$stored = (string) get_post_meta( $post->ID, '_mv_content_hash', true );
+								$edited = '' !== $stored && md5( (string) $post->post_content ) !== $stored;
+								?>
+								<?php if ( $edited ) : ?>
+									<span style="color:#8a6d00">נערך ידנית</span>
+								<?php else : ?>
+									<span style="color:#116329">מסונכרן עם התבנית</span>
+								<?php endif; ?>
+							<?php else : ?>
+								<span style="color:#b32d2e">חסר</span>
+							<?php endif; ?>
+						</td>
+						<td>
+							<?php if ( $post instanceof WP_Post ) : ?>
+								<a href="<?php echo esc_url( (string) get_edit_post_link( $post->ID ) ); ?>">עריכה</a> ·
+								<a href="<?php echo esc_url( (string) get_permalink( $post->ID ) ); ?>" target="_blank" rel="noopener">צפייה</a>
+							<?php else : ?>
+								—
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<h2>בנייה מחדש מהתבנית</h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'mv_rebuild_content' ); ?>
 			<input type="hidden" name="action" value="mv_rebuild_content">
-			<p>בנייה מחדש שומרת את כל הסקשנים העדכניים של התבנית לתוך תוכן עמוד הבית, יוצרת עמודים משפטיים חסרים ומגדירה את העמוד כעמוד הבית הסטטי.</p>
-			<p><strong>שים לב:</strong> הפעולה דורסת עריכות ידניות שבוצעו בתוכן עמוד הבית.</p>
-			<?php submit_button( 'בנייה מחדש של עמוד הבית מהתבנית' ); ?>
+			<p>הפעולה כותבת מחדש את כל העמודים לפי הגרסה העדכנית של התבנית ומשלימה עמודים חסרים.</p>
+			<p><strong>שימו לב:</strong> עריכות ידניות בעמודים האלה יידרסו.</p>
+			<?php submit_button( 'בנייה מחדש של העמודים' ); ?>
 		</form>
 	</div>
 	<?php
@@ -703,7 +741,15 @@ function mv_handle_rebuild_content() {
 
 	mv_install_content( true );
 
-	wp_safe_redirect( add_query_arg( array( 'page' => 'mv-content', 'mv_done' => 1 ), admin_url( 'themes.php' ) ) );
+	wp_safe_redirect(
+		add_query_arg(
+			array(
+				'page'    => 'mv-content',
+				'mv_done' => 1,
+			),
+			admin_url( 'admin.php' )
+		)
+	);
 	exit;
 }
 add_action( 'admin_post_mv_rebuild_content', 'mv_handle_rebuild_content' );
