@@ -14,8 +14,8 @@
 <section id="companion" class="mv-sec mv-comp-sec" aria-labelledby="mv-comp-title">
   <div class="mv-wrap">
     <div class="mv-sec-head">
-      <p class="mv-pill-tint"><?php mv_icon( 'sparkle', 15 ); ?>לא רק מערכת</p>
-      <h2 class="mv-h2" id="mv-comp-title">יש לך צוות שלם מאחורי הטלפון<span class="mv-dot" aria-hidden="true">.</span></h2>
+      <h2 class="mv-h2" id="mv-comp-title">מנטור אישי וקהילה של מתווכים, בתוך המערכת<span class="mv-dot" aria-hidden="true">.</span></h2>
+      <p class="mv-lede">יעדים שמישהו עוקב אחריהם בשבילכם, ומקום להתייעץ בו באנונימיות עם מי שכבר עבר את זה.</p>
     </div>
 
     <div class="mv-comp-grid">
