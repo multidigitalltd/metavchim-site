@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MV_THEME_VERSION', '1.18.2' );
+define( 'MV_THEME_VERSION', '1.19.0' );
 define( 'MV_THEME_DIR', get_template_directory() );
 define( 'MV_THEME_URI', get_template_directory_uri() );
 
