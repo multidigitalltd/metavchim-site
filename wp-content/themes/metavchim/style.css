@@ -1,0 +1,21 @@
+/*
+Theme Name: מתווכים
+Theme URI: https://metavchim.co.il
+Author: Multi Digital
+Author URI: https://metavchim.co.il
+Version: 1.19.2
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: metavchim
+Tags: rtl-language-support, accessibility-ready, one-column, custom-menu, block-patterns
+*/
+
+/*
+כל העיצוב נטען מקבצים ייעודיים תחת assets/css בטעינה מותנית לפי עמוד:
+ - assets/css/main.css  — בסיס, כותרת עליונה, פוטר, עמודי תוכן, סרגל נגישות (כל האתר)
+ - assets/css/home.css  — סקשנים של עמוד הבית בלבד (נטען רק בעמוד הבית)
+הקובץ הזה משמש להצהרת התבנית בלבד כדי לא להוסיף בקשת HTTP מיותרת.
+*/
