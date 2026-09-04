@@ -57,7 +57,7 @@ function mv_dashboard_cards() {
 		),
 		array(
 			'title' => 'מספרים באתר',
-			'text'  => 'רצועת הנתונים בראש עמוד הבית: כמה מתווכים, משרדים ושיתופי פעולה.',
+			'text'  => 'רצועת הנתונים בראש עמוד הבית. בלי מספרים היא לא מוצגת באתר.',
 			'url'   => admin_url( 'admin.php?page=mv-numbers' ),
 		),
 		array(
