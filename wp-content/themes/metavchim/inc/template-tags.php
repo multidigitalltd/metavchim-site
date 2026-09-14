@@ -1,0 +1,206 @@
+<?php
+/**
+ * Reusable template output helpers.
+ *
+ * @package Metavchim
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * כתובת הבסיס של המערכת. אפשר לשנות בקבוע MV_APP_URL או במסנן.
+ *
+ * @param string $path נתיב פנימי, למשל 'signup'.
+ * @return string
+ */
+function mv_app_url( $path = '' ) {
+	$base = defined( 'MV_APP_URL' ) && MV_APP_URL ? (string) MV_APP_URL : 'https://app.metavchim.co.il';
+	/**
+	 * כתובת הבסיס של המערכת.
+	 *
+	 * @param string $base כתובת הבסיס.
+	 */
+	$base = (string) apply_filters( 'mv_app_url', $base );
+	return '' === $path ? $base . '/' : untrailingslashit( $base ) . '/' . ltrim( $path, '/' );
+}
+
+/**
+ * פתיחת חשבון — הרשמה עצמאית למערכת.
+ *
+ * @return string
+ */
+function mv_signup_url() {
+	/**
+	 * כתובת פתיחת החשבון.
+	 *
+	 * @param string $url כתובת ההרשמה.
+	 */
+	return (string) apply_filters( 'mv_signup_url', mv_app_url( 'signup' ) );
+}
+
+/**
+ * התחברות למערכת.
+ *
+ * @return string
+ */
+function mv_login_url_app() {
+	return mv_app_url();
+}
+
+/**
+ * וורדפרס מסמן כל קישור עוגן של עמוד הבית כפריט הנוכחי, ולכן בעמוד הבית
+ * כל פריטי התפריט קיבלו סימון. פריטי עוגן מסומנים כאן רק לפי הסקשן שבו
+ * הגולש נמצא בפועל (ראו assets/js/main.js); פריטי עמוד נשארים כרגיל.
+ *
+ * @param string[] $classes מחלקות הפריט.
+ * @param WP_Post  $item    פריט התפריט.
+ * @return string[]
+ */
+function mv_clean_anchor_menu_classes( $classes, $item ) {
+	if ( ! is_array( $classes ) || false === strpos( (string) $item->url, '#' ) ) {
+		return $classes;
+	}
+
+	return array_values(
+		array_diff(
+			$classes,
+			array( 'current-menu-item', 'current_page_item', 'current-menu-ancestor', 'current-menu-parent', 'current_page_parent', 'current_page_ancestor' )
+		)
+	);
+}
+add_filter( 'nav_menu_css_class', 'mv_clean_anchor_menu_classes', 10, 2 );
+
+/**
+ * Inline brand logo SVG (avoids an extra HTTP request in the header/footer).
+ *
+ * @param int    $size   Square size in px.
+ * @param string $accent Accent color for the second bracket.
+ * @param string $main   Main stroke color.
+ */
+function mv_logo_svg( $size = 25, $accent = '#3FBF63', $main = '#0E100F' ) {
+	printf(
+		'<svg width="%1$d" height="%1$d" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path d="M28.5 6.5h7a6 6 0 0 1 6 6v23a6 6 0 0 1-6 6h-7" stroke="%2$s" stroke-width="5.2" stroke-linecap="round"/><path d="M19.5 6.5h-7a6 6 0 0 0-6 6v23a6 6 0 0 0 6 6h7" stroke="%3$s" stroke-width="5.2" stroke-linecap="round"/><rect x="19.4" y="19.4" width="9.2" height="9.2" rx="2.4" fill="%2$s"/></svg>',
+		absint( $size ),
+		esc_attr( $main ),
+		esc_attr( $accent )
+	);
+}
+
+/**
+ * Display label of the collaboration page (menu + installed page title).
+ *
+ * @return string
+ */
+function mv_collab_label() {
+	return 'שת"פים';
+}
+
+/**
+ * Primary menu fallback: the anchor links from the approved design.
+ */
+function mv_primary_menu_fallback() {
+	$links  = array(
+		'#product'  => 'המערכת',
+		'#voice'    => 'סוכן קולי',
+		'#security' => 'אבטחה',
+		'#plans'    => 'מסלולים',
+	);
+	$home   = is_front_page() ? '' : esc_url( home_url( '/' ) );
+	$collab = get_page_by_path( 'collaboration' );
+	$collab = $collab ? get_permalink( $collab ) : home_url( '/collaboration/' );
+	$about  = get_page_by_path( 'about' );
+	$about  = $about ? get_permalink( $about ) : home_url( '/about/' );
+
+	echo '<ul class="mv-nav-list">';
+	foreach ( $links as $anchor => $label ) {
+		printf(
+			'<li><a href="%s%s">%s</a></li>',
+			$home, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+			esc_attr( $anchor ),
+			esc_html( $label )
+		);
+
+		// "שת"פים" sits between "אבטחה" and "מסלולים"; it is plain bold
+		// text while the visitor is already on that page.
+		if ( '#security' === $anchor ) {
+			if ( function_exists( 'mv_is_collab_page' ) && mv_is_collab_page() ) {
+				printf( '<li><span class="mv-nav-current" aria-current="page">%s</span></li>', esc_html( mv_collab_label() ) );
+			} else {
+				printf( '<li><a href="%s">%s</a></li>', esc_url( $collab ), esc_html( mv_collab_label() ) );
+			}
+		}
+	}
+
+	// "אודות" סוגר את התפריט.
+	if ( function_exists( 'mv_is_about_page' ) && mv_is_about_page() ) {
+		printf( '<li><span class="mv-nav-current" aria-current="page">%s</span></li>', 'אודות' );
+	} else {
+		printf( '<li><a href="%s">%s</a></li>', esc_url( $about ), 'אודות' );
+	}
+
+	echo '</ul>';
+}
+
+/**
+ * Footer legal-menu fallback: link to the installed legal pages when present.
+ */
+function mv_footer_menu_fallback() {
+	$pages = array(
+		'terms'         => 'תנאי שימוש',
+		'privacy'       => 'פרטיות',
+		'accessibility' => 'הצהרת נגישות',
+	);
+	echo '<ul class="mv-footer-list">';
+	foreach ( $pages as $slug => $label ) {
+		$page = get_page_by_path( $slug );
+		$url  = $page ? get_permalink( $page ) : home_url( '/' . $slug . '/' );
+		printf( '<li><a href="%s">%s</a></li>', esc_url( $url ), esc_html( $label ) );
+	}
+	echo '</ul>';
+}
+
+/**
+ * Accessibility toolbar markup (ת"י 5568 / WCAG 2.2 AA).
+ * Preferences persist in localStorage; behavior lives in assets/js/main.js.
+ */
+function mv_a11y_toolbar() {
+	$actions = array(
+		'fontplus'   => 'הגדלת טקסט',
+		'fontminus'  => 'הקטנת טקסט',
+		'contrast'   => 'ניגודיות גבוהה',
+		'invert'     => 'היפוך צבעים',
+		'grayscale'  => 'גווני אפור',
+		'underline'  => 'הדגשת קישורים בקו',
+		'readable'   => 'פונט קריא',
+		'noanim'     => 'עצירת אנימציות',
+		'headings'   => 'הבלטת כותרות',
+		'links'      => 'הבלטת קישורים',
+		'guide'      => 'סרגל קריאה',
+	);
+
+	$statement = get_page_by_path( 'accessibility' );
+	?>
+	<div class="mv-a11y" id="mv-a11y">
+		<button type="button" class="mv-a11y-btn" id="mv-a11y-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="mv-a11y-panel">
+			<span class="screen-reader-text">פתיחת תפריט נגישות</span>
+			<svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="4.5" r="2" fill="currentColor"/><path d="M4.5 8.2c2.4.6 4.9.9 7.5.9s5.1-.3 7.5-.9M12 9.1v4.2m0 0-2.6 6.2M12 13.3l2.6 6.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+		<div class="mv-a11y-panel" id="mv-a11y-panel" role="dialog" aria-modal="false" aria-label="תפריט נגישות" hidden>
+			<div class="mv-a11y-head">
+				<span>נגישות</span>
+				<button type="button" class="mv-a11y-close" id="mv-a11y-close"><span class="screen-reader-text">סגירת תפריט נגישות</span><span aria-hidden="true">&#215;</span></button>
+			</div>
+			<div class="mv-a11y-grid">
+				<?php foreach ( $actions as $key => $label ) : ?>
+					<button type="button" class="mv-a11y-act" data-a11y="<?php echo esc_attr( $key ); ?>" aria-pressed="false"><?php echo esc_html( $label ); ?></button>
+				<?php endforeach; ?>
+			</div>
+			<button type="button" class="mv-a11y-reset" data-a11y="reset">איפוס הגדרות נגישות</button>
+			<?php if ( $statement ) : ?>
+				<a class="mv-a11y-statement" href="<?php echo esc_url( get_permalink( $statement ) ); ?>">הצהרת נגישות</a>
+			<?php endif; ?>
+		</div>
+	</div>
+	<div class="mv-reading-guide" id="mv-reading-guide" aria-hidden="true"></div>
+	<?php
+}

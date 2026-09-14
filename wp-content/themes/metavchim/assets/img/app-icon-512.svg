@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <title>מתווכים — אייקון אפליקציה</title>
+  <rect width="512" height="512" rx="112" fill="#0E100F"></rect>
+  <g transform="translate(256 256) scale(7.1) translate(-24 -24)">
+    <path d="M28.5 6.5h7a6 6 0 0 1 6 6v23a6 6 0 0 1-6 6h-7" stroke="#FFFFFF" stroke-width="5.4" stroke-linecap="round"></path>
+    <path d="M19.5 6.5h-7a6 6 0 0 0-6 6v23a6 6 0 0 0 6 6h7" stroke="#70EE91" stroke-width="5.4" stroke-linecap="round"></path>
+    <rect x="19.4" y="19.4" width="9.2" height="9.2" rx="2.4" fill="#70EE91"></rect>
+  </g>
+</svg>
