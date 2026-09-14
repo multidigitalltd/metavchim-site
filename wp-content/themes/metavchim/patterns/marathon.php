@@ -54,10 +54,10 @@
               <span class="mrt-logo-mv-name">מתווכים<span class="mrt-dot-g" aria-hidden="true">.</span></span>
             </span>
           </div>
-          <div class="mrt-kicker">מזמינים אתכם לאירוע חד־פעמי</div>
+          <div class="mrt-kicker">מזמינים אתכן לאירוע חד־פעמי</div>
 
-          <h1 class="mrt-h1">מרתון <span class="mrt-dot-g">השת״פים</span> הגדול<span class="mrt-dot-g" aria-hidden="true">.</span></h1>
-          <p class="mrt-lead">בוקר עבודה אחד: מעלים למערכת את הנכסים והקונים שיש לכם ביד, המערכת מצליבה בין כל מי שנמצא בחדר, ואתם סוגרים שיתופי פעולה בלייב — עם הסכם עמלה כתוב.</p>
+          <h1 class="mrt-h1">מרתון <span class="mrt-dot-g">השת״פים</span> למתווכות<span class="mrt-dot-g" aria-hidden="true">.</span></h1>
+          <p class="mrt-lead">בוקר עבודה אחד: מעלות למערכת את הנכסים והקונים שיש לכן ביד, המערכת מצליבה בין כל מי שנמצאת בחדר, ואתן סוגרות שיתופי פעולה בלייב — עם הסכם עמלה כתוב.</p>
 
           <div class="mrt-facts">
             <div class="mrt-fact is-start">
@@ -101,7 +101,7 @@
           </div>
           <div class="mrt-live">
             <span class="mrt-live-dot" aria-hidden="true"></span>
-            הכניסה חינם · הרשמה חובה — המקומות מוגבלים · פתוח גם למתווכים שעוד לא ברשת
+            הכניסה חינם · הרשמה חובה — המקומות מוגבלים · פתוח גם למתווכות שעוד לא ברשת
           </div>
         </div>
 
@@ -112,7 +112,7 @@
   <section id="what" class="mrt-sec">
     <div class="mrt-wrap">
       <h2 class="mrt-h2">איך בוקר אחד הופך לעסקאות<span class="mrt-dot" aria-hidden="true">.</span></h2>
-      <p class="mrt-h2-x">לא הרצאה ולא כיבוד עם כרטיסי ביקור. יושבים, מזינים, והמערכת עושה את החיבורים.</p>
+      <p class="mrt-h2-x">לא הרצאה ולא כיבוד עם כרטיסי ביקור. יושבות, מזינות, והמערכת עושה את החיבורים.</p>
 
       <div class="mrt-steps">
         <div class="mrt-step">
@@ -120,8 +120,8 @@
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0B6E35" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6v11M7.6 10.4 12 14.8l4.4-4.4"></path><path d="M4.6 19.4h14.8"></path></svg>
           </span>
           <div class="mrt-step-n">שלב 1</div>
-          <div class="mrt-step-t">מזינים למערכת</div>
-          <div class="mrt-step-x">כל נכס וכל קונה שיש לכם ביד. אפשר גם בהקלטה קולית, בלי להקליד.</div>
+          <div class="mrt-step-t">מזינות למערכת</div>
+          <div class="mrt-step-x">כל נכס וכל קונה שיש לכן ביד. אפשר גם בהקלטה קולית, בלי להקליד.</div>
         </div>
         <div class="mrt-step">
           <span class="mrt-tile is-violet" aria-hidden="true">
@@ -129,22 +129,22 @@
           </span>
           <div class="mrt-step-n is-violet">שלב 2</div>
           <div class="mrt-step-t">המערכת מצליבה</div>
-          <div class="mrt-step-x">מנוע ההתאמות עובר על כל מה שנכנס ומחזיר לכם התאמות עם ציון.</div>
+          <div class="mrt-step-x">מנוע ההתאמות עובר על כל מה שנכנס ומחזיר לכן התאמות עם ציון.</div>
         </div>
         <div class="mrt-step">
           <span class="mrt-tile is-green" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0B6E35" stroke-width="1.9" stroke-linecap="round"><circle cx="7" cy="7" r="2.8"></circle><circle cx="17" cy="17" r="2.8"></circle><path d="M9.2 9.2l5.6 5.6"></path></svg>
           </span>
           <div class="mrt-step-n">שלב 3</div>
-          <div class="mrt-step-t">נפגשים ומדברים</div>
-          <div class="mrt-step-x">כל התאמה היא מתווך שיושב בחדר. קמים, נפגשים, סוגרים עמלה.</div>
+          <div class="mrt-step-t">נפגשות ומדברות</div>
+          <div class="mrt-step-x">כל התאמה היא מתווכת שיושבת בחדר. קמות, נפגשות, סוגרות עמלה.</div>
         </div>
         <div class="mrt-step is-dark">
           <span class="mrt-tile is-dark" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#70EE91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 18.4c2.2.4 3-2.6 4.6-5.6 1.4-2.6 2.6-1.4 2.2 1-.3 1.9 1 2.6 2.2 1.3 1.1-1.2 2.4-1 2.8.5.3 1.2 1.3 1.7 2.4 1.2"></path><path d="M4 21h16"></path></svg>
           </span>
           <div class="mrt-step-n is-light">שלב 4</div>
-          <div class="mrt-step-t">חותמים במערכת</div>
+          <div class="mrt-step-t">חותמות במערכת</div>
           <div class="mrt-step-x is-light">הסכם השת״פ נחתם דיגיטלית ונשמר על הכרטיס. בלי הסכמות בעל־פה.</div>
         </div>
       </div>
@@ -162,14 +162,14 @@
             <span class="mrt-tl-tag">חלק א׳</span>
             <div class="mrt-tl-b">
               <div class="mrt-tl-t">פתיחה והזנה למערכת</div>
-              <div class="mrt-tl-x">כל אחד מעלה את הנכסים והקונים שלו. צוות שלנו עובר בין השולחנות ועוזר.</div>
+              <div class="mrt-tl-x">כל אחת מעלה את הנכסים והקונים שלה. צוות שלנו עובר בין השולחנות ועוזר.</div>
             </div>
           </div>
           <div class="mrt-tl-row">
             <span class="mrt-tl-tag">חלק ב׳</span>
             <div class="mrt-tl-b">
               <div class="mrt-tl-t">הדגמה חיה של המערכת</div>
-              <div class="mrt-tl-x">כל היכולות על המסך הגדול, עם הנתונים שהרגע הזנתם.</div>
+              <div class="mrt-tl-x">כל היכולות על המסך הגדול, עם הנתונים שהרגע הזנתן.</div>
             </div>
           </div>
           <div class="mrt-tl-row is-dark">
@@ -184,7 +184,7 @@
             <span class="mrt-tl-tag">חלק ג׳</span>
             <div class="mrt-tl-b">
               <div class="mrt-tl-t">מרתון ההתאמות</div>
-              <div class="mrt-tl-x">המערכת מוציאה את ההתאמות בין כל מי שבחדר, ואתם נפגשים אחד עם השני.</div>
+              <div class="mrt-tl-x">המערכת מוציאה את ההתאמות בין כל מי שבחדר, ואתן נפגשות אחת עם השנייה.</div>
             </div>
           </div>
           <div class="mrt-tl-row">
@@ -203,12 +203,12 @@
           <div class="mrt-who-k">למי הבוקר הזה</div>
           <div class="mrt-who-list">
             <div class="mrt-who-card">
-              <div class="mrt-who-t">מתווכים שכבר במערכת</div>
+              <div class="mrt-who-t">מתווכות שכבר במערכת</div>
               <div class="mrt-who-x">תצאו עם מאגר מסודר, התאמות פתוחות ושת״פים חתומים — ותדעו לעבוד עם כל היכולות.</div>
             </div>
             <div class="mrt-who-card is-green">
-              <div class="mrt-who-t is-green">מתווכים שעוד לא ברשת</div>
-              <div class="mrt-who-x">נפתח לכם חשבון במקום, בחינם, ותיכנסו לרשת עוד באותו בוקר. נכסים וקונים ללא הגבלה.</div>
+              <div class="mrt-who-t is-green">מתווכות שעוד לא ברשת</div>
+              <div class="mrt-who-x">נפתח לכן חשבון במקום, בחינם, ותיכנסו לרשת עוד באותו בוקר. נכסים וקונים ללא הגבלה.</div>
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@
   <section id="demo" class="mrt-sec">
     <div class="mrt-wrap">
       <h2 class="mrt-h2">מה נראה בהדגמה<span class="mrt-dot" aria-hidden="true">.</span></h2>
-      <p class="mrt-h2-x">כל יכולת מוצגת על נתונים אמיתיים שלכם, לא על דמו מוכן מראש.</p>
+      <p class="mrt-h2-x">כל יכולת מוצגת על נתונים אמיתיים שלכן, לא על דמו מוכן מראש.</p>
 
       <div class="mrt-caps">
         <div class="mrt-cap">
@@ -243,7 +243,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B6E35" stroke-width="2" stroke-linecap="round"><rect x="9" y="2.8" width="6" height="10.4" rx="3"></rect><path d="M5.6 11a6.4 6.4 0 0 0 12.8 0"></path><path d="M12 17.4V21"></path></svg>
           </span>
           <div class="mrt-cap-t">סוכן קולי בוואטסאפ</div>
-          <div class="mrt-cap-x">שולחים הודעה קולית והוא קולט נכס, קובע פגישה ומוציא תזכורת.</div>
+          <div class="mrt-cap-x">שולחות הודעה קולית והוא קולט נכס, קובע פגישה ומוציא תזכורת.</div>
         </div>
         <div class="mrt-cap">
           <span class="mrt-tile-s is-violet" aria-hidden="true">
@@ -264,7 +264,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B6E35" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="3"></rect><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"></path></svg>
           </span>
           <div class="mrt-cap-t">פגישות ותזכורות</div>
-          <div class="mrt-cap-x">נקבעות אוטומטית, בסנכרון ליומן גוגל ולמייל שלכם.</div>
+          <div class="mrt-cap-x">נקבעות אוטומטית, בסנכרון ליומן גוגל ולמייל שלכן.</div>
         </div>
         <div class="mrt-cap">
           <span class="mrt-tile-s is-green" aria-hidden="true">
@@ -292,7 +292,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#70EE91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.6"></rect><path d="M8 10.4V8a4 4 0 0 1 8 0v2.4"></path></svg>
           </span>
           <div class="mrt-cap-t">הלידים שלך נשארים שלך</div>
-          <div class="mrt-cap-x is-light">רק מה שאתם בוחרים לשתף עובר לצד השני. שאר המאגר חסוי.</div>
+          <div class="mrt-cap-x is-light">רק מה שאתן בוחרות לשתף עובר לצד השני. שאר המאגר חסוי.</div>
         </div>
       </div>
     </div>
@@ -301,8 +301,8 @@
   <section id="register" class="mrt-sec">
     <div class="mrt-reg">
       <div>
-        <h2 class="mrt-h2-r">שומרים לכם מקום<span class="mrt-dot" aria-hidden="true">.</span></h2>
-        <p class="mrt-reg-x">[mv_event field="weekday"] [mv_event field="date"] בשעה [mv_event field="time"], [mv_event field="address"], [mv_event field="address_sub"]. מספר המקומות מוגבל, כדי שלכל מתווך יהיה זמן להזין את המאגר שלו ולסגור שת״פים בפועל.</p>
+        <h2 class="mrt-h2-r">שומרים לכן מקום<span class="mrt-dot" aria-hidden="true">.</span></h2>
+        <p class="mrt-reg-x">[mv_event field="weekday"] [mv_event field="date"] בשעה [mv_event field="time"], [mv_event field="address"], [mv_event field="address_sub"]. מספר המקומות מוגבל, כדי שלכל מתווכת יהיה זמן להזין את המאגר שלה ולסגור שת״פים בפועל.</p>
 
         <div class="mrt-checks">
           <div class="mrt-check">
@@ -315,27 +315,27 @@
           </div>
           <div class="mrt-check">
             <svg class="mrt-none" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B6E35" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.4 4.4L19 7.4"></path></svg>
-            <div class="mrt-check-t">צוות שלנו יושב איתכם על ההזנה למערכת</div>
+            <div class="mrt-check-t">צוות שלנו יושב איתכן על ההזנה למערכת</div>
           </div>
         </div>
 
         <div class="mrt-bring">
           <div class="mrt-bring-k">מה להביא</div>
-          <div class="mrt-bring-t">לפטופ או טלפון, ורשימת הנכסים והקונים שיש לכם ביד — גם אם היא בפתקים.</div>
+          <div class="mrt-bring-t">לפטופ או טלפון, ורשימת הנכסים והקונים שיש לכן ביד — גם אם היא בפתקים.</div>
         </div>
 
         <div class="mrt-wa">
           <svg class="mrt-none" width="34" height="34" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12 2.4A9.5 9.5 0 0 0 3.9 16.8L2.6 21.4l4.7-1.2A9.5 9.5 0 1 0 12 2.4Zm5.2 13.3c-.2.6-1.2 1.2-1.9 1.2-.6 0-2.4-.3-4.6-2.2-2-1.8-2.6-3.4-2.7-4-.1-.6.3-1.4.8-1.8.3-.2.6-.2.8-.2.3 0 .5 0 .7.5l.7 1.7c.1.3 0 .5-.1.7l-.4.5c-.1.2-.2.3 0 .6.3.5.8 1.1 1.3 1.5.7.6 1.2.8 1.5.9.2.1.4 0 .5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.4.2.4.4.4.6 0 .1 0 .1-.2.2Z"></path></svg>
           <div class="mrt-tl-b">
-            <div class="mrt-wa-t">מעדיפים להירשם בוואטסאפ?</div>
-            <div class="mrt-wa-x">שלחו הודעה ל‑<a class="mrt-wa-a" href="[mv_event field='whatsapp']" dir="ltr">[mv_event field="phone"]</a> ונשמור לכם מקום.</div>
+            <div class="mrt-wa-t">מעדיפות להירשם בוואטסאפ?</div>
+            <div class="mrt-wa-x">שלחו הודעה ל‑<a class="mrt-wa-a" href="[mv_event field='whatsapp']" dir="ltr">[mv_event field="phone"]</a> ונשמור לכן מקום.</div>
           </div>
         </div>
       </div>
 
       <div class="mrt-form">
         <div class="mrt-form-t">טופס הרשמה</div>
-        <div class="mrt-form-x">ממלאים, ואנחנו חוזרים אליכם עם אישור.</div>
+        <div class="mrt-form-x">ממלאות, ואנחנו חוזרים אליכן עם אישור.</div>
 
         <form class="mv-event-form" method="post" novalidate
           action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
@@ -352,7 +352,7 @@
           <div class="mrt-fields">
             <div>
               <label class="mrt-label" for="mrt-name">שם מלא</label>
-              <input class="mrt-input" type="text" id="mrt-name" name="mv_name" placeholder="השם שלכם" autocomplete="name" maxlength="120" required aria-describedby="mrt-name-err">
+              <input class="mrt-input" type="text" id="mrt-name" name="mv_name" placeholder="השם שלכן" autocomplete="name" maxlength="120" required aria-describedby="mrt-name-err">
               <span class="mrt-error" id="mrt-name-err" role="alert"></span>
             </div>
             <div>
@@ -362,7 +362,7 @@
             </div>
             <div>
               <label class="mrt-label" for="mrt-office">משרד / סוכנות</label>
-              <input class="mrt-input" type="text" id="mrt-office" name="mv_office" placeholder="שם המשרד שלכם" maxlength="120" required aria-describedby="mrt-office-err">
+              <input class="mrt-input" type="text" id="mrt-office" name="mv_office" placeholder="שם המשרד שלכן" maxlength="120" required aria-describedby="mrt-office-err">
               <span class="mrt-error" id="mrt-office-err" role="alert"></span>
             </div>
             <div>
@@ -371,7 +371,7 @@
               <span class="mrt-error" id="mrt-area-err" role="alert"></span>
             </div>
             <fieldset>
-              <legend class="mrt-label">כבר עובדים במערכת?</legend>
+              <legend class="mrt-label">כבר עובדות במערכת?</legend>
               <div class="mrt-toggle">
                 <input type="radio" id="mrt-member-yes" name="mv_member" value="כן" required>
                 <label for="mrt-member-yes">כן</label>
@@ -395,8 +395,8 @@
           <div class="mrt-done-ico" aria-hidden="true">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#70EE91" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"></path></svg>
           </div>
-          <p class="mrt-done-title">נשמר לכם מקום</p>
-          <p class="mrt-done-text">נחזור אליכם עם אישור והכתובת המדויקת.</p>
+          <p class="mrt-done-title">נשמר לכן מקום</p>
+          <p class="mrt-done-text">נחזור אליכן עם אישור והכתובת המדויקת.</p>
         </div>
       </div>
     </div>
@@ -407,20 +407,20 @@
       <h2 class="mrt-h2-f">שאלות שחוזרות<span class="mrt-dot-g" aria-hidden="true">?</span></h2>
       <div class="mrt-faq-grid">
         <div>
-          <div class="mrt-faq-q">אני חייב להביא נכסים בבלעדיות?</div>
-          <div class="mrt-faq-a">לא. תביאו את מה שיש — נכסים, קונים או שוכרים. גם קונה בודד יכול להפוך לעסקה מול נכס של מתווך אחר בחדר.</div>
+          <div class="mrt-faq-q">אני חייבת להביא נכסים בבלעדיות?</div>
+          <div class="mrt-faq-a">לא. תביאו את מה שיש — נכסים, קונים או שוכרים. גם קונה בודד יכול להפוך לעסקה מול נכס של מתווכת אחרת בחדר.</div>
         </div>
         <div>
           <div class="mrt-faq-q">הלידים שלי נחשפים לכולם?</div>
-          <div class="mrt-faq-a">לא. רק מה שאתם בוחרים לשתף עובר לצד השני, ופרטי הלקוח נפתחים אחרי הסכם עמלה כתוב.</div>
+          <div class="mrt-faq-a">לא. רק מה שאתן בוחרות לשתף עובר לצד השני, ופרטי הלקוח נפתחים אחרי הסכם עמלה כתוב.</div>
         </div>
         <div>
           <div class="mrt-faq-q">איך מתחלקת העמלה בשת״פ?</div>
-          <div class="mrt-faq-a">אתם קובעים ביניכם, והמערכת שומרת את החלוקה בכתב על העסקה. ברירת המחדל המקובלת היא 50/50.</div>
+          <div class="mrt-faq-a">אתן קובעות ביניכן, והמערכת שומרת את החלוקה בכתב על העסקה. ברירת המחדל המקובלת היא 50/50.</div>
         </div>
         <div>
           <div class="mrt-faq-q">אני לא במערכת, שווה לי לבוא?</div>
-          <div class="mrt-faq-a">כן. נפתח לכם חשבון במקום בחינם, נעזור להזין את המאגר, ותצאו עם התאמות פתוחות עוד באותו בוקר.</div>
+          <div class="mrt-faq-a">כן. נפתח לכן חשבון במקום בחינם, נעזור להזין את המאגר, ותצאו עם התאמות פתוחות עוד באותו בוקר.</div>
         </div>
       </div>
     </div>

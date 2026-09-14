@@ -68,8 +68,8 @@ function mv_lead_form_label( $form ) {
  */
 function mv_lead_success_message( $form ) {
 	$messages = array(
-		'marathon' => 'נשמר לכם מקום. נחזור אליכם עם אישור והכתובת המדויקת.',
-		'waitlist' => 'רשמנו אתכם. נעדכן ברגע שייפתח מועד נוסף.',
+		'marathon' => 'נשמר לכן מקום. נחזור אליכן עם אישור והכתובת המדויקת.',
+		'waitlist' => 'רשמנו אתכן. נעדכן ברגע שייפתח מועד נוסף.',
 		'news'     => 'נרשמתם. כל יכולת חדשה תגיע אליכם למייל.',
 	);
 	return isset( $messages[ $form ] ) ? $messages[ $form ] : 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.';

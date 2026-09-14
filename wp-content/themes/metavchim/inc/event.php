@@ -19,18 +19,18 @@ function mv_event_fields() {
 	return array(
 		'date'        => array(
 			'label'   => 'תאריך',
-			'default' => '31.08.26',
+			'default' => '16.09.26',
 			'help'    => 'מוצג כמו שנכתב, בכיוון משמאל לימין.',
 		),
 		'weekday'     => array(
 			'label'   => 'יום בשבוע',
-			'default' => 'יום שני',
+			'default' => 'יום רביעי',
 			'help'    => '',
 		),
 		'time'        => array(
 			'label'   => 'שעה',
-			'default' => '10:00',
-			'help'    => 'למשל 10:00. המילה "בבוקר" מתווספת בעיצוב.',
+			'default' => '10:30',
+			'help'    => 'למשל 10:30. המילה "בבוקר" מתווספת בעיצוב.',
 		),
 		'address'     => array(
 			'label'   => 'כתובת',
@@ -82,6 +82,31 @@ function mv_event_migrate_address() {
 	update_option( 'mv_event_addr_v', '2', false );
 }
 add_action( 'admin_init', 'mv_event_migrate_address', 9 );
+
+/**
+ * ניקוי חד-פעמי: אתר ששמר את המועד הקודם של האירוע (31.08.26, יום שני,
+ * 10:00) עובר למועד העדכני. מועד שהמנהל הקליד בעצמו נשאר כפי שהוא.
+ */
+function mv_event_migrate_date() {
+	if ( '1' === get_option( 'mv_event_date_v', '' ) ) {
+		return;
+	}
+
+	$old = array(
+		'mv_event_date'    => '31.08.26',
+		'mv_event_weekday' => 'יום שני',
+		'mv_event_time'    => '10:00',
+	);
+
+	foreach ( $old as $option => $value ) {
+		if ( $value === get_option( $option, '' ) ) {
+			delete_option( $option );
+		}
+	}
+
+	update_option( 'mv_event_date_v', '1', false );
+}
+add_action( 'admin_init', 'mv_event_migrate_date', 9 );
 
 /**
  * לוגואים של שותפי האירוע, כפי שהם מופיעים בקובץ העיצוב.
@@ -312,7 +337,7 @@ function mv_render_waitlist_popup() {
 			</span>
 
 			<h2 class="mrt-pop-title" id="mrt-pop-title">לא מסתדר לכם התאריך<span class="mrt-pop-dot">?</span></h2>
-			<p class="mrt-pop-text">השאירו פרטים ונעדכן אתכם ברגע שנפתחת קבוצה חדשה. אפשר לציין בהערות אם נוח לכם יותר בשעות הבוקר או בשעות הערב.</p>
+			<p class="mrt-pop-text">השאירו פרטים ונעדכן אתכן ברגע שנפתחת קבוצה חדשה. אפשר לציין בהערות אם נוח לכן יותר בשעות הבוקר או בשעות הערב.</p>
 
 			<form class="mrt-pop-form" method="post" novalidate
 				action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
@@ -328,7 +353,7 @@ function mv_render_waitlist_popup() {
 
 				<div>
 					<label class="mrt-pop-label" for="mrt-pop-name">שם מלא</label>
-					<input class="mrt-pop-field" type="text" id="mrt-pop-name" name="mv_name" placeholder="השם שלכם" autocomplete="name" maxlength="120" required aria-describedby="mrt-pop-name-err">
+					<input class="mrt-pop-field" type="text" id="mrt-pop-name" name="mv_name" placeholder="השם שלכן" autocomplete="name" maxlength="120" required aria-describedby="mrt-pop-name-err">
 					<span class="mrt-error" id="mrt-pop-name-err" role="alert"></span>
 				</div>
 				<div>
@@ -338,7 +363,7 @@ function mv_render_waitlist_popup() {
 				</div>
 				<div>
 					<label class="mrt-pop-label" for="mrt-pop-note">הערות <span class="mrt-pop-opt">— בוקר או ערב?</span></label>
-					<textarea class="mrt-pop-field" id="mrt-pop-note" name="mv_note" rows="2" maxlength="500" placeholder="למשל: מעדיף שעות ערב"></textarea>
+					<textarea class="mrt-pop-field" id="mrt-pop-note" name="mv_note" rows="2" maxlength="500" placeholder="למשל: מעדיפה שעות ערב"></textarea>
 				</div>
 
 				<?php mv_turnstile_widget(); ?>
@@ -350,7 +375,7 @@ function mv_render_waitlist_popup() {
 				<span class="mrt-pop-ico" aria-hidden="true">
 					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"></path></svg>
 				</span>
-				<p class="mrt-pop-title">רשמנו אתכם<span class="mrt-pop-dot">.</span></p>
+				<p class="mrt-pop-title">רשמנו אתכן<span class="mrt-pop-dot">.</span></p>
 				<p class="mrt-pop-text">נעדכן ברגע שייפתח מועד נוסף.</p>
 			</div>
 		</div>
