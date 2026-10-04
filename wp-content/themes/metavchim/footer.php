@@ -37,11 +37,11 @@ defined( 'ABSPATH' ) || exit;
 	</footer>
 
 	<div class="mv-sticky">
-		<a class="mv-sticky-cta" href="#demo">
-			<?php mv_icon( 'calendar', 17 ); ?>
-			תיאום הדגמה חינם
+		<a class="mv-sticky-cta" href="<?php echo esc_url( mv_signup_url() ); ?>">
+			<?php mv_icon( 'sparkle', 17 ); ?>
+			פתיחת חשבון חינם
 		</a>
-		<a class="mv-sticky-alt" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
+		<a class="mv-sticky-alt" href="#demo">דברו איתנו</a>
 	</div>
 
 	<?php mv_a11y_toolbar(); ?>

@@ -333,12 +333,12 @@ function mv_privacy_content() {
 			array( 'p', '<strong>בעל המאגר והאחראי על המידע:</strong> [שם החברה המלא], ח.פ. [מספר], [כתובת], דוא"ל: [כתובת דוא"ל ליצירת קשר].' ),
 
 			array( 'h2', 'איזה מידע נאסף' ),
-			array( 'p', '<strong>מידע שאתה מוסר ביוזמתך.</strong> בטופס תיאום ההדגמה שבאתר נאספים שם מלא, מספר טלפון, כתובת דוא"ל, ומועד מועדף להדגמה אם בחרת למלא אותו. בנוסף נשמרת כתובת העמוד שממנו נשלחה הפנייה. שדות אלה נדרשים כדי שנוכל לחזור אליך.' ),
+			array( 'p', '<strong>מידע שאתה מוסר ביוזמתך.</strong> בטופס יצירת הקשר שבאתר נאספים שם מלא, מספר טלפון וכתובת דוא"ל. בנוסף נשמרת כתובת העמוד שממנו נשלחה הפנייה. שדות אלה נדרשים כדי שנוכל לחזור אליך.' ),
 			array( 'p', '<strong>מידע טכני שנאסף אוטומטית.</strong> בעת גלישה באתר עשויים להיאסף נתוני שימוש כלליים: סוג הדפדפן והמכשיר, מערכת ההפעלה, שפת הממשק, העמודים שנצפו, משך השהייה, המקור שממנו הגעת לאתר וכתובת IP מקוצרת. איסוף זה מתבצע רק לאחר שנתת הסכמה לכך, כמפורט בסעיף המדידה.' ),
 
 			array( 'h2', 'למה המידע משמש' ),
 			array( 'p', 'פרטי הקשר שאתה מוסר באתר נאספים ומשמשים אותנו למטרות הבאות:' ),
-			array( 'p', '· יצירת קשר איתך, מענה לפנייתך ותיאום הדגמה של מערכת מתווכים.<br>· <strong>מכירה ושיווק</strong> של מערכת מתווכים והשירותים הנלווים לה, לרבות שיחות מכירה ומעקב.<br>· <strong>משלוח הצעות פרסומיות ודברי פרסומת</strong> בנוגע למערכת מתווכים ולעדכוני מוצר, בדוא"ל, במסרונים, בהודעות ווטסאפ או בשיחת טלפון.<br>· שיפור המוצר, השירות והאתר, וניתוח סטטיסטי של הביקושים.' ),
+			array( 'p', '· יצירת קשר איתך ומענה לפנייתך בנוגע למערכת מתווכים.<br>· <strong>מכירה ושיווק</strong> של מערכת מתווכים והשירותים הנלווים לה, לרבות שיחות מכירה ומעקב.<br>· <strong>משלוח הצעות פרסומיות ודברי פרסומת</strong> בנוגע למערכת מתווכים ולעדכוני מוצר, בדוא"ל, במסרונים, בהודעות ווטסאפ או בשיחת טלפון.<br>· שיפור המוצר, השירות והאתר, וניתוח סטטיסטי של הביקושים.' ),
 			array( 'p', 'מסירת הפרטים בטופס מהווה הסכמה לקבלת פניות ודברי פרסומת כאמור, בהתאם לסעיף 30א לחוק התקשורת (בזק ושידורים), התשמ"ב-1982. <strong>אפשר לבקש להסיר את פרטיך בכל עת</strong> — בהודעת חזרה, בקישור ההסרה שבתחתית כל דיוור, או בפנייה לכתובת הדוא"ל שבראש מדיניות זו — ונחדל מפנייה שיווקית אליך.' ),
 			array( 'p', 'איננו מוכרים ואיננו משכירים את פרטיך לצדדים שלישיים, ואיננו מעבירים אותם לשימוש שיווקי של גורם אחר.' ),
 
@@ -398,24 +398,42 @@ function mv_ensure_menu_item( $menu_id, $slug, $label, $before_label = '' ) {
 		$items = array();
 	}
 
+	// פריט מתאים יכול להיות קישור לעמוד, קישור לאותה כתובת, או פריט
+	// עם אותה כותרת שנוצר כשהכתובת הייתה שונה (למשל לפני מבנה קישורים
+	// יפים). הראשון נשמר ומתוקן, והשאר נמחקים כדי שלא תהיה כפילות.
+	$matches = array();
 	foreach ( $items as $item ) {
-		$is_page_item = ( 'post_type' === $item->type && (int) $item->object_id === (int) $page->ID );
-		$is_url_item  = ( untrailingslashit( $item->url ) === untrailingslashit( $url ) );
+		$is_page_item  = ( 'post_type' === $item->type && (int) $item->object_id === (int) $page->ID );
+		$is_url_item   = ( untrailingslashit( $item->url ) === untrailingslashit( $url ) );
+		$is_label_item = ( $label === $item->title );
 
-		if ( $is_page_item || $is_url_item ) {
-			if ( $label !== $item->title ) {
-				wp_update_nav_menu_item(
-					$menu_id,
-					$item->ID,
-					array(
-						'menu-item-title'  => $label,
-						'menu-item-url'    => $url,
-						'menu-item-status' => 'publish',
-					)
-				);
-			}
-			return;
+		if ( $is_page_item || $is_url_item || $is_label_item ) {
+			$matches[] = $item;
 		}
+	}
+
+	if ( $matches ) {
+		$keep = array_shift( $matches );
+
+		if ( $label !== $keep->title || untrailingslashit( $keep->url ) !== untrailingslashit( $url ) ) {
+			wp_update_nav_menu_item(
+				$menu_id,
+				$keep->ID,
+				array(
+					'menu-item-title'  => $label,
+					'menu-item-url'    => $url,
+					'menu-item-status' => 'publish',
+				)
+			);
+		}
+
+		foreach ( $matches as $extra ) {
+			wp_delete_post( (int) $extra->ID, true );
+		}
+
+		mv_place_menu_item_before( (int) $keep->ID, $items, $before_label );
+
+		return;
 	}
 
 	$new_id = wp_update_nav_menu_item(
@@ -428,26 +446,51 @@ function mv_ensure_menu_item( $menu_id, $slug, $label, $before_label = '' ) {
 		)
 	);
 
-	if ( is_wp_error( $new_id ) || '' === $before_label ) {
+	if ( is_wp_error( $new_id ) ) {
+		return;
+	}
+
+	mv_place_menu_item_before( (int) $new_id, $items, $before_label );
+}
+
+/**
+ * מיקום פריט בתפריט ממש לפני פריט אחר, לפי הכותרת שלו.
+ *
+ * @param int    $item_id      הפריט להזזה.
+ * @param array  $items        פריטי התפריט כפי שנקראו.
+ * @param string $before_label הכותרת שאחריה הפריט אמור לשבת.
+ */
+function mv_place_menu_item_before( $item_id, array $items, $before_label ) {
+	if ( ! $item_id || '' === $before_label ) {
 		return;
 	}
 
 	foreach ( $items as $item ) {
-		if ( $before_label === $item->title ) {
-			wp_update_post(
-				array(
-					'ID'         => $new_id,
-					'menu_order' => (int) $item->menu_order,
-				)
-			);
-			wp_update_post(
-				array(
-					'ID'         => $item->ID,
-					'menu_order' => (int) $item->menu_order + 1,
-				)
-			);
-			break;
+		if ( $before_label !== $item->title || (int) $item->ID === $item_id ) {
+			continue;
 		}
+
+		$order = (int) $item->menu_order;
+		wp_update_post(
+			array(
+				'ID'         => $item_id,
+				'menu_order' => $order,
+			)
+		);
+
+		// כל מה שמאותו מקום והלאה נדחף אחד קדימה, כדי לא ליצור שוויון.
+		foreach ( $items as $later ) {
+			if ( (int) $later->ID !== $item_id && (int) $later->menu_order >= $order ) {
+				wp_update_post(
+					array(
+						'ID'         => $later->ID,
+						'menu_order' => (int) $later->menu_order + 1,
+					)
+				);
+			}
+		}
+
+		return;
 	}
 }
 
@@ -461,7 +504,6 @@ function mv_install_menus( array $legal_ids ) {
 				'#product'       => 'המערכת',
 				'#voice'         => 'סוכן קולי',
 				'#security'      => 'אבטחה',
-				'collaboration/' => mv_collab_label(),
 				'#plans'         => 'מסלולים',
 			);
 			foreach ( $anchors as $target => $label ) {
@@ -642,6 +684,28 @@ function mv_maybe_repair_content() {
 	}
 }
 add_action( 'admin_init', 'mv_maybe_repair_content' );
+
+/**
+ * ניקוי חד-פעמי לתפריט הראשי: גרסאות קודמות יצרו את הקישור לעמוד
+ * השת״פים גם ככתובת ידנית וגם כקישור לעמוד, ובאתר עם מבנה קישורים
+ * שונה נוצרו שני פריטים באותו שם.
+ */
+function mv_fix_menu_duplicates() {
+	if ( '1' === get_option( 'mv_menu_fix_v', '' ) ) {
+		return;
+	}
+
+	$locations = get_nav_menu_locations();
+	$menu_id   = isset( $locations['primary'] ) ? (int) $locations['primary'] : 0;
+
+	if ( $menu_id ) {
+		mv_ensure_menu_item( $menu_id, 'collaboration', mv_collab_label(), 'מסלולים' );
+		mv_ensure_menu_item( $menu_id, 'about', 'אודות' );
+	}
+
+	update_option( 'mv_menu_fix_v', '1', false );
+}
+add_action( 'admin_init', 'mv_fix_menu_duplicates', 12 );
 
 /**
  * מסך "תוכן העמודים" בלוח הבקרה — רשימת העמודים של התבנית עם קישורי

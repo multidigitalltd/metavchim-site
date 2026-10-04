@@ -144,7 +144,7 @@
   <div class="mv-c-wrap">
     <h2 class="mv-c-h2" id="mv-c-impact-title">מה זה עושה למספרים של המשרד<span class="mv-dot" aria-hidden="true">.</span></h2>
     <p class="mv-c-impact-lede">מודל להמחשה, על משרד עם 20 נכסים ו‑45 קונים פעילים, המחובר לשלושה משרדים באזור.</p>
-    <p class="mv-c-note">ההשוואה מתארת את פוטנציאל ההתאמות במאגר המורחב — לא הבטחה לתוצאה. בהדגמה נריץ את החישוב על הנתונים האמיתיים שלך.</p>
+    <p class="mv-c-note">ההשוואה מתארת את פוטנציאל ההתאמות במאגר המורחב — לא הבטחה לתוצאה. אחרי פתיחת החשבון החישוב רץ על הנתונים האמיתיים שלך.</p>
 
     <div class="mv-c-kpis">
       <div class="mv-c-kpi">
@@ -487,9 +487,9 @@
   <div class="mv-c-cta mv-on-dark">
     <div class="mv-c-cta-glow" aria-hidden="true"></div>
     <h2 id="mv-c-cta-title">נראה לך אילו משרדים באזור שלך כבר ברשת<span class="mv-dot" aria-hidden="true">.</span></h2>
-    <p>הדגמה של 20 דקות על הנתונים שלך. בלי מצגת.</p>
+    <p>פותחים חשבון ורואים מיד מי באזור שלך ברשת. מסלול שתפים חינם לתמיד.</p>
     <div class="mv-c-btns">
-      <a class="mv-c-btn-green" href="#demo">קביעת הדגמה</a>
+      <a class="mv-c-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון חינם</a>
       <a class="mv-c-btn-ghost" href="<?php echo esc_url( home_url( '/' ) ); ?>">חזרה לדף הבית</a>
     </div>
   </div>

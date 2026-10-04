@@ -170,7 +170,7 @@ html{scroll-behavior:auto}
 .mv-copy{margin-inline-start:0}
 }
 
-/* ---------- טופס הרשמה ותיאום הדגמה (חלון קופץ) ---------- */
+/* ---------- חלון יצירת קשר ---------- */
 .mv-modal{display:none;position:fixed;inset:0;z-index:120;align-items:center;justify-content:center;padding:24px 18px}
 .mv-modal.is-open,.mv-modal:target{display:flex}
 .mv-modal-backdrop{position:absolute;inset:0;background:rgba(11,15,20,.55);backdrop-filter:blur(2px)}
@@ -214,9 +214,9 @@ html{scroll-behavior:auto}
 .mv-lede{font-size:1.125rem;line-height:1.6;color:var(--mv-text2)}
 .mv-pill-dark{display:inline-flex;align-items:center;gap:9px;background:var(--mv-ink);color:var(--mv-green);font-size:0.8125rem;font-weight:800;padding:8px 16px;border-radius:999px;letter-spacing:.3px}
 .mv-pill-tint{display:inline-flex;align-items:center;gap:9px;background:var(--mv-tint);color:var(--mv-green-aa);font-size:0.8125rem;font-weight:800;padding:8px 15px;border-radius:999px}
-.mv-btn-green{display:inline-block;background:var(--mv-green);color:var(--mv-black);font-size:1.03125rem;font-weight:800;padding:16px 34px;border-radius:13px;box-shadow:0 12px 34px rgba(112,238,145,.22);transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.mv-btn-green{display:inline-block;background:linear-gradient(180deg,#8CF7A8,var(--mv-green));color:var(--mv-black);font-size:1.03125rem;font-weight:800;padding:16px 34px;border-radius:13px;box-shadow:0 14px 38px rgba(112,238,145,.28);transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
 .mv-btn-green:hover{transform:translateY(-3px);background:var(--mv-green-hover);color:var(--mv-black);box-shadow:0 18px 44px rgba(112,238,145,.32)}
-.mv-btn-ghost{display:inline-block;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#fff;font-size:1.03125rem;font-weight:700;padding:16px 30px;border-radius:13px;transition:all .2s ease}
+.mv-btn-ghost{display:inline-block;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;font-size:1.03125rem;font-weight:700;padding:16px 30px;border-radius:13px;transition:all .2s ease}
 .mv-btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.32);transform:translateY(-3px);color:#fff}
 .mv-btn-row{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
 .mv-sec-head{max-width:1240px;margin:0 auto;text-align:center}

@@ -15,10 +15,10 @@
   <div class="mv-cta mv-on-dark">
     <div class="mv-cta-glow" aria-hidden="true"></div>
     <h2 class="mv-h2" id="mv-cta-title">נראה לך את ההתאמות שכבר יושבות במאגר שלך<span class="mv-dot" aria-hidden="true">.</span></h2>
-    <p class="mv-lede">הדגמה של 20 דקות על הנתונים שלך. בלי מצגת.</p>
+    <p class="mv-lede">פותחים חשבון ומתחילים — מסלול שתפים חינם לתמיד, נכסים וקונים ללא הגבלה.</p>
     <div class="mv-btn-row">
-      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון</a>
-      <a class="mv-btn-ghost" href="#demo">קביעת הדגמה</a>
+      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון חינם</a>
+      <a class="mv-btn-ghost" href="#demo">דברו איתנו</a>
     </div>
   </div>
 </section>

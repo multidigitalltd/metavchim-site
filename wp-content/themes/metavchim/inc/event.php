@@ -385,7 +385,7 @@ function mv_render_waitlist_popup() {
 add_action( 'wp_footer', 'mv_render_waitlist_popup', 7 );
 
 /**
- * דף הנחיתה עומד בפני עצמו — אין בו את חלון תיאום ההדגמה של האתר.
+ * דף הנחיתה עומד בפני עצמו — אין בו את חלון יצירת הקשר של האתר.
  *
  * @param bool $needed האם להציג.
  * @return bool

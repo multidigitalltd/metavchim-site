@@ -23,16 +23,32 @@
 
 /* ===== 1. Hero ===== */
 .mv-hero{position:relative;margin:16px 28px 0;background:var(--mv-black);color:#fff;border-radius:28px;padding:88px 28px 0;overflow:hidden}
-.mv-hero-glow{position:absolute;inset:-160px 0 auto 0;height:620px;background:radial-gradient(60% 60% at 50% 0%,rgba(112,238,145,.18),rgba(10,12,11,0) 70%);pointer-events:none;animation:mvGlow 7s ease-in-out infinite}
+.mv-hero-glow{position:absolute;inset:-160px 0 auto 0;height:620px;background:radial-gradient(60% 60% at 50% 0%,rgba(112,238,145,.2),rgba(10,12,11,0) 70%);pointer-events:none;animation:mvGlow 7s ease-in-out infinite}
+/* שתי הילות רכות שנעות לאט — נותנות עומק בלי להסיח מהטקסט. */
+.mv-hero-aurora{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.mv-hero-aurora::before,.mv-hero-aurora::after{content:"";position:absolute;width:620px;height:620px;border-radius:50%;filter:blur(90px);opacity:.5}
+.mv-hero-aurora::before{inset-block-start:-180px;inset-inline-start:-140px;background:radial-gradient(circle,rgba(112,238,145,.3),transparent 68%);animation:mvFloatA 16s ease-in-out infinite}
+.mv-hero-aurora::after{inset-block-start:-120px;inset-inline-end:-160px;background:radial-gradient(circle,rgba(63,191,99,.26),transparent 68%);animation:mvFloatB 19s ease-in-out infinite}
+@keyframes mvFloatA{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(40px,30px,0)}}
+@keyframes mvFloatB{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-36px,26px,0)}}
 .mv-hero-gridbg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:linear-gradient(#000,transparent 70%);mask-image:linear-gradient(#000,transparent 70%);pointer-events:none}
 .mv-hero-inner{position:relative;max-width:1180px;margin:0 auto;text-align:center}
-.mv-hero-tag{display:inline-flex;align-items:center;gap:14px;color:rgba(255,255,255,.65);font-size:0.90625rem;font-weight:600;letter-spacing:.06em}
-.mv-hero-tag-line{width:34px;height:1px;background:rgba(255,255,255,.25)}
-.mv-h1{margin:26px 0 0;font-size:4.75rem;font-weight:900;line-height:1.03;letter-spacing:-.035em;text-wrap:balance}
-.mv-hero-sub{font-size:1.25rem;line-height:1.6;color:rgba(255,255,255,.62);max-width:610px;margin:28px auto 36px;text-wrap:pretty}
+.mv-hero-tag{display:inline-flex;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:rgba(112,238,145,.1);border:1px solid rgba(112,238,145,.26);color:#C9F7D6;font-size:0.90625rem;font-weight:700;letter-spacing:.01em}
+.mv-hero-pulse{width:8px;height:8px;border-radius:999px;background:var(--mv-green);box-shadow:0 0 0 0 rgba(112,238,145,.55);animation:mvPulse 2.4s ease-out infinite}
+@keyframes mvPulse{0%{box-shadow:0 0 0 0 rgba(112,238,145,.5)}70%{box-shadow:0 0 0 10px rgba(112,238,145,0)}100%{box-shadow:0 0 0 0 rgba(112,238,145,0)}}
+.mv-h1{margin:26px 0 0;font-size:4.75rem;font-weight:900;line-height:1.03;letter-spacing:-.04em;text-wrap:balance}
+/* מילת המפתח בכותרת מודגשת בירוק של המותג, עם קו עדין מתחתיה. */
+.mv-hero-hl{position:relative;color:var(--mv-green);white-space:nowrap}
+.mv-hero-hl::after{content:"";position:absolute;inset-inline:0;inset-block-end:.1em;height:.085em;border-radius:999px;background:linear-gradient(90deg,rgba(112,238,145,0),rgba(112,238,145,.7),rgba(112,238,145,0))}
+.mv-hero-sub{font-size:1.25rem;line-height:1.6;color:rgba(255,255,255,.7);max-width:640px;margin:26px auto 34px;text-wrap:pretty}
+/* שורת האמון מתחת לכפתורים — מה שמקבלים עוד לפני שמשלמים. */
+.mv-hero-trust{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 26px;margin:26px 0 0;padding:0;list-style:none;font-size:0.9375rem;font-weight:600;color:rgba(255,255,255,.66)}
+.mv-hero-trust li{display:inline-flex;align-items:center;gap:8px}
+.mv-hero-trust svg{color:var(--mv-green);flex:none}
 /* Product screenshot mock */
 .mv-shot{position:relative;max-width:1180px;margin:60px auto 0}
-.mv-shot-frame{border:1px solid rgba(255,255,255,.1);border-radius:22px 22px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:10px 10px 0}
+.mv-shot-frame{position:relative;border:1px solid rgba(255,255,255,.12);border-radius:22px 22px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));padding:10px 10px 0;box-shadow:0 -1px 0 rgba(255,255,255,.12) inset,0 40px 90px -40px rgba(0,0,0,.9)}
+.mv-shot{filter:drop-shadow(0 30px 60px rgba(0,0,0,.45))}
 .mv-shot-app{border-radius:16px 16px 0 0;overflow:hidden;background:var(--mv-ink);display:grid;grid-template-columns:210px 1fr;text-align:right}
 .mv-shot-side{background:var(--mv-black);border-inline-end:1px solid rgba(255,255,255,.06);padding:20px 18px}
 .mv-shot-side-brand{display:flex;align-items:center;gap:9px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:1.0625rem;font-weight:900}
@@ -448,6 +464,7 @@
 .mv-plans-note{margin:18px 0 0;font-size:0.875rem;color:var(--mv-muted)}
 
 @media (prefers-reduced-motion:reduce){
+.mv-hero-aurora::before,.mv-hero-aurora::after,.mv-hero-pulse{animation:none}
 .mv-plans{scroll-behavior:auto}
 .mv-plan:hover,.mv-plan-cta:hover,.mv-rail-btn:hover{transform:none}
 }
@@ -494,6 +511,8 @@
 .mv-cta-sec{padding:70px 16px 32px}
 .mv-hero{margin:12px 16px 0;padding:64px 18px 0;border-radius:22px}
 .mv-h1{font-size:2.5rem}
+.mv-hero-tag{font-size:0.84375rem;padding:8px 14px}
+.mv-hero-trust{gap:8px 16px;font-size:0.875rem}
 .mv-hero-sub{font-size:1.0625rem}
 .mv-network-sec .mv-h2{font-size:2.125rem}
 .mv-security-sec .mv-h2{font-size:2.125rem}

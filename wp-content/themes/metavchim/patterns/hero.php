@@ -13,16 +13,22 @@
 <!-- wp:html -->
 <section class="mv-hero mv-on-dark" aria-labelledby="mv-hero-title">
   <div class="mv-hero-glow" aria-hidden="true"></div>
+  <div class="mv-hero-aurora" aria-hidden="true"></div>
   <div class="mv-hero-gridbg" aria-hidden="true"></div>
 
   <div class="mv-hero-inner">
-    <p class="mv-hero-tag"><span class="mv-hero-tag-line" aria-hidden="true"></span>המערכת היחידה עם רשת שיתופי פעולה בין משרדים<span class="mv-hero-tag-line" aria-hidden="true"></span></p>
-    <h1 class="mv-h1" id="mv-hero-title">המערכת עובדת בשבילך.<br>הרשת מביאה לך עסקאות<span class="mv-dot" aria-hidden="true">.</span></h1>
+    <p class="mv-hero-tag"><span class="mv-hero-pulse" aria-hidden="true"></span>המערכת היחידה עם רשת שיתופי פעולה בין משרדים</p>
+    <h1 class="mv-h1" id="mv-hero-title">המערכת עובדת בשבילך.<br>הרשת מביאה לך <span class="mv-hero-hl">עסקאות</span><span class="mv-dot" aria-hidden="true">.</span></h1>
     <p class="mv-hero-sub">מערכת ניהול אחת למתווכים ולמשרדי תיווך שעושה בשבילך את העבודה: קולטת כל שיחה לכרטיס לקוח, מצליבה כל נכס מול כל הקונים — ומחברת אותך לרשת שיתופי הפעולה בין המשרדים, כך שגם עסקה שאין לך במאגר נסגרת דרכך, בעמלה שמוסכמת מראש.</p>
     <div class="mv-btn-row">
-      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון — 14 יום ניסיון</a>
+      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון חינם</a>
       <a class="mv-btn-ghost" href="#network">איך עובדים שיתופי הפעולה</a>
     </div>
+    <ul class="mv-hero-trust">
+      <li><?php mv_icon( 'check', 15 ); ?>מסלול שתפים — חינם לתמיד</li>
+      <li><?php mv_icon( 'check', 15 ); ?>נכסים וקונים ללא הגבלה</li>
+      <li><?php mv_icon( 'check', 15 ); ?>בלי התקנה — מהדפדפן ומהנייד</li>
+    </ul>
   </div>
 
   <div class="mv-shot" role="img" aria-label="הדמיית מסך המערכת: רשימת התאמות פתוחות עם ציוני התאמה ותמלול שיחה נכנסת בזמן אמת">

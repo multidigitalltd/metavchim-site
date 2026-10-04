@@ -195,7 +195,7 @@ function mv_render_turnstile_page() {
 
 		<p>
 			<?php if ( mv_turnstile_enabled() ) : ?>
-				<strong style="color:#116329">ההגנה פעילה.</strong> תיבת האימות מוצגת בטופס תיאום ההדגמה, וכל שליחה מאומתת מול Cloudflare.
+				<strong style="color:#116329">ההגנה פעילה.</strong> תיבת האימות מוצגת בטפסים הציבוריים, וכל שליחה מאומתת מול Cloudflare.
 			<?php else : ?>
 				<strong style="color:#8a6d00">ההגנה כבויה.</strong> עד שיוגדרו שני המפתחות, הטופס מוגן במלכודת בוטים ובחסימת שליחות חוזרות בלבד.
 			<?php endif; ?>

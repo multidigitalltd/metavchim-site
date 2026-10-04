@@ -1,6 +1,6 @@
 <?php
 /**
- * טופס הרשמה ותיאום הדגמה (ליד) — חלון קופץ עם שם, טלפון ומייל.
+ * טופס יצירת קשר (ליד) — חלון קופץ עם שם, טלפון ומייל.
  *
  * הטופס נשלח ל-admin-post.php עם בדיקות שדות מלאות, נשמר כסוג תוכן פנימי
  * ונשלח גם במייל למנהל האתר. ההגנה מפני שליחות אוטומטיות היא Cloudflare
@@ -42,7 +42,7 @@ function mv_lead_fields() {
  */
 function mv_lead_form_labels() {
 	return array(
-		'demo'     => 'תיאום הדגמה',
+		'demo'     => 'יצירת קשר',
 		'marathon' => 'הרשמה למרתון השת״פים',
 		'waitlist' => 'רשימת המתנה למועד הבא',
 		'news'     => 'הרשמה לעדכונים',
@@ -72,7 +72,7 @@ function mv_lead_success_message( $form ) {
 		'waitlist' => 'רשמנו אתכן. נעדכן ברגע שייפתח מועד נוסף.',
 		'news'     => 'נרשמתם. כל יכולת חדשה תגיע אליכם למייל.',
 	);
-	return isset( $messages[ $form ] ) ? $messages[ $form ] : 'קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.';
+	return isset( $messages[ $form ] ) ? $messages[ $form ] : 'קיבלנו את הפרטים. נחזור אליכם בהקדם.';
 }
 
 /**
@@ -165,7 +165,9 @@ function mv_render_lead_meta_box( $post ) {
 		<p><strong>אזור פעילות:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_area', true ) ); ?></p>
 		<p><strong>כבר במערכת:</strong> <?php echo esc_html( (string) get_post_meta( $post->ID, '_mv_lead_member', true ) ); ?></p>
 	<?php endif; ?>
-	<p><strong>מועד מועדף:</strong> <?php echo $when ? esc_html( mv_format_lead_when( $when ) ) : 'לא צוין'; ?></p>
+	<?php if ( $when ) : // נשמר בפניות מהתקופה שבה הטופס ביקש מועד. ?>
+		<p><strong>מועד מועדף:</strong> <?php echo esc_html( mv_format_lead_when( $when ) ); ?></p>
+	<?php endif; ?>
 	<?php if ( $note ) : ?>
 		<p><strong>הודעה:</strong><br><?php echo nl2br( esc_html( $note ) ); ?></p>
 	<?php endif; ?>
@@ -187,7 +189,6 @@ function mv_lead_columns( $columns ) {
 	$columns['mv_form']  = 'מקור';
 	$columns['mv_phone'] = 'טלפון';
 	$columns['mv_email'] = 'דוא"ל';
-	$columns['mv_when']  = 'מועד מועדף';
 	if ( $date ) {
 		$columns['date'] = $date;
 	}
@@ -208,9 +209,6 @@ function mv_lead_column_content( $column, $post_id ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_phone', true ) );
 	} elseif ( 'mv_email' === $column ) {
 		echo esc_html( (string) get_post_meta( $post_id, '_mv_lead_email', true ) );
-	} elseif ( 'mv_when' === $column ) {
-		$when = (string) get_post_meta( $post_id, '_mv_lead_when', true );
-		echo esc_html( $when ? mv_format_lead_when( $when ) : '—' );
 	}
 }
 add_action( 'manage_' . MV_LEAD_CPT . '_posts_custom_column', 'mv_lead_column_content', 10, 2 );
@@ -262,11 +260,11 @@ function mv_render_demo_form() {
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
 			</button>
 
-			<h2 class="mv-modal-title" id="mv-demo-title">תיאום הדגמה</h2>
-			<p class="mv-modal-sub">משאירים פרטים ומועד שנוח לכם, ואנחנו חוזרים אליכם לתיאום הדגמה אישית של המערכת. ללא עלות וללא התחייבות.</p>
+			<h2 class="mv-modal-title" id="mv-demo-title">דברו איתנו</h2>
+			<p class="mv-modal-sub">שאלה על המערכת, התאמה למשרד שלכם או עזרה בהתחלה — משאירים פרטים ואנחנו חוזרים אליכם. אפשר גם לפתוח חשבון ולהתחיל לבד, בלי לחכות לנו.</p>
 
 			<?php if ( 'ok' === $sent ) : ?>
-				<p class="mv-form-note is-ok" role="status">קיבלנו את הפרטים. נחזור אליכם בהקדם לתיאום.</p>
+				<p class="mv-form-note is-ok" role="status">קיבלנו את הפרטים. נחזור אליכם בהקדם.</p>
 			<?php elseif ( 'err' === $sent ) : ?>
 				<p class="mv-form-note is-err" role="alert">חלק מהפרטים חסרים או שגויים. אפשר לנסות שוב.</p>
 			<?php endif; ?>
@@ -295,23 +293,10 @@ function mv_render_demo_form() {
 					<input type="email" id="mv-email" name="mv_email" required autocomplete="email" maxlength="120">
 				</p>
 
-				<fieldset class="mv-field-pair">
-					<legend>מועד מועדף להדגמה <span class="mv-field-opt">(לא חובה)</span></legend>
-					<div class="mv-field-row">
-						<p class="mv-field">
-							<label for="mv-date">תאריך</label>
-							<input type="date" id="mv-date" name="mv_date" min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>">
-						</p>
-						<p class="mv-field">
-							<label for="mv-time">שעה</label>
-							<input type="time" id="mv-time" name="mv_time" step="900">
-						</p>
-					</div>
-				</fieldset>
 
 				<?php mv_turnstile_widget(); ?>
 
-				<button type="submit" class="mv-form-submit">שליחה ותיאום הדגמה</button>
+				<button type="submit" class="mv-form-submit">שליחה</button>
 				<span class="mv-form-legal">הפרטים נשמרים לצורך יצירת קשר בלבד.</span>
 			</form>
 		</div>

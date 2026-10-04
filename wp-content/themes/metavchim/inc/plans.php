@@ -155,7 +155,7 @@ function mv_render_plan_meta_box( $post ) {
 	<p class="mv-pf">
 		<label for="mv_plan_cta_url">קישור הכפתור</label>
 		<input type="text" id="mv_plan_cta_url" name="_mv_plan_cta_url" value="<?php echo esc_attr( $get( '_mv_plan_cta_url' ) ); ?>">
-		<span class="description">כתובת מלאה, או <code>#demo</code> לפתיחת טופס תיאום הדגמה. ריק = עמוד פתיחת החשבון במערכת.</span>
+		<span class="description">כתובת מלאה, או <code>#demo</code> לפתיחת טופס יצירת הקשר. ריק = ברירת המחדל לפי סוג המחיר.</span>
 	</p>
 	<p class="mv-pf">
 		<label><input type="checkbox" name="_mv_plan_dark" value="1" <?php checked( '1', (string) $get( '_mv_plan_dark' ) ); ?>> כרטיס בעיצוב כהה (מודגש)</label>
@@ -314,12 +314,15 @@ function mv_render_plans() {
 							</p>
 						<?php endif; ?>
 
-						<?php if ( $trial ) : ?>
+						<?php if ( 'free' === mv_plan_price_kind( $month ) ) : ?>
+							<p class="mv-plan-trial">חינם לתמיד</p>
+						<?php elseif ( $trial ) : ?>
 							<p class="mv-plan-trial"><?php echo esc_html( $trial ); ?> יום ניסיון חינם</p>
 						<?php endif; ?>
 
-						<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : mv_signup_url() ); ?>">
-							<?php echo esc_html( $cta_label ? $cta_label : 'קביעת הדגמה' ); ?>
+						<?php $cta = mv_plan_cta_default( $month ); ?>
+						<a class="mv-plan-cta<?php echo $dark ? ' is-green' : ''; ?>" href="<?php echo esc_url( $cta_url ? $cta_url : $cta['url'] ); ?>">
+							<?php echo esc_html( $cta_label ? $cta_label : $cta['label'] ); ?>
 						</a>
 
 						<?php if ( $features ) : ?>
@@ -443,15 +446,19 @@ function mv_plan_features_from_item( array $item ) {
 		$lines[] = 'עד ' . $users . ' משתמשים';
 	}
 
+	// תיאור רב-שורתי: השורה הראשונה היא כותרת המשנה, השאר פריטים.
+	$description = (string) mv_pick( $item, array( 'description', 'subtitle', 'tagline', 'summary' ) );
+
+	// מסלול שמצהיר בעצמו "ללא הגבלה" לא יציג לצד זה תקרה מספרית.
+	$no_cap = false !== mb_strpos( $description, 'ללא הגבלה' );
+
 	$properties = mv_plan_limit( $item, array( 'maxProperties', 'max_properties' ) );
 	if ( 'unlimited' === $properties ) {
 		$lines[] = 'נכסים ללא הגבלה';
-	} elseif ( is_int( $properties ) && $properties > 0 ) {
+	} elseif ( is_int( $properties ) && $properties > 0 && ! $no_cap ) {
 		$lines[] = 'עד ' . $properties . ' נכסים';
 	}
 
-	// תיאור רב-שורתי: השורה הראשונה היא כותרת המשנה, השאר פריטים.
-	$description = (string) mv_pick( $item, array( 'description', 'subtitle', 'tagline', 'summary' ) );
 	$extra       = array_slice( array_filter( array_map( 'trim', explode( "\n", $description ) ) ), 1 );
 	foreach ( $extra as $line ) {
 		$lines[] = $line;
@@ -496,6 +503,75 @@ function mv_plan_note_from_item( array $item ) {
 	}
 
 	return implode( ' · ', $parts );
+}
+
+/**
+ * סיווג המחיר של מסלול: חינם, מחיר מספרי, או "בהתאמה".
+ *
+ * הסיווג קובע את סדר ההצגה, את טקסט הכפתור ואת שורת הניסיון — מסלול
+ * חינם אינו "ניסיון", ומסלול בהתאמה אינו נפתח לבד.
+ *
+ * @param string $price המחיר כפי שהגיע מהמערכת.
+ * @return string free|number|custom
+ */
+function mv_plan_price_kind( $price ) {
+	$price = (string) $price;
+
+	if ( false !== mb_strpos( $price, 'חינם' ) ) {
+		return 'free';
+	}
+
+	return preg_match( '/\d/', $price ) ? 'number' : 'custom';
+}
+
+/**
+ * מפתח המיון של מסלול: חינם ראשון, אחריו לפי המחיר, ו"בהתאמה" בסוף.
+ *
+ * @param string $price המחיר.
+ * @return int
+ */
+function mv_plan_price_rank( $price ) {
+	$kind = mv_plan_price_kind( $price );
+
+	if ( 'free' === $kind ) {
+		return 0;
+	}
+
+	if ( 'custom' === $kind ) {
+		return PHP_INT_MAX;
+	}
+
+	$digits = preg_replace( '/[^0-9]/', '', (string) $price );
+	return '' === $digits ? PHP_INT_MAX - 1 : (int) $digits;
+}
+
+/**
+ * ברירות המחדל של הכפתור לפי סוג המחיר.
+ *
+ * @param string $price המחיר.
+ * @return array{label:string,url:string}
+ */
+function mv_plan_cta_default( $price ) {
+	$kind = mv_plan_price_kind( $price );
+
+	if ( 'free' === $kind ) {
+		return array(
+			'label' => 'הצטרפות חינם',
+			'url'   => mv_signup_url(),
+		);
+	}
+
+	if ( 'custom' === $kind ) {
+		return array(
+			'label' => 'דברו איתנו',
+			'url'   => '#demo',
+		);
+	}
+
+	return array(
+		'label' => 'התחלת ניסיון',
+		'url'   => mv_signup_url(),
+	);
 }
 
 /**
@@ -568,6 +644,17 @@ function mv_sync_plans_from_api() {
 		);
 	}
 
+	// סדר ההצגה נקבע לפי המחיר ולא לפי סדר התשובה: חינם ראשון, אחריו
+	// המסלולים לפי מחיר עולה, ו"בהתאמה" בסוף.
+	usort(
+		$data,
+		static function ( $a, $b ) {
+			$price_a = is_array( $a ) ? (string) mv_pick( $a, array( 'monthlyPrice', 'price_label', 'price', 'amount' ) ) : '';
+			$price_b = is_array( $b ) ? (string) mv_pick( $b, array( 'monthlyPrice', 'price_label', 'price', 'amount' ) ) : '';
+			return mv_plan_price_rank( $price_a ) <=> mv_plan_price_rank( $price_b );
+		}
+	);
+
 	$seen  = array();
 	$order = 0;
 
@@ -630,9 +717,9 @@ function mv_sync_plans_from_api() {
 
 		// שדות שבבעלות העורך — נקבעים רק בפעם הראשונה ולא נדרסים אחר כך.
 		if ( ! $existing ) {
-			$custom = ( '' === $price ) || ! preg_match( '/\d/', $price );
-			update_post_meta( $plan_id, '_mv_plan_cta_label', $custom ? 'קביעת הדגמה' : 'התחלת ניסיון' );
-			update_post_meta( $plan_id, '_mv_plan_cta_url', $custom ? '#demo' : mv_signup_url() );
+			$cta = mv_plan_cta_default( $price );
+			update_post_meta( $plan_id, '_mv_plan_cta_label', $cta['label'] );
+			update_post_meta( $plan_id, '_mv_plan_cta_url', $cta['url'] );
 			update_post_meta( $plan_id, '_mv_plan_badge', '' );
 			update_post_meta( $plan_id, '_mv_plan_dark', 0 );
 		}
@@ -691,7 +778,7 @@ function mv_pick( array $item, array $keys ) {
  * משיכה מחדש, אחרת המסלולים השמורים ימשיכו להציג את הנוסח הישן עד
  * הסנכרון המתוזמן הבא.
  */
-const MV_PLANS_MAP_VERSION = '3';
+const MV_PLANS_MAP_VERSION = '4';
 
 /**
  * משיכה מחדש פעם אחת אחרי שינוי במיפוי.
@@ -710,6 +797,32 @@ function mv_resync_plans_on_map_change() {
 
 	if ( mv_get_plans() ) {
 		mv_sync_plans_from_api();
+	}
+
+	// אחרי הסנכרון, כשהמחירים כבר עדכניים — אחרת מסלול שמחירו השתנה
+	// יקבל כפתור לפי המחיר הישן.
+	mv_plans_relabel_cta();
+}
+
+/**
+ * כפתור המסלול: אתרים קיימים נשמרו עם "קביעת הדגמה" כברירת מחדל, וזה
+ * אינו קיים יותר. כפתור שהמנהל ערך בעצמו נשאר כפי שהוא.
+ */
+function mv_plans_relabel_cta() {
+	foreach ( mv_get_plans() as $plan ) {
+		$label = (string) get_post_meta( $plan->ID, '_mv_plan_cta_label', true );
+		$url   = (string) get_post_meta( $plan->ID, '_mv_plan_cta_url', true );
+
+		if ( 'קביעת הדגמה' !== $label ) {
+			continue;
+		}
+
+		$cta = mv_plan_cta_default( (string) get_post_meta( $plan->ID, '_mv_plan_price', true ) );
+		update_post_meta( $plan->ID, '_mv_plan_cta_label', $cta['label'] );
+
+		if ( '#demo' === $url ) {
+			update_post_meta( $plan->ID, '_mv_plan_cta_url', $cta['url'] );
+		}
 	}
 }
 
@@ -918,7 +1031,7 @@ function mv_seed_plans() {
 			'title'    => 'משרד',
 			'sub'      => 'הכול מהמסלול הקודם, ובנוסף שכבת הניהול: סוכנים, הרשאות, יעדים ודוחות.',
 			'features' => "ניהול סוכנים והרשאות\nחלוקת לידים ומעקב טיפול\nיעדים ודוחות ביצועים\nניהול שיתופי פעולה ועמלות\nמיתוג המשרד על כל דף שקונה רואה",
-			'cta'      => 'קביעת הדגמה',
+			'cta'      => 'דברו איתנו',
 			'cta_url'  => '#demo',
 			'badge'    => 'הכי נבחר',
 			'dark'     => 1,
