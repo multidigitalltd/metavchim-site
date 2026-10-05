@@ -229,6 +229,19 @@ function mv_render_plans() {
 		return '';
 	}
 
+	// הסדר נקבע לפי המחיר גם בהצגה ולא רק בסנכרון: חינם ראשון, אחריו
+	// לפי מחיר עולה, ו"בהתאמה" בסוף. כך הסדר נכון גם באתר שהסנכרון
+	// האחרון בו נכשל או קדם לכלל הזה.
+	usort(
+		$plans,
+		static function ( $a, $b ) {
+			$rank = mv_plan_price_rank( (string) get_post_meta( $a->ID, '_mv_plan_price', true ) )
+				<=> mv_plan_price_rank( (string) get_post_meta( $b->ID, '_mv_plan_price', true ) );
+
+			return 0 !== $rank ? $rank : ( (int) $a->menu_order <=> (int) $b->menu_order );
+		}
+	);
+
 	// המתג מוצג רק אם יש בכלל מסלול עם מחיר שנתי.
 	$has_yearly = false;
 	$max_save   = 0;
@@ -556,7 +569,7 @@ function mv_plan_cta_default( $price ) {
 
 	if ( 'free' === $kind ) {
 		return array(
-			'label' => 'הצטרפות חינם',
+			'label' => 'התחל עכשיו',
 			'url'   => mv_signup_url(),
 		);
 	}
@@ -778,7 +791,7 @@ function mv_pick( array $item, array $keys ) {
  * משיכה מחדש, אחרת המסלולים השמורים ימשיכו להציג את הנוסח הישן עד
  * הסנכרון המתוזמן הבא.
  */
-const MV_PLANS_MAP_VERSION = '4';
+const MV_PLANS_MAP_VERSION = '5';
 
 /**
  * משיכה מחדש פעם אחת אחרי שינוי במיפוי.
@@ -805,15 +818,18 @@ function mv_resync_plans_on_map_change() {
 }
 
 /**
- * כפתור המסלול: אתרים קיימים נשמרו עם "קביעת הדגמה" כברירת מחדל, וזה
- * אינו קיים יותר. כפתור שהמנהל ערך בעצמו נשאר כפי שהוא.
+ * כפתור המסלול: ברירות מחדל שהיו בגרסאות קודמות מתעדכנות לנוסח העדכני.
+ * כפתור שהמנהל ניסח בעצמו נשאר כפי שהוא.
  */
 function mv_plans_relabel_cta() {
+	// נוסחים שהתבנית עצמה כתבה בעבר — מותר להחליף אותם.
+	$defaults = array( 'קביעת הדגמה', 'הצטרפות חינם' );
+
 	foreach ( mv_get_plans() as $plan ) {
 		$label = (string) get_post_meta( $plan->ID, '_mv_plan_cta_label', true );
 		$url   = (string) get_post_meta( $plan->ID, '_mv_plan_cta_url', true );
 
-		if ( 'קביעת הדגמה' !== $label ) {
+		if ( ! in_array( $label, $defaults, true ) ) {
 			continue;
 		}
 
