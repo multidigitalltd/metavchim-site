@@ -17,18 +17,81 @@
   <div class="mv-hero-gridbg" aria-hidden="true"></div>
 
   <div class="mv-hero-inner">
-    <p class="mv-hero-tag"><span class="mv-hero-pulse" aria-hidden="true"></span>המערכת היחידה עם רשת שיתופי פעולה בין משרדים</p>
-    <h1 class="mv-h1" id="mv-hero-title">המערכת עובדת בשבילך.<br>הרשת מביאה לך <span class="mv-hero-hl">עסקאות</span><span class="mv-dot" aria-hidden="true">.</span></h1>
-    <p class="mv-hero-sub">מערכת ניהול אחת למתווכים ולמשרדי תיווך שעושה בשבילך את העבודה: קולטת כל שיחה לכרטיס לקוח, מצליבה כל נכס מול כל הקונים — ומחברת אותך לרשת שיתופי הפעולה בין המשרדים, כך שגם עסקה שאין לך במאגר נסגרת דרכך, בעמלה שמוסכמת מראש.</p>
-    <div class="mv-btn-row">
-      <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון חינם</a>
-      <a class="mv-btn-ghost" href="#network">איך עובדים שיתופי הפעולה</a>
+    <div class="mv-hero-copy">
+      <h1 class="mv-h1" id="mv-hero-title">המערכת עושה את העבודה.<br>אתם סוגרים <span class="mv-hero-hl">עסקאות</span><span class="mv-dot" aria-hidden="true">.</span></h1>
+      <p class="mv-hero-sub">קליטת לידים, תיוק שיחות, התאמות, תזכורות, הצעות והסכמים — הכול רץ מעצמו ברקע, ומגיע אליכם מוכן. מה שנשאר לכם הוא מה שבאמת מכניס כסף: לפגוש לקוחות ולסגור עסקאות — לבד או עם משרד שותף מהרשת.</p>
+      <div class="mv-btn-row">
+        <a class="mv-btn-green" href="<?php echo esc_url( mv_signup_url() ); ?>">פתיחת חשבון חינם</a>
+        <a class="mv-btn-ghost" href="#network">איך עובדים שיתופי הפעולה</a>
+      </div>
+      <ul class="mv-hero-trust">
+        <li><?php mv_icon( 'check', 15 ); ?>מסלול שתפים — חינם לתמיד</li>
+        <li><?php mv_icon( 'check', 15 ); ?>נכסים וקונים ללא הגבלה</li>
+        <li><?php mv_icon( 'check', 15 ); ?>בלי התקנה — מהדפדפן ומהנייד</li>
+      </ul>
     </div>
-    <ul class="mv-hero-trust">
-      <li><?php mv_icon( 'check', 15 ); ?>מסלול שתפים — חינם לתמיד</li>
-      <li><?php mv_icon( 'check', 15 ); ?>נכסים וקונים ללא הגבלה</li>
-      <li><?php mv_icon( 'check', 15 ); ?>בלי התקנה — מהדפדפן ומהנייד</li>
-    </ul>
+
+    <div class="mv-hero-device" role="img" aria-label="הדמיית המערכת בנייד: לוח הבקרה מציג ארבע התאמות חדשות ושבע משימות להיום, ומסביבו פעולות שהמערכת ביצעה לבד — שיחה שתומללה לכרטיס, התאמה בציון 92%, סיור שנקבע ביומן, תזכורות שנשלחו והסכם שנחתם דיגיטלית.">
+      <div class="mv-phone" aria-hidden="true">
+        <div class="mv-phone-notch"></div>
+        <div class="mv-phone-screen">
+          <div class="mv-ph-top">
+            <span class="mv-ph-hello">בוקר טוב, דנה</span>
+            <span class="mv-ph-ava"><?php mv_logo_svg( 15, '#70EE91', '#FFFFFF' ); ?></span>
+          </div>
+
+          <div class="mv-ph-kpis">
+            <div class="mv-ph-kpi">
+              <span class="mv-ph-kpi-v">4</span>
+              <span class="mv-ph-kpi-t">התאמות חדשות</span>
+            </div>
+            <div class="mv-ph-kpi">
+              <span class="mv-ph-kpi-v">7</span>
+              <span class="mv-ph-kpi-t">משימות להיום</span>
+            </div>
+          </div>
+
+          <p class="mv-ph-label">המערכת עשתה בשבילך</p>
+          <ul class="mv-ph-feed">
+            <li>
+              <span class="mv-ph-ico is-green"><?php mv_icon( 'mic', 15 ); ?></span>
+              <span class="mv-ph-row"><strong>שיחה תומללה</strong><em>נפתח כרטיס קונה · גבעתיים</em></span>
+              <span class="mv-ph-ok"><?php mv_icon( 'check', 12 ); ?></span>
+            </li>
+            <li>
+              <span class="mv-ph-ico is-violet"><?php mv_icon( 'match', 15 ); ?></span>
+              <span class="mv-ph-row"><strong>התאמה 92%</strong><em>ויצמן 9 · משפחת אלמוג</em></span>
+              <span class="mv-ph-ok"><?php mv_icon( 'check', 12 ); ?></span>
+            </li>
+            <li>
+              <span class="mv-ph-ico is-blue"><?php mv_icon( 'calendar', 15 ); ?></span>
+              <span class="mv-ph-row"><strong>סיור נקבע · מחר 16:00</strong><em>אישור נשלח ללקוח</em></span>
+              <span class="mv-ph-ok"><?php mv_icon( 'check', 12 ); ?></span>
+            </li>
+            <li>
+              <span class="mv-ph-ico is-green"><?php mv_icon( 'signature', 15 ); ?></span>
+              <span class="mv-ph-row"><strong>הסכם בלעדיות נחתם</strong><em>נשמר בכרטיס הנכס</em></span>
+              <span class="mv-ph-ok"><?php mv_icon( 'check', 12 ); ?></span>
+            </li>
+          </ul>
+
+          <div class="mv-ph-tabs">
+            <span class="is-on"><?php mv_icon( 'gauge', 16 ); ?></span>
+            <span><?php mv_icon( 'building', 16 ); ?></span>
+            <span><?php mv_icon( 'users', 16 ); ?></span>
+            <span><?php mv_icon( 'whatsapp', 16 ); ?></span>
+            <span><?php mv_icon( 'chart', 16 ); ?></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mv-chips" aria-hidden="true">
+        <span class="mv-chip mv-chip-1"><?php mv_icon( 'whatsapp', 15 ); ?>ליד מווטסאפ נקלט</span>
+        <span class="mv-chip mv-chip-2"><?php mv_icon( 'bell', 15 ); ?>7 תזכורות יצאו</span>
+        <span class="mv-chip mv-chip-3"><?php mv_icon( 'handshake', 15 ); ?>שת״פ נסגר בעמלה מוסכמת</span>
+        <span class="mv-chip mv-chip-4"><?php mv_icon( 'offer', 15 ); ?>הצעה נשלחה ונפתחה</span>
+      </div>
+    </div>
   </div>
 
   <div class="mv-shot" role="img" aria-label="הדמיית מסך המערכת: רשימת התאמות פתוחות עם ציוני התאמה ותמלול שיחה נכנסת בזמן אמת">

@@ -32,17 +32,15 @@
 @keyframes mvFloatA{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(40px,30px,0)}}
 @keyframes mvFloatB{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-36px,26px,0)}}
 .mv-hero-gridbg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:linear-gradient(#000,transparent 70%);mask-image:linear-gradient(#000,transparent 70%);pointer-events:none}
-.mv-hero-inner{position:relative;max-width:1180px;margin:0 auto;text-align:center}
-.mv-hero-tag{display:inline-flex;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:rgba(112,238,145,.1);border:1px solid rgba(112,238,145,.26);color:#C9F7D6;font-size:0.90625rem;font-weight:700;letter-spacing:.01em}
-.mv-hero-pulse{width:8px;height:8px;border-radius:999px;background:var(--mv-green);box-shadow:0 0 0 0 rgba(112,238,145,.55);animation:mvPulse 2.4s ease-out infinite}
-@keyframes mvPulse{0%{box-shadow:0 0 0 0 rgba(112,238,145,.5)}70%{box-shadow:0 0 0 10px rgba(112,238,145,0)}100%{box-shadow:0 0 0 0 rgba(112,238,145,0)}}
-.mv-h1{margin:26px 0 0;font-size:4.75rem;font-weight:900;line-height:1.03;letter-spacing:-.04em;text-wrap:balance}
+.mv-hero-inner{position:relative;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:56px;align-items:center;text-align:start}
+.mv-hero-copy{min-width:0}
+.mv-h1{margin:0;font-size:4.25rem;font-weight:900;line-height:1.03;letter-spacing:-.04em;text-wrap:balance}
 /* מילת המפתח בכותרת מודגשת בירוק של המותג, עם קו עדין מתחתיה. */
 .mv-hero-hl{position:relative;color:var(--mv-green);white-space:nowrap}
 .mv-hero-hl::after{content:"";position:absolute;inset-inline:0;inset-block-end:.1em;height:.085em;border-radius:999px;background:linear-gradient(90deg,rgba(112,238,145,0),rgba(112,238,145,.7),rgba(112,238,145,0))}
-.mv-hero-sub{font-size:1.25rem;line-height:1.6;color:rgba(255,255,255,.7);max-width:640px;margin:26px auto 34px;text-wrap:pretty}
+.mv-hero-sub{font-size:1.1875rem;line-height:1.65;color:rgba(255,255,255,.7);max-width:620px;margin:24px 0 32px;text-wrap:pretty}
 /* שורת האמון מתחת לכפתורים — מה שמקבלים עוד לפני שמשלמים. */
-.mv-hero-trust{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 26px;margin:26px 0 0;padding:0;list-style:none;font-size:0.9375rem;font-weight:600;color:rgba(255,255,255,.66)}
+.mv-hero-trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin:24px 0 0;padding:0;list-style:none;font-size:0.9375rem;font-weight:600;color:rgba(255,255,255,.66)}
 .mv-hero-trust li{display:inline-flex;align-items:center;gap:8px}
 .mv-hero-trust svg{color:var(--mv-green);flex:none}
 /* Product screenshot mock */
@@ -96,6 +94,47 @@
 .mv-wave span:nth-child(11){animation-delay:1s}
 .mv-wave span:nth-child(12){animation-delay:1.1s}
 .mv-shot-fade{height:110px;margin-top:-108px;position:relative;background:linear-gradient(180deg,rgba(10,12,11,0),#0A0C0B 78%)}
+
+/* ---------- המכשיר בהירו: לוח הבקרה ומה שהמערכת עשתה לבד ---------- */
+.mv-hero-device{position:relative;justify-self:center;width:300px;height:566px}
+.mv-phone{position:relative;width:300px;height:566px;border-radius:40px;padding:10px;background:linear-gradient(170deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 38%,rgba(255,255,255,.12));box-shadow:0 50px 90px -40px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.07);animation:mvPhoneFloat 9s ease-in-out infinite}
+@keyframes mvPhoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.mv-phone-notch{position:absolute;inset-block-start:14px;inset-inline:50% auto;transform:translateX(50%);width:96px;height:22px;border-radius:999px;background:#050706;z-index:2}
+.mv-phone-screen{position:relative;height:100%;border-radius:31px;background:linear-gradient(180deg,#0E1512,#0A0C0B 42%);overflow:hidden;padding:40px 14px 12px;display:flex;flex-direction:column;gap:12px}
+.mv-ph-top{display:flex;align-items:center;gap:10px}
+.mv-ph-hello{flex:1;font-size:0.9375rem;font-weight:800;color:#fff}
+.mv-ph-ava{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:rgba(112,238,145,.16)}
+.mv-ph-kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mv-ph-kpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px 12px}
+.mv-ph-kpi-v{display:block;font-size:1.5rem;font-weight:900;color:var(--mv-green);line-height:1}
+.mv-ph-kpi-t{display:block;margin-top:4px;font-size:0.6875rem;color:rgba(255,255,255,.55)}
+.mv-ph-label{margin:4px 0 0;font-size:0.6875rem;font-weight:800;letter-spacing:.04em;color:rgba(255,255,255,.45)}
+.mv-ph-feed{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.mv-ph-feed li{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;opacity:0;animation:mvFeedIn .5s ease forwards}
+.mv-ph-feed li:nth-child(1){animation-delay:.3s}
+.mv-ph-feed li:nth-child(2){animation-delay:1.1s}
+.mv-ph-feed li:nth-child(3){animation-delay:1.9s}
+.mv-ph-feed li:nth-child(4){animation-delay:2.7s}
+@keyframes mvFeedIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.mv-ph-ico{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:9px}
+.mv-ph-ico.is-green{background:rgba(112,238,145,.16);color:var(--mv-green)}
+.mv-ph-ico.is-violet{background:rgba(141,110,232,.2);color:#C3B2FF}
+.mv-ph-ico.is-blue{background:rgba(88,150,232,.18);color:#9EC6FF}
+.mv-ph-row{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mv-ph-row strong{font-size:0.78125rem;font-weight:800;color:#fff}
+.mv-ph-row em{font-size:0.6875rem;font-style:normal;color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-ph-ok{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:rgba(112,238,145,.18);color:var(--mv-green)}
+.mv-ph-tabs{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:10px 8px 2px;border-top:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.38)}
+.mv-ph-tabs .is-on{color:var(--mv-green)}
+
+/* שבבים צפים: מה שהמערכת עושה ברקע, גם בלי להיכנס אליה. */
+.mv-chip{position:absolute;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;background:rgba(16,22,18,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(112,238,145,.26);color:#E6F6EA;font-size:0.8125rem;font-weight:700;white-space:nowrap;box-shadow:0 18px 34px -20px rgba(0,0,0,.9);animation:mvChipFloat 7s ease-in-out infinite}
+.mv-chip svg{color:var(--mv-green)}
+.mv-chip-1{inset-block-start:22px;inset-inline-end:-124px;animation-delay:.2s}
+.mv-chip-2{inset-block-start:150px;inset-inline-start:-112px;animation-delay:1.4s}
+.mv-chip-3{inset-block-end:158px;inset-inline-end:-128px;animation-delay:2.6s}
+.mv-chip-4{inset-block-end:96px;inset-inline-start:-96px;animation-delay:3.4s}
+@keyframes mvChipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
 /* ===== 2. Stats strip ===== */
 .mv-stats-sec{padding:70px 28px 0}
@@ -464,7 +503,8 @@
 .mv-plans-note{margin:18px 0 0;font-size:0.875rem;color:var(--mv-muted)}
 
 @media (prefers-reduced-motion:reduce){
-.mv-hero-aurora::before,.mv-hero-aurora::after,.mv-hero-pulse{animation:none}
+.mv-hero-aurora::before,.mv-hero-aurora::after,.mv-phone,.mv-chip{animation:none}
+.mv-ph-feed li{opacity:1;animation:none}
 .mv-plans{scroll-behavior:auto}
 .mv-plan:hover,.mv-plan-cta:hover,.mv-rail-btn:hover{transform:none}
 }
@@ -483,7 +523,13 @@
 
 /* ===== Responsive ===== */
 @media (max-width:1180px){
-.mv-h1{font-size:3.75rem}
+.mv-h1{font-size:3.5rem}
+.mv-hero-inner{grid-template-columns:1fr 320px;gap:36px}
+/* במסך צר אין מקום לשבבים צפים סביב המכשיר בלי לכסות אותו, ולכן הם
+   יורדים לשורה מסודרת מתחתיו — אותו מסר, בלי התנגשות. */
+.mv-hero-device{width:auto;height:auto;display:flex;flex-direction:column;align-items:center}
+.mv-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px;max-width:360px}
+.mv-chip{position:static;font-size:0.75rem;padding:8px 12px;animation:none}
 .mv-network-sec .mv-h2{font-size:2.875rem}
 .mv-orbit-grid{grid-template-columns:1fr;gap:10px}
 .mv-orbit{height:500px}
@@ -492,6 +538,9 @@
 .mv-voice-card{grid-template-columns:1fr;gap:36px}
 }
 @media (max-width:980px){
+.mv-hero-inner{grid-template-columns:1fr;gap:44px;text-align:center}
+.mv-hero-sub{margin-inline:auto}
+.mv-btn-row,.mv-hero-trust{justify-content:center}
 .mv-net-grid{grid-template-columns:1fr}
 .mv-net-mid{padding:18px 0}
 .mv-conn{display:none}
@@ -506,6 +555,11 @@
 .mv-match-grid{grid-template-columns:1fr}
 }
 @media (max-width:760px){
+.mv-hero-device,.mv-phone{width:268px;height:506px}
+.mv-chip{font-size:0.71875rem;padding:7px 10px}
+.mv-chip-1{inset-block-start:34px;inset-inline-end:-16px}
+.mv-chip-2{inset-block-start:170px;inset-inline-start:-14px}
+.mv-chip-3,.mv-chip-4{display:none}
 .mv-stats-sec{padding:50px 16px 0}
 .mv-network-sec{padding:70px 16px 0}
 .mv-cta-sec{padding:70px 16px 32px}
