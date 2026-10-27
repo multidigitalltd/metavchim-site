@@ -38,6 +38,32 @@ function mv_is_collab_page() {
 }
 
 /**
+ * כתובת סקריפט מעקב ההרשמות.
+ *
+ * ברירת המחדל היא הסקריפט של האפליקציה. אפשר להחליף אותה בקבוע
+ * MV_LINKS_SRC ב-wp-config.php, או לכבות את הטעינה לגמרי בהגדרת
+ * הקבוע למחרוזת ריקה — בלי לערוך את התבנית.
+ *
+ * @return string כתובת בטוחה לטעינה, או מחרוזת ריקה כשאין.
+ */
+function mv_links_script_url() {
+	$src = defined( 'MV_LINKS_SRC' ) ? (string) MV_LINKS_SRC : 'https://app.metavchim.co.il/mv-links.js';
+
+	/**
+	 * סינון כתובת סקריפט המעקב.
+	 *
+	 * @param string $src הכתובת.
+	 */
+	$src = (string) apply_filters( 'mv_links_script_url', $src );
+
+	if ( '' === $src || ! wp_http_validate_url( $src ) ) {
+		return '';
+	}
+
+	return esc_url_raw( $src );
+}
+
+/**
  * Enqueue front-end styles and scripts.
  */
 function mv_enqueue_assets() {
@@ -122,6 +148,23 @@ function mv_enqueue_assets() {
 			MV_THEME_URI . '/assets/js/home.js',
 			array(),
 			MV_THEME_VERSION,
+			array(
+				'strategy'  => 'defer',
+				'in_footer' => true,
+			)
+		);
+	}
+
+	// מעקב ההרשמות של המערכת. סקריפט צד-ראשון מהדומיין של האפליקציה,
+	// נטען בכל עמודי האתר (כולל עמוד המרתון) עם defer כדי שלא יעכב
+	// את הציור. הכתובת ניתנת לשינוי בלי לגעת בקוד התבנית.
+	$links_src = mv_links_script_url();
+	if ( '' !== $links_src ) {
+		wp_enqueue_script(
+			'mv-links',
+			$links_src,
+			array(),
+			null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- הכתובת נטענת כפי שהיא, בלי ?ver= שישבור מטמון בצד האפליקציה.
 			array(
 				'strategy'  => 'defer',
 				'in_footer' => true,
