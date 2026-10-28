@@ -378,19 +378,6 @@ function mv_feature_tag_class( $tag ) {
 }
 
 /**
- * סך כל היכולות ברשימה.
- *
- * @return int
- */
-function mv_feature_count() {
-	$count = 0;
-	foreach ( mv_feature_groups() as $group ) {
-		$count += count( $group['items'] );
-	}
-	return $count;
-}
-
-/**
  * קישור לאזור היכולות בעמוד הבית.
  *
  * @param string $anchor העוגן.
@@ -414,7 +401,7 @@ function mv_mega_menu() {
 		<div class="mv-mega" id="mv-mega" hidden>
 			<div class="mv-mega-in">
 				<div class="mv-mega-head">
-					<p class="mv-mega-title"><?php echo esc_html( mv_feature_count() ); ?> יכולות במערכת אחת<span class="mv-dot" aria-hidden="true">.</span></p>
+					<p class="mv-mega-title">כל הכלים להצלחה שלך<span class="mv-dot" aria-hidden="true">.</span></p>
 					<a class="mv-mega-all" href="<?php echo esc_url( mv_home_anchor( 'capabilities' ) ); ?>">לכל היכולות</a>
 				</div>
 
@@ -427,10 +414,7 @@ function mv_mega_menu() {
 									<li>
 										<a class="mv-mega-item" href="<?php echo esc_url( mv_home_anchor( 'capabilities' ) ); ?>">
 											<span class="mv-mega-ico"><?php mv_icon( $item['icon'], 18 ); ?></span>
-											<span class="mv-mega-name"><?php echo esc_html( $item['title'] ); ?></span>
-											<?php if ( ! empty( $item['tag'] ) ) : ?>
-												<span class="mv-tag<?php echo esc_attr( mv_feature_tag_class( $item['tag'] ) ); ?>"><?php echo esc_html( $item['tag'] ); ?></span>
-											<?php endif; ?>
+											<span class="mv-mega-name"><?php echo esc_html( $item['title'] ); ?><?php if ( ! empty( $item['tag'] ) ) : ?><span class="mv-tag<?php echo esc_attr( mv_feature_tag_class( $item['tag'] ) ); ?>"><?php echo esc_html( $item['tag'] ); ?></span><?php endif; ?></span>
 										</a>
 									</li>
 								<?php endforeach; ?>
