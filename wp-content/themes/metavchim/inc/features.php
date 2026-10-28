@@ -107,6 +107,12 @@ function mv_feature_groups() {
 					'title' => 'טופס „מה אתם מחפשים?”',
 					'text'  => 'הלקוח ממלא בעצמו — דרישות, או פרטי הנכס שלו.',
 				),
+				array(
+					'icon'  => 'flame',
+					'title' => 'לידים חמים לרכישה',
+					'text'  => 'קונים שמחכים להצעות, בשיתוף Kanko.',
+					'tag'   => 'בלעדי',
+				),
 			),
 		),
 		array(
@@ -177,6 +183,17 @@ function mv_feature_groups() {
 					'title' => 'לידים לפי מקור',
 					'text'  => 'רואים איזה ערוץ באמת מביא עסקאות.',
 				),
+				array(
+					'icon'  => 'globe',
+					'title' => 'אתר אישי למתווך',
+					'text'  => 'אתר משלכם, והנכסים מתעדכנים בו מהמערכת.',
+				),
+				array(
+					'icon'  => 'megaphone',
+					'title' => 'רכש מדיה',
+					'text'  => 'קמפיינים ממומנים לנכסים, מתוך המערכת.',
+					'tag'   => 'בקרוב',
+				),
 			),
 		),
 		array(
@@ -237,10 +254,30 @@ function mv_feature_groups() {
 					'title' => 'יומן חשיפות',
 					'text'  => 'מה נחשף, למי ומתי.',
 				),
+			),
+		),
+		array(
+			'title' => 'ידע, כלים ונתוני שוק',
+			'items' => array(
 				array(
 					'icon'  => 'forum',
-					'title' => 'פורום אנונימי',
-					'text'  => 'מתייעצים בלי שם ובלי משרד.',
+					'title' => 'פורום המתווכים',
+					'text'  => 'מתייעצים עם הענף, בלי שם ובלי משרד.',
+				),
+				array(
+					'icon'  => 'tools',
+					'title' => 'כלים מקצועיים',
+					'text'  => 'מחשבונים וטפסים שמתווך צריך, במקום אחד.',
+				),
+				array(
+					'icon'  => 'chart',
+					'title' => 'נתוני שוק',
+					'text'  => 'מחירי עסקאות ומגמות לפי אזור.',
+				),
+				array(
+					'icon'  => 'activity',
+					'title' => 'דוחות ופילוח עסקאות',
+					'text'  => 'מה נסגר, באיזה טווח מחיר וכמה זמן לקח.',
 				),
 			),
 		),
@@ -328,6 +365,19 @@ function mv_feature_groups() {
 }
 
 /**
+ * מחלקת העיצוב של תווית היכולת.
+ *
+ * „בקרוב” מקבלת מראה מאופק — היא הבטחה ולא יכולת קיימת; „בלעדי”
+ * וכל תווית אחרת מודגשות בירוק של המותג.
+ *
+ * @param string $tag התווית.
+ * @return string
+ */
+function mv_feature_tag_class( $tag ) {
+	return 'בקרוב' === $tag ? ' is-soon' : '';
+}
+
+/**
  * סך כל היכולות ברשימה.
  *
  * @return int
@@ -378,6 +428,9 @@ function mv_mega_menu() {
 										<a class="mv-mega-item" href="<?php echo esc_url( mv_home_anchor( 'capabilities' ) ); ?>">
 											<span class="mv-mega-ico"><?php mv_icon( $item['icon'], 18 ); ?></span>
 											<span class="mv-mega-name"><?php echo esc_html( $item['title'] ); ?></span>
+											<?php if ( ! empty( $item['tag'] ) ) : ?>
+												<span class="mv-tag<?php echo esc_attr( mv_feature_tag_class( $item['tag'] ) ); ?>"><?php echo esc_html( $item['tag'] ); ?></span>
+											<?php endif; ?>
 										</a>
 									</li>
 								<?php endforeach; ?>

@@ -23,7 +23,7 @@
       <h3 class="mv-cap-group-title"><?php echo esc_html( $group['title'] ); ?><span class="mv-cap-count"><?php echo esc_html( (string) count( $group['items'] ) ); ?></span></h3>
       <div class="mv-caps">
 <?php foreach ( $group['items'] as $item ) : ?>
-        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( $item['icon'], 21 ); ?></span><h4 class="mv-cap-title"><?php echo esc_html( $item['title'] ); ?></h4><p class="mv-cap-text"><?php echo esc_html( $item['text'] ); ?></p></div>
+        <div class="mv-cap"><span class="mv-cap-ico"><?php mv_icon( $item['icon'], 21 ); ?></span><h4 class="mv-cap-title"><?php echo esc_html( $item['title'] ); ?><?php if ( ! empty( $item['tag'] ) ) : ?><span class="mv-tag<?php echo esc_attr( mv_feature_tag_class( $item['tag'] ) ); ?>"><?php echo esc_html( $item['tag'] ); ?></span><?php endif; ?></h4><p class="mv-cap-text"><?php echo esc_html( $item['text'] ); ?></p></div>
 <?php endforeach; ?>
       </div>
     </div>
