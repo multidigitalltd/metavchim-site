@@ -187,8 +187,8 @@ function mv_feature_groups() {
 				),
 				array(
 					'icon'  => 'globe',
-					'title' => 'אתר אישי למתווך',
-					'text'  => 'אתר משלכם, והנכסים מתעדכנים בו מהמערכת.',
+					'title' => 'יצירת אתר אישי',
+					'text'  => 'אתר משלכם עם כל הנכסים, בלחיצה אחת.',
 				),
 				array(
 					'icon'  => 'megaphone',
